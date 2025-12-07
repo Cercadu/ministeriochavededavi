@@ -1,1 +1,1619 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ação de Graças - 37 anos de Sacerdócio do Pe. Celso</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #B8860B; /* Dourado para celebração */
+            --secondary: #8B4513; /* Marrom dourado */
+            --accent: #FFD700; /* Dourado vibrante */
+            --light: #FFF8DC; /* Branco amarelado suave */
+            --dark: #2C1810; /* Marrom escuro */
+            --liturgical-color: #DAA520; /* Dourado litúrgico */
+            --font-size: 16px;
+        }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(to bottom, #FFF8DC, #FAF0E6);
+            color: var(--dark);
+            font-size: var(--font-size);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding-bottom: 20px;
+        }
+
+        .banner-container {
+            width: 100%;
+            overflow: hidden;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .banner {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .banner-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(184, 134, 11, 0.9), transparent);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .banner-title {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .banner-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            border-radius: 12px;
+            margin: 0 15px 20px 15px;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .header-decoration {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                    radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .celebration-info {
+            background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .anniversary-badge {
+            background: var(--accent);
+            color: var(--dark);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            margin-top: 10px;
+            display: inline-block;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .liturgy-section {
+            background: white;
+            margin: 15px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            border: 2px solid var(--primary);
+        }
+
+        .liturgy-header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 15px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .liturgy-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--accent);
+        }
+
+        .liturgy-header h2 {
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .liturgy-icon {
+            font-size: 1.2rem;
+        }
+
+        .liturgy-arrow {
+            transition: transform 0.3s;
+        }
+
+        .liturgy-content {
+            background-color: white;
+            display: none;
+            border-left: 3px solid var(--accent);
+            padding: 20px;
+            white-space: pre-line;
+            line-height: 1.8;
+        }
+
+        .liturgy-content.expanded {
+            display: block;
+        }
+
+        .liturgy-role {
+            font-weight: bold;
+            color: var(--primary);
+            margin-top: 15px;
+            display: block;
+        }
+
+        .liturgy-response {
+            font-style: italic;
+            color: var(--secondary);
+            margin-left: 20px;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .liturgy-reading {
+            background: var(--light);
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid var(--primary);
+            border-radius: 0 8px 8px 0;
+        }
+
+        .liturgy-reading-title {
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background-color: var(--primary);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin: 0 15px;
+            border-radius: 8px;
+        }
+
+        .font-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .font-btn {
+            background: var(--accent);
+            color: var(--dark);
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .font-btn:hover {
+            transform: scale(1.1);
+            background: white;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: white;
+            border-radius: 20px;
+            padding: 5px 12px;
+            width: 180px;
+        }
+
+        .search-box input {
+            border: none;
+            outline: none;
+            width: 100%;
+            padding: 5px;
+            background: transparent;
+            color: var(--dark);
+        }
+
+        .music-list {
+            padding: 15px;
+        }
+
+        .moment-section {
+            margin-bottom: 20px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            scroll-margin-top: 80px;
+            border: 1px solid var(--primary);
+        }
+
+        .moment-header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 15px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .moment-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--accent);
+        }
+
+        .moment-header h2 {
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .moment-icon {
+            font-size: 1.1rem;
+        }
+
+        .moment-arrow {
+            transition: transform 0.3s;
+        }
+
+        .moment-content {
+            background-color: white;
+            display: none;
+            border-left: 3px solid var(--accent);
+        }
+
+        .moment-content.expanded {
+            display: block;
+        }
+
+        .song-item {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .song-item:last-child {
+            border-bottom: none;
+        }
+
+        .song-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--primary);
+        }
+
+        .song-key {
+            background-color: var(--accent);
+            color: var(--dark);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .song-lyrics {
+            white-space: pre-line;
+            line-height: 1.8;
+            padding: 15px;
+            background-color: var(--light);
+            border-radius: 8px;
+            border-left: 4px solid var(--secondary);
+            margin-top: 10px;
+            font-size: calc(var(--font-size) + 2px);
+            text-align: center;
+            font-family: 'Courier New', monospace;
+        }
+
+        .chord {
+            color: var(--primary);
+            font-weight: bold;
+            background: rgba(255, 215, 0, 0.1);
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .liturgy-menu {
+            background: white;
+            padding: 15px;
+            margin: 15px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border: 2px solid var(--primary);
+        }
+
+        .liturgy-menu h2 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.3rem;
+        }
+
+        .liturgy-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .liturgy-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            background: var(--light);
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--dark);
+            transition: all 0.3s;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .liturgy-link:hover {
+            background: var(--accent);
+            color: var(--dark);
+            transform: translateX(5px);
+        }
+
+        .liturgy-link i {
+            font-size: 1.1rem;
+        }
+
+        .footer {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            text-align: center;
+            padding: 15px;
+            font-size: 0.9rem;
+            margin: 20px 15px 0 15px;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.8rem;
+        }
+
+        .action-btn:hover {
+            background: var(--accent);
+            color: var(--dark);
+        }
+
+        .back-to-liturgy {
+            display: block;
+            margin: 15px auto;
+            padding: 10px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            text-align: center;
+            max-width: 200px;
+        }
+
+        .back-to-liturgy:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .anniversary-message {
+            background: linear-gradient(135deg, var(--light), white);
+            padding: 20px;
+            margin: 15px;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px dashed var(--primary);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+
+        .anniversary-message h3 {
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .priest-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid var(--primary);
+            margin: 15px auto;
+            display: block;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            :root {
+                --font-size: 15px;
+            }
+
+            h1 {
+                font-size: 1.6rem;
+            }
+
+            .banner-title {
+                font-size: 1.4rem;
+            }
+
+            .banner-subtitle {
+                font-size: 1rem;
+            }
+
+            .moment-header h2 {
+                font-size: 1.1rem;
+            }
+
+            .controls {
+                flex-direction: column;
+                gap: 10px;
+                padding: 10px;
+            }
+
+            .search-box {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .liturgy-links {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            :root {
+                --font-size: 14px;
+            }
+
+            h1 {
+                font-size: 1.4rem;
+            }
+
+            .moment-header {
+                padding: 12px;
+            }
+
+            .song-item {
+                padding: 12px;
+            }
+
+            .priest-photo {
+                width: 120px;
+                height: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="banner-container">
+        <img src="img/banner.jpg" alt="37 anos de Sacerdócio do Pe. Celso" class="banner">
+        <div class="banner-overlay">
+            <div class="banner-title">Ação de Graças</div>
+            <div class="banner-subtitle">37 anos de Sacerdócio do Pe. Celso</div>
+        </div>
+    </div>
+
+    <div class="anniversary-message">
+        <img src="https://via.placeholder.com/150/FFD700/2C1810?text=Pe.+Celso" alt="Pe. Celso" class="priest-photo">
+        <h3><i class="fas fa-hands-praying"></i> Celebração de Ação de Graças</h3>
+        <p>Em honra aos <strong>37 anos de sacerdócio</strong> do<br>
+        <strong>Reverendíssimo Pe. Celso</strong></p>
+        <div class="anniversary-badge">
+            <i class="fas fa-church"></i> 37 Anos de Sacerdócio
+        </div>
+    </div>
+
+    <!-- Liturgia do Dia Expansível -->
+    <div class="liturgy-section">
+        <div class="liturgy-header">
+            <h2><i class="fas fa-book-bible liturgy-icon"></i> Liturgia da Celebração</h2>
+            <span class="liturgy-arrow">▼</span>
+        </div>
+        <div class="liturgy-content">
+            <strong>MISSA DE AÇÃO DE GRAÇAS</strong>
+            Pelos 37 anos de Sacerdócio do Pe. Celso
+            (Cor litúrgica: branco/dourado)
+
+            <strong>RITOS INICIAIS</strong>
+
+            <span class="liturgy-role">Sacerdote:</span> Em nome do Pai, do Filho ✠ e do Espírito Santo.
+            <span class="liturgy-response">Amém.</span>
+
+            <span class="liturgy-role">Sacerdote:</span> A graça de nosso Senhor Jesus Cristo, o amor do Pai e a comunhão do Espírito Santo estejam convosco.
+            <span class="liturgy-response">Bendito seja Deus, que nos reuniu no amor de Cristo!</span>
+
+            <div class="liturgy-reading">
+                <div class="liturgy-reading-title">PRIMEIRA LEITURA (Is 11,1-10)</div>
+                Leitura do Livro do Profeta Isaías.
+
+                Naqueles dias, 1 nascerá uma haste do tronco de Jessé e, a partir da raiz, surgirá o rebento de uma flor; 2 sobre ele repousará o espírito do Senhor: espírito de sabedoria e discernimento, espírito de conselho e fortaleza, espírito de ciência e temor de Deus; 3 no temor do Senhor encontra ele seu prazer. Ele não julgará pelas aparências que vê nem decidirá somente por ouvir dizer; 4 mas trará justiça para os humildes e uma ordem justa para os homens pacíficos; fustigará a terra com a força da sua palavra e destruirá o mau com o sopro dos lábios. 5 Cingirá a cintura com a correia da justiça e as costas com a faixa da fidelidade. 6 O lobo e o cordeiro viverão juntos e o leopardo deitar-se-á ao lado do cabrito; o bezerro e o leão comerão juntos e até mesmo uma criança poderá tangê-los. 7 A vaca e o urso pastarão lado a lado, enquanto suas crias descansam juntas; o leão comerá palha como o boi; 8 a criança de peito vai brincar em cima do buraco da cobra venenosa; e o menino desmamado não temerá pôr a mão na toca da serpente. 9 Não haverá danos nem mortes por todo o meu santo monte: a terra estará tão repleta do saber do Senhor quanto as águas que cobrem o mar. 10 Naquele dia, a raiz de Jessé se erguerá como um sinal entre os povos; hão de buscá-la as nações, e gloriosa será a sua morada.
+
+                <span class="liturgy-role">Leitor:</span> Palavra do Senhor.
+                <span class="liturgy-response">Graças a Deus.</span>
+            </div>
+
+            <div class="liturgy-reading">
+                <div class="liturgy-reading-title">SALMO RESPONSORIAL (Sl 71[72],1-2.7-8.12-13.17)</div>
+                <span class="liturgy-role">R.</span> <span class="liturgy-response">Nos seus dias a justiça florirá.</span>
+
+                Dai ao Rei vossos poderes, Senhor Deus, vossa justiça ao descendente da realeza! Com justiça ele governe o vosso povo, com equidade ele julgue os vossos pobres.
+                <span class="liturgy-role">R.</span> <span class="liturgy-response">Nos seus dias a justiça florirá.</span>
+
+                Nos seus dias a justiça florirá e grande paz, até que a lua perca o brilho! De mar a mar estenderá o seu domínio, e desde o rio até os confins de toda a terra!
+                <span class="liturgy-role">R.</span> <span class="liturgy-response">Nos seus dias a justiça florirá.</span>
+
+                Libertará o indigente que suplica, e o pobre ao qual ninguém quer ajudar. Terá pena do indigente e do infeliz, e a vida dos humildes salvará.
+                <span class="liturgy-role">R.</span> <span class="liturgy-response">Nos seus dias a justiça florirá.</span>
+
+                Seja bendito o seu nome para sempre! E que dure como o sol sua memória! Todos os povos serão nele abençoados, todas as gentes cantarão o seu louvor.
+                <span class="liturgy-role">R.</span> <span class="liturgy-response">Nos seus dias a justiça florirá.</span>
+            </div>
+
+            <div class="liturgy-reading">
+                <div class="liturgy-reading-title">SEGUNDA LEITURA (Rm 15,4-9)</div>
+                Leitura da Carta de São Paulo aos Romanos.
+
+                Irmãos, 4 tudo o que outrora foi escrito, foi escrito para nossa instrução, para que, pela nossa constância e pelo conforto espiritual das Escrituras, tenhamos firme esperança. 5 O Deus que dá constância e conforto vos dê a graça da harmonia e concórdia, uns com os outros, como ensina Cristo Jesus. 6 Assim, tendo como que um só coração e a uma só voz, glorificareis o Deus e Pai do Senhor nosso, Jesus Cristo. 7 Por isso, acolhei-vos uns aos outros, como também Cristo vos acolheu, para a glória de Deus. 8 Pois eu digo: Cristo tornou-se servo dos que praticam a circuncisão, para honrar a veracidade de Deus, confirmando as promessas feitas aos pais. 9 Quanto aos pagãos, eles glorificam a Deus, em razão da sua misericórdia, como está escrito: "Por isso, eu vos glorificarei entre os pagãos e cantarei louvores ao vosso nome".
+
+                <span class="liturgy-role">Leitor:</span> Palavra do Senhor.
+                <span class="liturgy-response">Graças a Deus.</span>
+            </div>
+
+            <div class="liturgy-reading">
+                <div class="liturgy-reading-title">EVANGELHO (Mt 3,1-12)</div>
+                <span class="liturgy-role">Aclamação:</span> Aleluia, Aleluia, Aleluia.
+                <span class="liturgy-role">V.</span> Preparai o caminho do Senhor, endireitai suas veredas! Toda carne há de ver a salvação do nosso Deus!
+
+                Proclamação do Evangelho de Jesus Cristo segundo Mateus.
+
+                <span class="liturgy-role">Sacerdote:</span> O Senhor esteja convosco.
+                <span class="liturgy-response">Ele está no meio de nós.</span>
+
+                <span class="liturgy-role">Sacerdote:</span> Proclamação do Evangelho de Jesus Cristo segundo Mateus.
+                <span class="liturgy-response">Glória a vós, Senhor.</span>
+
+                Naquele tempo, apareceu João Batista, pregando no deserto da Judéia: "Convertei-vos, porque o Reino dos Céus está próximo". João foi anunciado pelo profeta Isaías, que disse: "Esta é a voz daquele que grita no deserto: preparai o caminho do Senhor, endireitai suas veredas!" João usava uma roupa feita de pelos de camelo e um cinturão de couro em torno dos rins; comia gafanhotos e mel do campo. Os moradores de Jerusalém, de toda a Judéia e de todos os lugares em volta do rio Jordão vinham ao encontro de João. Confessavam os seus pecados e João os batizava no rio Jordão. Quando viu muitos fariseus e saduceus vindo para o batismo, João disse-lhes: "Raça de cobras venenosas, quem vos ensinou a fugir da ira que vai chegar? Produzi frutos que provem a vossa conversão. Não penseis que basta dizer: 'Abraão é nosso pai', porque eu vos digo: até mesmo destas pedras Deus pode fazer nascer filhos de Abraão. O machado já está na raiz das árvores, e toda árvore que não der bom fruto será cortada e jogada no fogo. Eu vos batizo com água para a conversão, mas aquele que vem depois de mim é mais forte do que eu. Eu nem sou digno de carregar suas sandálias. Ele vos batizará com o Espírito Santo e com fogo. Ele está com a pá na mão; ele vai limpar sua eira e recolher seu trigo no celeiro; mas a palha ele a queimará num fogo que não se apaga".
+
+                <span class="liturgy-role">Sacerdote:</span> Palavra da Salvação.
+                <span class="liturgy-response">Glória a vós, Senhor.</span>
+            </div>
+
+            <strong>LITURGIA EUCARÍSTICA</strong>
+
+            <span class="liturgy-role">Oração sobre as oferendas:</span> Aceitai, ó Deus, as oferendas que vos apresentamos, ao celebrarmos os 37 anos de sacerdócio do vosso servo Celso. Fazei que esta Eucaristia seja para ele e para nós fonte de graça e renovação. Por Cristo, nosso Senhor.
+            <span class="liturgy-response">Amém.</span>
+
+            <strong>RITOS FINAIS</strong>
+
+            <span class="liturgy-role">Oração após a comunhão:</span> Deus eterno e todo-poderoso, que nos alimentastes com o pão da vida, fazei que o ministério do vosso servo Celso continue produzindo frutos abundantes em nossa comunidade. Por Cristo, nosso Senhor.
+            <span class="liturgy-response">Amém.</span>
+
+            <span class="liturgy-role">Bênção solene:</span> O Deus, que chamou o Pe. Celso ao ministério sacerdotal, vos abençoe e guarde. ✠ Amém.
+            Que Ele ilumine o seu caminho e fortaleça seu ministério. ✠ Amém.
+            E que todos nós, aqui reunidos, sejamos testemunhas do seu amor. ✠ Amém.
+
+            <span class="liturgy-role">Sacerdote:</span> E a bênção de Deus todo-poderoso, Pai, Filho e Espírito Santo, desça sobre vós e permaneça para sempre.
+            <span class="liturgy-response">Amém.</span>
+
+            <span class="liturgy-role">Sacerdote:</span> Ide em paz, levando a alegria desta celebração!
+            <span class="liturgy-response">Graças a Deus!</span>
+        </div>
+    </div>
+
+    <div class="controls">
+        <div class="font-controls">
+            <span>Tamanho da fonte:</span>
+            <button class="font-btn" id="decrease-font" title="Diminuir fonte">
+                <i class="fas fa-minus"></i>
+            </button>
+            <button class="font-btn" id="reset-font" title="Fonte padrão">
+                A
+            </button>
+            <button class="font-btn" id="increase-font" title="Aumentar fonte">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="search-input" placeholder="Buscar música...">
+        </div>
+    </div>
+
+    <div class="music-list" id="music-list">
+        <!-- As músicas serão inseridas aqui pelo JavaScript -->
+    </div>
+
+    <!-- Menu de Navegação no Final -->
+    <div class="liturgy-menu">
+        <h2><i class="fas fa-list-alt"></i> Navegação Rápida</h2>
+        <div class="liturgy-links" id="liturgy-links">
+            <!-- Os links serão gerados pelo JavaScript -->
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <i class="fas fa-church"></i>
+                <span>37 anos de Sacerdócio</span>
+            </div>
+            <div class="footer-actions">
+                <button class="action-btn" id="expand-all">
+                    <i class="fas fa-expand"></i> Expandir Tudo
+                </button>
+                <button class="action-btn" id="collapse-all">
+                    <i class="fas fa-compress"></i> Recolher Tudo
+                </button>
+            </div>
+        </div>
+        <p style="margin-top: 10px; font-size: 0.8rem; opacity: 0.9;">Em ação de graças pelo ministério do Pe. Celso</p>
+    </div>
+</div>
+
+<script>
+    // Dados das músicas para a Missa de Ação de Graças
+    const musicData = [
+        {
+            moment: "Entrada",
+            icon: "fas fa-door-open",
+            songs: [
+                {
+                    title: "É CHEGADO O TEMPO",
+                    key: "D",
+                    lyrics: `[Intro] D9  D9/F#  G9  G7M  Gm7 
+
+D9            A/C#   Bm                    A 
+   É chegado o tempo     de se olhar por dentro 
+G9       G7M    D9/F#   G9   G7M  A4 
+Tempo de se esvaziar,   de   recomeçar 
+G9              D9/F#          G9  A 
+Tempo da graça, tempo de acreditar 
+
+D9                A/C#   Bm                   D9/F# 
+   Eis o tempo da espera     onde o brilho da estrela 
+G9         D9/F#  G9/E   A4 
+Vem nos preparar, nos anunciar 
+G9      G7M   G9/E      A4     A11 
+Está chegando o      Emanuel 
+
+D9              A/C#               G9 
+Ele virá, nos trará sua paz e sua luz 
+ G7M  G9/E       A4 
+Iluminará nossas vidas 
+ D9              A/C#               G9 
+Cristo Jesus salvador reinará sobre nós e assim 
+    G9/E       A4 
+Cantaremos sua glória! 
+D9              A/C#               G9 
+Ele virá, nos trará sua paz e sua luz 
+ G7M  G9/E       A4 
+Iluminará nossas vidas 
+D9              A/C#                G9 
+Cristo Jesus salvador reinará sobre nós e assim 
+
+    G7M           Bm   A   G9 
+Cantaremos sua glória! 
+    G7M           Bm   A   G9 
+Cantaremos sua glória! 
+                  Bm 
+Cantaremos sua glória!`
+                }
+            ]
+        },
+        {
+            moment: "Ato Penitencial",
+            icon: "fas fa-hands-praying",
+            songs: [
+                {
+                    title: "KYRIE ELEISON",
+                    key: "D",
+                    lyrics: `[Intro] D  Em  Bm  A 
+        D  Em  Bm  A4 
+
+[Primeira Parte] 
+    D 
+Senhor que viestes 
+     Bm7 
+Não para condenar 
+     G7M     D/F# 
+Mas para perdoar 
+ Em      Bm    A/C#  ( G/B  A ) 
+Tende piedade de nós 
+
+[Refrão] 
+D Em7  D/F# G 
+Kyrie Eleison 
+D Em7 D/F# G 
+Kyrie Eleison 
+   Bm   A4 A D  G/D 
+Kyrie Eleison 
+
+[Segunda Parte] 
+ D 
+Cristo que vos alegrais 
+ Bm7          G7M    D/F# 
+Pelo pecador arrependido 
+Em        Bm     A/C#   ( G/B  A ) 
+Tende piedade de nós 
+
+[Refrão] 
+D   Em7  D/F# G 
+Christe Eleison 
+D  Em7 D/F# G 
+Christe Eleison 
+   Bm   A4 A D  G/D 
+Christe Eleison 
+
+[Terceira Parte] 
+    D 
+Senhor que muito perdoais 
+Bm            G7M      D/F# 
+A todo aquele que muito ama 
+Em       Bm     A/C#  ( G/B  A ) 
+Tende piedade de nós 
+
+[Refrão] 
+D Em7  D/F# G 
+Kyrie Eleison 
+D Em7 D/F# G 
+Kyrie Eleison 
+   Bm   A4 A D 
+Kyrie Eleison`
+                }
+            ]
+        },
+        {
+            moment: "Salmo",
+            icon: "fas fa-book-bible",
+            songs: [
+                {
+                    title: "NOS SEUS DIAS A JUSTIÇA FLORIRÁ",
+                    key: "D",
+                    lyrics: `G/B A/C#    D         G/B      A/C# 
+Nos seus dias a justiça florirá. 
+A/G         D/F#        Em7     Asus 
+Nos seus dias a justiça florirá. 
+
+          Em7                                         A4 
+Dai ao Rei vossos poderes, Senhor Deus, 
+              Em7                                       A4 Bm7 
+vossa justiça ao descendente da realeza! 
+            Em   D/F# G         E/G#   A4 
+Com justiça ele governe o vosso povo, 
+
+                Em7                   A4 
+Nos seus dias a justiça florirá 
+               Em7                                       A4  Bm7 
+e grande paz, até que a lua perca o brilho! 
+               Em     D/F#    G   E/G#  A4 
+De mar a mar estenderá o seu domínio, 
+
+          Em7                              A4 
+Libertará o indigente que suplica, * 
+     Em7                                            A4 Bm7 
+e o pobre ao qual ninguém quer ajudar. 
+       Em    D/F#  G         E/G#    A4 
+Terá pena do indigente e do infeliz, 
+
+              Em7                                 A4 
+Seja bendito o seu nome para sempre! * 
+          Em7                                    A4 Bm7 
+E que dure como o sol sua memória! 
+              Em       D/F# G      E/G#     A4 
+Todos os povos serão nele abençoados,`
+                }
+            ]
+        },
+        {
+            moment: "Aclamação",
+            icon: "fas fa-music",
+            songs: [
+                {
+                    title: "ALELUIA",
+                    key: "F#m",
+                    lyrics: `    E         F#m 
+Aleluia, aleluia! 
+    E         F#m 
+Aleluia, aleluia! 
+
+        Bm        A     Bm 
+O Espírito consagrou-me 
+      D     E    F#m 
+E mandou-me anunciar 
+ Bm      F#m    C#7  F#m 
+Boa nova para os pobres!`
+                }
+            ]
+        },
+        {
+            moment: "Ofertório",
+            icon: "fas fa-gift",
+            songs: [
+                {
+                    title: "Ó SANTO MESSIAS",
+                    key: "Em",
+                    lyrics: `[Intro] Em  Bm  Em  Bm  C  D  Em 
+
+      Em       Bm       Em 
+Solo: muito suspira por ti 
+    Bm     Em  Bm      Em 
+Teu povo fiel, tua israel! 
+            Am       Bm       C 
+Assembleia: muito suspira por ti 
+    D      C   Bm      Em 
+Teu povo fiel, tua israel! 
+
+        F#m7(5-) B7     C    G/B 
+Solo: ó san  -  nto messias! 
+              Am B7     Em 
+Assembleia: ó santo messias! 
+
+      Em       Bm        Em 
+Solo: tua lembrança embalsama 
+Bm         Em   Bm         Em 
+Dos que te amam os tristes dias 
+            Am       Bm        C 
+Assembleia: tua lembrança embalsama 
+D          C    Bm         Em 
+Dos que te amam os tristes dias 
+
+        F#m7(5-) B7     C    G/B 
+Solo: ó san  -  nto messias! 
+              Am B7     Em 
+Assembleia: ó santo messias! 
+
+      Em      Bm        Em 
+Solo: a nação que te adorava 
+   Bm         Em       Bm           Em 
+Tornaram-na escrava, encheram-na de dor 
+            Am      Bm        C 
+Assembleia: a nação que te adorava 
+   D          C        Bm           Em 
+Tornaram-na escrava, encheram-na de dor 
+
+        F#m7(5-) B7     C    G/B 
+Solo: ó san  -  nto messias! 
+              Am B7     Em 
+Assembleia: ó santo messias! 
+
+       F#m5-        Em       B      C 
+Solo: apressa-te em vir libertá-la,  
+    Am 
+em vir salvá-la 
+   Bm    Em     Bm    E 
+Bendito senhor! Bendito senhor!`
+                }
+            ]
+        },
+        {
+            moment: "Santo",
+            icon: "fas fa-church",
+            songs: [
+                {
+                    title: "SANTO É O SENHOR",
+                    key: "G",
+                    lyrics: `Intro.:    Em    D    C    G/B     Am     
+Am/G    F#m7(b5)   B4    B 
+
+Em  D   C   G  D  Em   F      C/E     D4  
+San------to, San----to, Santo é o Senhor 
+D#dim 
+
+Em  D   C   G  D    Em F      C/E     D4  
+San------to, San----to, Santo é o Senhor 
+Dadd9 
+
+Am7(9)       Bm7(9)              C 
+Céus e terra proclamam vossa glória 
+  F#m7(b5)      B7add9  Fadd9 
+Hosana nas alturas 
+
+Em  D   C   G  D  Em   F      C/E     D4  
+San------to, San----to, Santo é o Senhor 
+D#dim 
+
+Em  D   C   G  D    Em F      C/E     D4  
+San------to, San----to, Santo é o Senhor 
+Dadd9 
+
+Am7(9)             Bm7            C 
+Bendito o que vem em nome do Senhor 
+  F#m7(b5)      B7  Cdim  C#7 
+Hosana nas alturas 
+
+F#m   E  D  A E  F#m  G     D/F#    E4 Fdim 
+San------to, Santo,   Santo é o Senhor 
+F#m   E  D  A E  F#m  G     D/F#    E4 E 
+San------to, Santo,   Santo é o Senhor`
+                }
+            ]
+        },
+        {
+            moment: "Comunhão",
+            icon: "fas fa-wine-glass-alt",
+            songs: [
+                {
+                    title: "DA CEPA BROTOU A RAMA",
+                    key: "Dm",
+                    lyrics: `[Intro] Dm  Gm  A7  Dm 
+
+[Refrão] 
+    Dm            A7 
+Da cepa brotou a rama 
+                   Dm 
+Da rama brotou a flor 
+     D            Gm 
+Da flor nasceu Maria 
+      Dm     A7   Dm 
+De Maria, o Salvador 
+
+    Dm            A7 
+Da cepa brotou a rama 
+                   Dm 
+Da rama brotou a flor 
+     D            Gm 
+Da flor nasceu Maria 
+      Dm     A7   Dm 
+De Maria, o Salvador 
+
+[Primeira Parte] 
+     Gm        C7 
+O Espírito de Deus 
+      F         A# 
+Sobre ele pousará 
+      Em7(5-)       A7 
+De saber, de entendimento 
+                 Dm 
+Este Espírito será 
+
+       Gm           C7 
+De conselho e fortaleza 
+     F             A# 
+De ciência e de temor 
+     Em7(5-)   A7 
+Achará sua alegria 
+                    Dm 
+No temor do seu Senhor 
+
+[Refrão] 
+    Dm            A7 
+Da cepa brotou a rama 
+                   Dm 
+Da rama brotou a flor 
+     D            Gm 
+Da flor nasceu Maria 
+      Dm     A7   Dm 
+De Maria, o Salvador 
+
+    Dm            A7 
+Da cepa brotou a rama 
+                   Dm 
+Da rama brotou a flor 
+     D            Gm 
+Da flor nasceu Maria 
+      Dm     A7   Dm 
+De Maria, o Salvador 
+
+[Segunda Parte] 
+       Gm         C7 
+Não será pela ilusão 
+      F               A# 
+Do olhar, do ouvir falar 
+          Em7(5-)     A7 
+Que ele irá julgar os homens 
+                  Dm 
+Como é praxe acontecer 
+
+        Gm           C7 
+Mas os pobres desta terra 
+        F         A# 
+Com justiça julgará 
+        Em7(5-)  A7 
+E dos fracos o direito 
+                   Dm 
+Ele é quem defenderá 
+
+[Refrão] 
+    Dm            A7 
+Da cepa brotou a rama 
+                   Dm 
+Da rama brotou a flor 
+     D            Gm 
+Da flor nasceu Maria 
+      Dm     A7   Dm 
+De Maria, o Salvador 
+
+    Dm            A7 
+Da cepa brotou a rama 
+                   Dm 
+Da rama brotou a flor 
+     D            Gm 
+Da flor nasceu Maria 
+      Dm     A7   Dm 
+De Maria, o Salvador 
+
+[Terceira Parte] 
+     Gm           C7 
+A palavra de sua boca 
+     F       A# 
+Ferirá o violento 
+     Em7(5-)      A7 
+E o sopro de seus lábios 
+             Dm 
+Matará o avarento 
+
+      Gm       C7 
+A justiça é o cinto 
+        F              A# 
+Que circunda a sua cintura 
+     Em7(5-)     A7 
+E o manto da lealdade 
+              Dm 
+É a sua vestidura 
+
+[Refrão] 
+    Dm            A7 
+Da cepa brotou a rama 
+                   Dm 
+Da rama brotou a flor 
+     D            Gm 
+Da flor nasceu Maria 
+      Dm     A7   Dm 
+De Maria, o Salvador 
+
+    Dm            A7 
+Da cepa brotou a rama 
+                   Dm 
+Da rama brotou a flor 
+     D            Gm 
+Da flor nasceu Maria 
+      Dm     A7   Dm 
+De Maria, o Salvador 
+
+[Quarta Parte] 
+       Gm         C7 
+Neste dia, neste dia 
+      F           A# 
+O incrível, verdadeiro 
+        Em7(5-)    A7 
+Coisa que nunca se viu 
+                   Dm 
+Morar lobo com cordeiro 
+
+     Gm           C7 
+A comer do mesmo pasto 
+         F             A# 
+Tigre e boi, burro e leão 
+        Em7(5-)  A7 
+Por um menino  guiados 
+                 Dm 
+Se confraternizarão 
+
+[Refrão] 
+    Dm            A7 
+Da cepa brotou a rama 
+                   Dm 
+Da rama brotou a flor 
+     D            Gm 
+Da flor nasceu Maria 
+      Dm     A7   Dm 
+De Maria, o Salvador 
+
+    Dm            A7 
+Da cepa brotou a rama 
+                   Dm 
+Da rama brotou a flor 
+     D            Gm 
+Da flor nasceu Maria 
+      Dm     A7   Dm 
+De Maria, o Salvador`
+                }
+            ]
+        },
+        {
+            moment: "Pós-Comunhão",
+            icon: "fas fa-praying-hands",
+            songs: [
+                {
+                    title: "UMA GRANDE MISSÃO",
+                    key: "C",
+                    lyrics: `    C                       Am 
+Um dia, como qualquer outro dia 
+              F    G                 C 
+O Senhor me criou para uma grande  
+   G7 
+missão 
+       C                       Am 
+Um jovem, como qualquer outro jovem 
+              F    G                  C 
+O Senhor me chamou para uma grande missão 
+
+F  G        C  F    G         C 
+Eu nada sabia, eu nada entendia 
+F  G         C   G                C 
+Eu nada previa de uma grande missão 
+F  G          C  F    G     C 
+Eu me encantei, me apaixonei 
+F  G        C  Am   Dm     G        C 
+O barco larguei    por uma grande missão 
+
+F         G          C  F         G 
+Eu disse sim, ó Senhor! Eu disse  
+       C 
+sim por amor 
+F         G         C     G          
+Pronto pra ir eu estou para uma  
+        C 
+grande missão 
+F         G        C   F          G 
+Eu disse sim, ó Senhor! Eu disse  
+       C 
+sim por amor 
+F          G       C  Am  Dm        
+Pronto pra ir eu estou   para uma  
+G         C  (G) 
+nova missão 
+
+    C                          Am 
+Um mundo, como qualquer outro mundo 
+              F    G                   
+O Senhor me elegeu para uma grande  
+C   G 
+missão 
+    C                       Am 
+Um povo, como qualquer outro povo 
+              F    G                 C 
+O Senhor me enviou para uma grande missão 
+
+F   G        C  F    G      C 
+Eu não resisti, eu quase morri 
+F   G        C  G                  C 
+Chorei e sorri por uma grande missão 
+F  G           C  F  G         C 
+A vida arrisquei, eu tudo deixei 
+F    G       C  Am  Dm       G     C 
+E a cruz carreguei por uma grande missão`
+                }
+            ]
+        },
+        {
+            moment: "Final",
+            icon: "fas fa-flag",
+            songs: [
+                {
+                    title: "VIGIA ESPERANDO A AURORA",
+                    key: "D",
+                    lyrics: `[Intro] D  G  F#m7 Em7  
+        D  G  F#m7 Em7  
+        D  A4  A 
+
+[Refrão] 
+   D     G           D        
+Vigia esperando a aurora  
+              G          D  D7 
+Qual noiva esperando o amor 
+     G         F#m7    Bm7     
+É assim que o servo espera  
+   Em7   A         D  Em7  D/F# 
+A vinda do seu Senhor 
+     G         F#m7    Bm7     
+É assim que o servo espera  
+   Em7   A         D 
+A vinda do seu Senhor 
+
+[Primeira Parte] 
+              A        A/G        D 
+Ao longe, um galo vai cantar seu canto 
+          B         B/D#       Em7 
+O sol no céu vai estender seu manto 
+         G         A        D 
+Na madrugada eu estarei desperto 
+            E        E/G#     A  G  F#m7 Em7 
+Que já vem perto o dia do Senhor! 
+
+[Refrão] 
+   D     G           D        
+Vigia esperando a aurora  
+              G          D  D7 
+Qual noiva esperando o amor 
+     G         F#m7    Bm7     
+É assim que o servo espera  
+   Em7   A         D  Em7  D/F# 
+A vinda do seu Senhor 
+     G         F#m7    Bm7     
+É assim que o servo espera  
+   Em7   A         D 
+A vinda do seu Senhor 
+
+[Segunda Parte] 
+         A        A/G        D 
+A minha voz vai acordar meu povo 
+            B           B/D#      Em7 
+Louvando a Deus que faz um mundo novo 
+           G           A         D 
+Não vou ligar se a madrugada é fria 
+             E     E/G#      A  G  F#m7 Em7 
+Que um novo dia logo vai chegar 
+
+[Refrão] 
+   D       G         D        
+Vigia esperando a aurora  
+                G        D  D7 
+Qual noiva esperando o amor 
+     G         F#m7    Bm7     
+É assim que o servo espera  
+   Em7      A      D  Em7  D/F# 
+A vinda do seu Senhor 
+     G         F#m7    Bm7     
+É assim que o servo espera  
+   Em7      A      D 
+A vinda do seu Senhor 
+
+( A  G  D ) 
+( A  G  D ) 
+( E  E/G#  A ) 
+( G  F#m7 Em7  D/F# ) 
+
+[Terceira Parte] 
+              A           A/G      D 
+Se é noite escura, acendo a minha tocha 
+           B           B/D#    Em7 
+Dentro do peito o sol já desabrocha 
+          G               A      D 
+Filho da luz, não vou dormir, vigio 
+           E         E/G#   A  G  F#m7 Em7 
+Ao mundo frio vou levar o amor! 
+
+[Refrão] 
+   D       G         D        
+Vigia esperando a aurora  
+                G        D  D7 
+Qual noiva esperando o amor 
+     G         F#m7    Bm7     
+É assim que o servo espera  
+   Em7      A      D  Em7  D/F# 
+A vinda do seu Senhor 
+     G         F#m7    Bm7     
+É assim que o servo espera  
+   Em7      A      D 
+A vinda do seu Senhor`
+                }
+            ]
+        }
+    ];
+
+    // Função para criar links da liturgia
+    function createLiturgyLinks() {
+        const liturgyContainer = document.getElementById('liturgy-links');
+        liturgyContainer.innerHTML = '';
+
+        musicData.forEach((moment, index) => {
+            const link = document.createElement('a');
+            link.className = 'liturgy-link';
+            link.href = `#moment-${index}`;
+            link.innerHTML = `
+                    <i class="${moment.icon}"></i>
+                    <span>${moment.moment}</span>
+                `;
+
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetSection = document.getElementById(`moment-${index}`);
+                if (targetSection) {
+                    // Expande a seção
+                    const content = targetSection.querySelector('.moment-content');
+                    content.classList.add('expanded');
+                    const arrow = targetSection.querySelector('.moment-arrow');
+                    arrow.textContent = '▲';
+
+                    // Rola suavemente até a seção
+                    targetSection.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+
+            liturgyContainer.appendChild(link);
+        });
+    }
+
+    // Função para renderizar as músicas
+    function renderMusicList() {
+        const musicListContainer = document.getElementById('music-list');
+        musicListContainer.innerHTML = '';
+
+        musicData.forEach((moment, momentIndex) => {
+            const momentSection = document.createElement('div');
+            momentSection.className = 'moment-section';
+            momentSection.id = `moment-${momentIndex}`;
+
+            const momentHeader = document.createElement('div');
+            momentHeader.className = 'moment-header';
+            momentHeader.innerHTML = `
+                    <h2><i class="${moment.icon} moment-icon"></i> ${moment.moment}</h2>
+                    <span class="moment-arrow">▼</span>
+                `;
+
+            const momentContent = document.createElement('div');
+            momentContent.className = 'moment-content';
+
+            moment.songs.forEach((song, songIndex) => {
+                const songItem = document.createElement('div');
+                songItem.className = 'song-item';
+                songItem.innerHTML = `
+                        <div class="song-title">
+                            <span>${song.title}</span>
+                            <span class="song-key">${song.key}</span>
+                        </div>
+                        <div class="song-lyrics">${formatLyrics(song.lyrics)}</div>
+                        <button class="back-to-liturgy" onclick="scrollToLiturgy()">
+                            <i class="fas fa-arrow-left"></i> Voltar para a Liturgia
+                        </button>
+                    `;
+
+                momentContent.appendChild(songItem);
+            });
+
+            // Adicionar evento de clique para expandir/contrair o momento
+            momentHeader.addEventListener('click', function() {
+                momentContent.classList.toggle('expanded');
+                const arrow = this.querySelector('.moment-arrow');
+                arrow.textContent = momentContent.classList.contains('expanded') ? '▲' : '▼';
+            });
+
+            momentSection.appendChild(momentHeader);
+            momentSection.appendChild(momentContent);
+            musicListContainer.appendChild(momentSection);
+        });
+    }
+
+    // Função para rolar até a liturgia
+    function scrollToLiturgy() {
+        const liturgySection = document.querySelector('.liturgy-section');
+        if (liturgySection) {
+            liturgySection.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+
+            // Expande a liturgia
+            const liturgyContent = document.querySelector('.liturgy-content');
+            liturgyContent.classList.add('expanded');
+            const liturgyArrow = document.querySelector('.liturgy-arrow');
+            liturgyArrow.textContent = '▲';
+        }
+    }
+
+    // Função para tornar a liturgia expansível
+    function setupLiturgyExpansion() {
+        const liturgyHeader = document.querySelector('.liturgy-header');
+        const liturgyContent = document.querySelector('.liturgy-content');
+        const liturgyArrow = document.querySelector('.liturgy-arrow');
+
+        liturgyHeader.addEventListener('click', function() {
+            liturgyContent.classList.toggle('expanded');
+            liturgyArrow.textContent = liturgyContent.classList.contains('expanded') ? '▲' : '▼';
+        });
+    }
+
+    // Função para formatar acordes nas letras
+    function formatLyrics(lyrics) {
+        // Destacar acordes entre colchetes
+        return lyrics.replace(/\[(.*?)\]/g, '<span class="chord">[$1]</span>');
+    }
+
+    // Funções para controle de fonte
+    function increaseFontSize() {
+        const root = document.documentElement;
+        let currentSize = parseFloat(getComputedStyle(root).getPropertyValue('--font-size'));
+        if (currentSize < 22) {
+            root.style.setProperty('--font-size', (currentSize + 1) + 'px');
+        }
+    }
+
+    function decreaseFontSize() {
+        const root = document.documentElement;
+        let currentSize = parseFloat(getComputedStyle(root).getPropertyValue('--font-size'));
+        if (currentSize > 12) {
+            root.style.setProperty('--font-size', (currentSize - 1) + 'px');
+        }
+    }
+
+    function resetFontSize() {
+        document.documentElement.style.setProperty('--font-size', '16px');
+    }
+
+    // Função para expandir/recolher todas as seções
+    function expandAll() {
+        document.querySelectorAll('.moment-content').forEach(content => {
+            content.classList.add('expanded');
+        });
+        document.querySelectorAll('.moment-arrow').forEach(arrow => {
+            arrow.textContent = '▲';
+        });
+        document.querySelector('.liturgy-content').classList.add('expanded');
+        document.querySelector('.liturgy-arrow').textContent = '▲';
+    }
+
+    function collapseAll() {
+        document.querySelectorAll('.moment-content').forEach(content => {
+            content.classList.remove('expanded');
+        });
+        document.querySelectorAll('.moment-arrow').forEach(arrow => {
+            arrow.textContent = '▼';
+        });
+        document.querySelector('.liturgy-content').classList.remove('expanded');
+        document.querySelector('.liturgy-arrow').textContent = '▼';
+    }
+
+    // Função de busca
+    function setupSearch() {
+        const searchInput = document.getElementById('search-input');
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+
+            document.querySelectorAll('.moment-section').forEach(section => {
+                const momentHeader = section.querySelector('.moment-header h2').textContent.toLowerCase();
+                const songs = section.querySelectorAll('.song-item');
+                let hasMatch = false;
+
+                songs.forEach(song => {
+                    const title = song.querySelector('.song-title span').textContent.toLowerCase();
+                    const lyrics = song.querySelector('.song-lyrics').textContent.toLowerCase();
+
+                    if (title.includes(searchTerm) || lyrics.includes(searchTerm)) {
+                        song.style.display = 'block';
+                        hasMatch = true;
+                    } else {
+                        song.style.display = 'none';
+                    }
+                });
+
+                // Mostrar/ocultar seção baseado nos resultados
+                section.style.display = hasMatch || momentHeader.includes(searchTerm) ? 'block' : 'none';
+            });
+        });
+    }
+
+    // Inicialização
+    document.addEventListener('DOMContentLoaded', function() {
+        // Criar links da liturgia
+        createLiturgyLinks();
+
+        // Renderizar músicas
+        renderMusicList();
+
+        // Configurar expansão da liturgia
+        setupLiturgyExpansion();
+
+        // Adicionar eventos aos botões de controle de fonte
+        document.getElementById('increase-font').addEventListener('click', increaseFontSize);
+        document.getElementById('decrease-font').addEventListener('click', decreaseFontSize);
+        document.getElementById('reset-font').addEventListener('click', resetFontSize);
+
+        // Adicionar eventos aos botões de expandir/recolher
+        document.getElementById('expand-all').addEventListener('click', expandAll);
+        document.getElementById('collapse-all').addEventListener('click', collapseAll);
+
+        // Configurar busca
+        setupSearch();
+    });
+</script>
+</body>
+</html>
