@@ -1,862 +1,556 @@
 :root {
-    /* Cores principais */
-    --primary-color: #2c3e50;
-    --secondary-color: #3498db;
-    --accent-color: #e74c3c;
-    --success-color: #2ecc71;
-    --warning-color: #f39c12;
-    
-    /* Cores litúrgicas */
-    --liturgical-white: #FFFFFF;
-    --liturgical-red: #FF0000;
-    --liturgical-green: #008000;
-    --liturgical-purple: #800080;
-    --liturgical-pink: #FFC0CB;
-    --liturgical-black: #000000;
-    --liturgical-gold: #FFD700;
-    
-    /* Cores de tema */
-    --bg-color: #f8f9fa;
-    --card-bg: #ffffff;
-    --text-color: #333333;
-    --border-color: #dee2e6;
-    --shadow: 0 2px 10px rgba(0,0,0,0.1);
-    
-    /* Tamanhos */
+    --primary: #B8860B; /* Dourado para celebração */
+    --secondary: #8B4513; /* Marrom dourado */
+    --accent: #FFD700; /* Dourado vibrante */
+    --light: #FFF8DC; /* Branco amarelado suave */
+    --dark: #2C1810; /* Marrom escuro */
+    --liturgical-color: #DAA520; /* Dourado litúrgico */
     --font-size: 16px;
-    --border-radius: 8px;
-    --spacing: 16px;
-}
-
-/* Tema escuro */
-[data-theme="dark"] {
-    --bg-color: #1a1a2e;
-    --card-bg: #16213e;
-    --text-color: #e6e6e6;
-    --border-color: #2d4059;
-    --primary-color: #4cc9f0;
-    --shadow: 0 2px 10px rgba(0,0,0,0.3);
 }
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
+    background: linear-gradient(to bottom, #FFF8DC, #FAF0E6);
+    color: var(--dark);
     font-size: var(--font-size);
     line-height: 1.6;
-    transition: background-color 0.3s, color 0.3s;
+    min-height: 100vh;
 }
 
 .app-container {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
-
-/* Header */
-.main-header {
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    color: white;
-    box-shadow: var(--shadow);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
-
-.header-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: var(--spacing);
-}
-
-.header-top h1 {
-    font-size: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.header-actions {
-    display: flex;
-    gap: 10px;
-}
-
-.btn-icon {
-    background: rgba(255, 255, 255, 0.2);
-    border: none;
-    color: white;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.3s;
-}
-
-.btn-icon:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
-
-/* Navegação */
-.main-nav ul {
-    display: flex;
-    list-style: none;
-    overflow-x: auto;
-    padding: 0 var(--spacing);
-}
-
-.main-nav li {
-    flex-shrink: 0;
-}
-
-.main-nav a {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 20px;
-    color: rgba(255, 255, 255, 0.9);
-    text-decoration: none;
-    border-bottom: 3px solid transparent;
-    transition: all 0.3s;
-    white-space: nowrap;
-}
-
-.main-nav a:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-}
-
-.main-nav a.nav-active {
-    background: rgba(255, 255, 255, 0.15);
-    color: white;
-    border-bottom-color: var(--liturgical-gold);
-}
-
-/* Conteúdo Principal */
-.main-content {
-    flex: 1;
-    padding: var(--spacing);
-    max-width: 1200px;
+    max-width: 800px;
     margin: 0 auto;
+    padding-bottom: 20px;
+}
+
+.banner-container {
     width: 100%;
-}
-
-.page {
-    display: none;
-    animation: fadeIn 0.5s ease;
-}
-
-.page.active {
-    display: block;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* Cards */
-.page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: var(--spacing);
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.page-header h2 {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: var(--primary-color);
-}
-
-.btn-primary, .btn-secondary {
-    padding: 10px 20px;
-    border: none;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.3s;
-}
-
-.btn-primary {
-    background: var(--secondary-color);
-    color: white;
-}
-
-.btn-primary:hover {
-    background: #2980b9;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
-}
-
-.btn-secondary {
-    background: var(--card-bg);
-    color: var(--text-color);
-    border: 1px solid var(--border-color);
-}
-
-.btn-secondary:hover {
-    background: var(--bg-color);
-    border-color: var(--secondary-color);
-}
-
-/* Página Inicial */
-.welcome-banner {
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    color: white;
-    padding: 40px;
-    border-radius: var(--border-radius);
-    text-align: center;
-    margin-bottom: var(--spacing);
-    box-shadow: var(--shadow);
-}
-
-.quick-stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: var(--spacing);
-    margin-bottom: var(--spacing);
-}
-
-.stat-card {
-    background: var(--card-bg);
-    padding: var(--spacing);
-    border-radius: var(--border-radius);
-    text-align: center;
-    box-shadow: var(--shadow);
-    transition: transform 0.3s;
-    border-top: 4px solid var(--secondary-color);
-}
-
-.stat-card:hover {
-    transform: translateY(-5px);
-}
-
-.stat-card i {
-    font-size: 2.5rem;
-    color: var(--secondary-color);
-    margin-bottom: 10px;
-}
-
-.stat-card h3 {
-    margin-bottom: 10px;
-    color: var(--primary-color);
-}
-
-.stat-card p {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: var(--accent-color);
-}
-
-/* Missa do Dia */
-.date-selector {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-}
-
-.date-selector input {
-    padding: 10px;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    background: var(--card-bg);
-    color: var(--text-color);
-}
-
-.missa-info-card {
-    background: var(--card-bg);
-    border-radius: var(--border-radius);
-    padding: var(--spacing);
-    margin-bottom: var(--spacing);
-    box-shadow: var(--shadow);
-    display: flex;
-    align-items: center;
-    gap: var(--spacing);
-    border-left: 5px solid;
-}
-
-.liturgical-color {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    text-transform: uppercase;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
-
-.missa-details {
-    flex: 1;
-}
-
-.missa-details h3 {
-    color: var(--primary-color);
-    margin-bottom: 5px;
-}
-
-.missa-details p {
-    margin: 5px 0;
-    color: var(--text-color);
-    opacity: 0.9;
-}
-
-.liturgy-section, .musicas-section {
-    background: var(--card-bg);
-    border-radius: var(--border-radius);
-    padding: var(--spacing);
-    margin-bottom: var(--spacing);
-    box-shadow: var(--shadow);
-}
-
-.liturgy-section h3, .musicas-section h3 {
-    color: var(--primary-color);
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-/* Lista de músicas */
-.musica-item {
-    background: var(--bg-color);
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    padding: 15px;
-    margin-bottom: 10px;
-    transition: all 0.3s;
-    cursor: pointer;
-}
-
-.musica-item:hover {
-    border-color: var(--secondary-color);
-    transform: translateX(5px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.musica-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.musica-title {
-    font-weight: bold;
-    color: var(--primary-color);
-}
-
-.musica-info {
-    display: flex;
-    gap: 15px;
-    font-size: 0.9rem;
-    color: var(--text-color);
-    opacity: 0.8;
-}
-
-.musica-info span {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.musica-lyrics {
-    margin-top: 10px;
-    padding: 10px;
-    background: var(--card-bg);
-    border-radius: var(--border-radius);
-    border-left: 3px solid var(--secondary-color);
-    display: none;
-}
-
-.musica-lyrics.show {
-    display: block;
-    animation: slideDown 0.3s ease;
-}
-
-@keyframes slideDown {
-    from { opacity: 0; max-height: 0; }
-    to { opacity: 1; max-height: 500px; }
-}
-
-.chord {
-    color: var(--accent-color);
-    font-weight: bold;
-    background: rgba(231, 76, 60, 0.1);
-    padding: 2px 4px;
-    border-radius: 3px;
-    margin-right: 2px;
-}
-
-/* Todas as Músicas */
-.search-container {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.search-box {
-    flex: 1;
-    min-width: 250px;
+    overflow: hidden;
+    border-radius: 0 0 20px 20px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    margin-bottom: 20px;
     position: relative;
 }
 
-.search-box input {
+.banner {
     width: 100%;
-    padding: 10px 10px 10px 35px;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    background: var(--card-bg);
-    color: var(--text-color);
+    height: auto;
+    display: block;
 }
 
-.search-box i {
+.banner-overlay {
     position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--text-color);
-    opacity: 0.7;
-}
-
-select {
-    padding: 10px;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    background: var(--card-bg);
-    color: var(--text-color);
-    min-width: 150px;
-}
-
-.musicas-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: var(--spacing);
-    margin-top: var(--spacing);
-}
-
-.musica-card {
-    background: var(--card-bg);
-    border-radius: var(--border-radius);
-    padding: var(--spacing);
-    box-shadow: var(--shadow);
-    transition: all 0.3s;
-    cursor: pointer;
-    border-top: 4px solid var(--secondary-color);
-}
-
-.musica-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
-}
-
-.musica-card h4 {
-    color: var(--primary-color);
-    margin-bottom: 10px;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-.musica-card .card-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 10px;
-    font-size: 0.9rem;
-}
-
-.tom-badge {
-    background: var(--accent-color);
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(184, 134, 11, 0.9), transparent);
     color: white;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-weight: bold;
-    font-size: 0.8rem;
+    padding: 20px;
+    text-align: center;
 }
 
-/* Todas as Missas */
-.missas-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: var(--spacing);
-    margin-top: var(--spacing);
-}
-
-.missa-card {
-    background: var(--card-bg);
-    border-radius: var(--border-radius);
-    padding: var(--spacing);
-    box-shadow: var(--shadow);
-    transition: all 0.3s;
-    cursor: pointer;
-    border-left: 5px solid;
-}
-
-.missa-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-}
-
-.missa-card h4 {
-    color: var(--primary-color);
-    margin-bottom: 10px;
-}
-
-.missa-card .missa-date {
-    color: var(--accent-color);
-    font-weight: bold;
+.banner-title {
+    font-size: 1.8rem;
     margin-bottom: 5px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
 }
 
-.missa-card .missa-info {
+.banner-subtitle {
+    font-size: 1.2rem;
+    opacity: 0.95;
+}
+
+header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    border-radius: 12px;
+    margin: 0 15px 20px 15px;
+}
+
+.header-content {
+    position: relative;
+    z-index: 2;
+}
+
+.header-decoration {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+            radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%);
+}
+
+h1 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    font-weight: 700;
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    opacity: 0.95;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.celebration-info {
+    background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
+    padding: 10px 20px;
+    border-radius: 25px;
+    display: inline-block;
+    margin-top: 15px;
     font-size: 0.9rem;
-    opacity: 0.8;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.2);
 }
 
-/* Configurações */
-.config-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: var(--spacing);
+.anniversary-badge {
+    background: var(--accent);
+    color: var(--dark);
+    padding: 8px 20px;
+    border-radius: 30px;
+    font-weight: bold;
+    margin-top: 10px;
+    display: inline-block;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
 }
 
-.config-card {
-    background: var(--card-bg);
-    border-radius: var(--border-radius);
-    padding: var(--spacing);
-    box-shadow: var(--shadow);
+/* Estilos para controles da liturgia */
+.liturgy-controls {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+    align-items: center;
 }
 
-.config-card h3 {
-    color: var(--primary-color);
-    margin-bottom: 20px;
+.liturgy-controls input[type="date"] {
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid var(--primary);
+    background: white;
+    color: var(--dark);
+    font-size: 0.9rem;
+}
+
+.liturgy-controls button.font-btn {
+    background: var(--accent);
+    color: var(--dark);
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 5px;
+    font-size: 0.9rem;
 }
 
-.color-options {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    gap: 10px;
-}
-
-.color-option {
-    padding: 15px;
-    border-radius: var(--border-radius);
-    text-align: center;
-    cursor: pointer;
-    transition: transform 0.3s;
-    border: 2px solid transparent;
-}
-
-.color-option:hover {
+.liturgy-controls button.font-btn:hover {
+    background: white;
     transform: scale(1.05);
 }
 
-.color-option.active {
-    border-color: var(--text-color);
-    box-shadow: 0 0 0 3px rgba(0,0,0,0.1);
+/* Estilo para mensagens de erro/informação */
+.liturgy-content div[style*="background: #ffebee"] {
+    border-radius: 8px;
+    margin: 20px 0;
 }
 
-.color-option span {
+/* Ajuste para responsividade dos controles */
+@media (max-width: 480px) {
+    .liturgy-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .liturgy-controls input[type="date"] {
+        width: 100%;
+    }
+}
+
+.controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background-color: var(--primary);
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin: 0 15px;
+    border-radius: 8px;
+}
+
+.font-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.font-btn {
+    background: var(--accent);
+    color: var(--dark);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
     font-weight: bold;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
 }
 
-.preferences label {
+.font-btn:hover {
+    transform: scale(1.1);
+    background: white;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    background: white;
+    border-radius: 20px;
+    padding: 5px 12px;
+    width: 180px;
+}
+
+.search-box input {
+    border: none;
+    outline: none;
+    width: 100%;
+    padding: 5px;
+    background: transparent;
+    color: var(--dark);
+}
+
+.music-list {
+    padding: 15px;
+}
+
+.moment-section {
+    margin-bottom: 20px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    scroll-margin-top: 80px;
+    border: 1px solid var(--primary);
+}
+
+.moment-header {
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    color: white;
+    padding: 15px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+.moment-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--accent);
+}
+
+.moment-header h2 {
+    font-size: 1.2rem;
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: 15px;
-    cursor: pointer;
 }
 
-.preferences input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
+.moment-icon {
+    font-size: 1.1rem;
 }
 
-.preferences input[type="range"] {
-    flex: 1;
-    margin: 0 10px;
+.moment-arrow {
+    transition: transform 0.3s;
 }
 
-.management-actions {
+.moment-content {
+    background-color: white;
+    display: none;
+    border-left: 3px solid var(--accent);
+}
+
+.moment-content.expanded {
+    display: block;
+}
+
+.song-item {
+    padding: 15px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.song-item:last-child {
+    border-bottom: none;
+}
+
+.song-title {
+    font-weight: bold;
+    margin-bottom: 8px;
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--primary);
+}
+
+.song-key {
+    background-color: var(--accent);
+    color: var(--dark);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+.song-lyrics {
+    white-space: pre-line;
+    line-height: 1.8;
+    padding: 15px;
+    background-color: var(--light);
+    border-radius: 8px;
+    border-left: 4px solid var(--secondary);
+    margin-top: 10px;
+    font-size: calc(var(--font-size) + 2px);
+    text-align: center;
+    font-family: 'Courier New', monospace;
+}
+
+.chord {
+    color: var(--primary);
+    font-weight: bold;
+    background: rgba(255, 215, 0, 0.1);
+    padding: 2px 4px;
+    border-radius: 3px;
+}
+
+.liturgy-menu {
+    background: white;
+    padding: 15px;
+    margin: 15px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border: 2px solid var(--primary);
+}
+
+.liturgy-menu h2 {
+    color: var(--primary);
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 1.3rem;
+}
+
+.liturgy-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 10px;
 }
 
-/* Footer */
-.main-footer {
-    background: var(--primary-color);
+.liturgy-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px;
+    background: var(--light);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--dark);
+    transition: all 0.3s;
+    border-left: 4px solid var(--secondary);
+}
+
+.liturgy-link:hover {
+    background: var(--accent);
+    color: var(--dark);
+    transform: translateX(5px);
+}
+
+.liturgy-link i {
+    font-size: 1.1rem;
+}
+
+.footer {
+    background: linear-gradient(to right, var(--primary), var(--secondary));
     color: white;
-    padding: var(--spacing);
-    margin-top: auto;
+    text-align: center;
+    padding: 15px;
+    font-size: 0.9rem;
+    margin: 20px 15px 0 15px;
+    border-radius: 12px 12px 0 0;
 }
 
 .footer-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 1200px;
+    max-width: 800px;
     margin: 0 auto;
-    width: 100%;
 }
 
-.footer-info {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.footer-info p {
+.footer-logo {
+    font-weight: bold;
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
-.status-connected {
-    color: var(--success-color);
-}
-
-.status-disconnected {
-    color: var(--warning-color);
-}
-
-/* Modal */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.5);
-    z-index: 2000;
-    align-items: center;
-    justify-content: center;
-    padding: var(--spacing);
-}
-
-.modal.active {
-    display: flex;
-    animation: fadeIn 0.3s ease;
-}
-
-.modal-content {
-    background: var(--card-bg);
-    border-radius: var(--border-radius);
-    width: 100%;
-    max-width: 800px;
-    max-height: 90vh;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: var(--spacing);
-    border-bottom: 1px solid var(--border-color);
-}
-
-.modal-close {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: var(--text-color);
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    transition: background 0.3s;
-}
-
-.modal-close:hover {
-    background: var(--bg-color);
-}
-
-.modal-body {
-    flex: 1;
-    padding: var(--spacing);
-    overflow-y: auto;
-}
-
-.modal-footer {
-    padding: var(--spacing);
-    border-top: 1px solid var(--border-color);
+.footer-actions {
     display: flex;
     gap: 10px;
-    justify-content: flex-end;
 }
 
-/* Formulários */
-.form-group {
-    margin-bottom: 20px;
+.action-btn {
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.8rem;
 }
 
-.form-group label {
+.action-btn:hover {
+    background: var(--accent);
+    color: var(--dark);
+}
+
+.back-to-liturgy {
     display: block;
-    margin-bottom: 5px;
-    font-weight: 500;
+    margin: 15px auto;
+    padding: 10px 20px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+    text-align: center;
+    max-width: 200px;
 }
 
-.form-group input,
-.form-group select,
-.form-group textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    background: var(--card-bg);
-    color: var(--text-color);
-    font-size: 1rem;
+.back-to-liturgy:hover {
+    background: var(--secondary);
+    transform: translateY(-2px);
 }
 
-.form-group textarea {
-    min-height: 100px;
-    resize: vertical;
-    font-family: monospace;
+.anniversary-message {
+    background: linear-gradient(135deg, var(--light), white);
+    padding: 20px;
+    margin: 15px;
+    border-radius: 12px;
+    text-align: center;
+    border: 2px dashed var(--primary);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
 }
 
-/* Responsividade */
+.anniversary-message h3 {
+    color: var(--primary);
+    margin-bottom: 10px;
+}
+
+.priest-photo {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid var(--primary);
+    margin: 15px auto;
+    display: block;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
 @media (max-width: 768px) {
     :root {
-        --font-size: 14px;
-        --spacing: 12px;
+        --font-size: 15px;
     }
-    
-    .header-top {
+
+    h1 {
+        font-size: 1.6rem;
+    }
+
+    .banner-title {
+        font-size: 1.4rem;
+    }
+
+    .banner-subtitle {
+        font-size: 1rem;
+    }
+
+    .moment-header h2 {
+        font-size: 1.1rem;
+    }
+
+    .controls {
         flex-direction: column;
         gap: 10px;
-        text-align: center;
+        padding: 10px;
     }
-    
-    .main-nav ul {
-        justify-content: center;
+
+    .search-box {
+        width: 100%;
+        max-width: 300px;
     }
-    
-    .page-header {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    
-    .date-selector {
-        flex-direction: column;
-    }
-    
-    .search-container {
-        flex-direction: column;
-    }
-    
-    .musicas-grid,
-    .missas-grid,
-    .config-container {
-        grid-template-columns: 1fr;
-    }
-    
+
     .footer-content {
         flex-direction: column;
         gap: 10px;
-        text-align: center;
+    }
+
+    .liturgy-links {
+        grid-template-columns: 1fr;
     }
 }
 
 @media (max-width: 480px) {
-    .welcome-banner {
-        padding: 20px;
+    :root {
+        --font-size: 14px;
     }
-    
-    .quick-stats {
-        grid-template-columns: 1fr;
+
+    h1 {
+        font-size: 1.4rem;
     }
-    
-    .missa-info-card {
-        flex-direction: column;
-        text-align: center;
+
+    .moment-header {
+        padding: 12px;
     }
-    
-    .liturgical-color {
-        width: 60px;
-        height: 60px;
+
+    .song-item {
+        padding: 12px;
+    }
+
+    .priest-photo {
+        width: 120px;
+        height: 120px;
     }
 }
-
-/* Animações de carregamento */
-.loading {
-    opacity: 0.6;
-    pointer-events: none;
-    position: relative;
-}
-
-.loading::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 20px;
-    height: 20px;
-    border: 2px solid var(--border-color);
-    border-top-color: var(--secondary-color);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    transform: translate(-50%, -50%);
-}
-
-@keyframes spin {
-    to { transform: translate(-50%, -50%) rotate(360deg); }
-}
-
-/* Notificações */
-.notification {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    padding: 15px 20px;
-    border-radius: var(--border-radius);
-    color: white;
-    font-weight: 500;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    z-index: 3000;
-    animation: slideIn 0.3s ease, slideOut 0.3s ease 2.7s forwards;
-}
-
-@keyframes slideIn {
-    from { transform: translateX(100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-}
-
-@keyframes slideOut {
-    to { transform: translateX(100%); opacity: 0; }
-}
-
-.notification.success { background: var(--success-color); }
-.notification.error { background: var(--accent-color); }
-.notification.info { background: var(--secondary-color); }
-.notification.warning { background: var(--warning-color); }

@@ -3,322 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema Litúrgico - Ministério de Música</title>
+    <title>Ação de Graças - 37 anos de Sacerdócio do Pe. Celso</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div class="app-container">
-        <!-- Cabeçalho -->
-        <header class="main-header">
-            <div class="header-top">
-                <h1><i class="fas fa-church"></i> Sistema Litúrgico</h1>
-                <div class="header-actions">
-                    <button id="theme-toggle" class="btn-icon" title="Alternar tema">
-                        <i class="fas fa-moon"></i>
-                    </button>
-                    <button id="print-btn" class="btn-icon" title="Imprimir">
-                        <i class="fas fa-print"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Menu Principal -->
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="#home" class="nav-active"><i class="fas fa-home"></i> Início</a></li>
-                    <li><a href="#missa-hoje"><i class="fas fa-calendar-alt"></i> Missa do Dia</a></li>
-                    <li><a href="#todas-musicas"><i class="fas fa-music"></i> Todas as Músicas</a></li>
-                    <li><a href="#todas-missas"><i class="fas fa-book"></i> Todas as Missas</a></li>
-                    <li><a href="#configuracoes"><i class="fas fa-cog"></i> Configurações</a></li>
-                </ul>
-            </nav>
-        </header>
-
-        <!-- Conteúdo Principal -->
-        <main class="main-content" id="main-content">
-            <!-- Página Inicial -->
-            <section id="home" class="page active">
-                <div class="welcome-banner">
-                    <h2>Bem-vindo ao Sistema Litúrgico</h2>
-                    <p>Selecione uma opção no menu acima para começar</p>
-                </div>
-                
-                <div class="quick-stats">
-                    <div class="stat-card">
-                        <i class="fas fa-music"></i>
-                        <h3>Total de Músicas</h3>
-                        <p id="total-musicas">Carregando...</p>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-calendar"></i>
-                        <h3>Missas Cadastradas</h3>
-                        <p id="total-missas">Carregando...</p>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-users"></i>
-                        <h3>Próxima Missa</h3>
-                        <p id="proxima-missa">Carregando...</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Missa do Dia -->
-            <section id="missa-hoje" class="page">
-                <div class="page-header">
-                    <h2><i class="fas fa-calendar-alt"></i> Missa do Dia</h2>
-                    <div class="date-selector">
-                        <input type="date" id="missa-date" value="2026-01-04">
-                        <button id="load-missa" class="btn-primary">
-                            <i class="fas fa-sync"></i> Carregar Missa
-                        </button>
-                    </div>
-                </div>
-
-                <div class="missa-container">
-                    <!-- Informações da Missa -->
-                    <div class="missa-info-card">
-                        <div class="liturgical-color" id="liturgical-color-indicator">
-                            <span id="color-name">Branco</span>
-                        </div>
-                        <div class="missa-details">
-                            <h3 id="missa-title">Epifania do Senhor</h3>
-                            <p id="missa-subtitle">Solenidade | Domingo</p>
-                            <p><strong>Data:</strong> <span id="missa-data">04/01/2026</span></p>
-                            <p><strong>Cor Litúrgica:</strong> <span id="missa-cor">Branco</span></p>
-                            <p><strong>Tipo:</strong> <span id="missa-tipo">Solenidade</span></p>
-                        </div>
-                    </div>
-
-                    <!-- Liturgia -->
-                    <div class="liturgy-section">
-                        <h3><i class="fas fa-book-bible"></i> Liturgia da Celebração</h3>
-                        <div id="liturgia-content">
-                            <!-- Carregado dinamicamente -->
-                        </div>
-                    </div>
-
-                    <!-- Músicas da Missa -->
-                    <div class="musicas-section">
-                        <h3><i class="fas fa-music"></i> Músicas para esta Missa</h3>
-                        <div id="musicas-missa">
-                            <!-- Carregado dinamicamente -->
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Todas as Músicas -->
-            <section id="todas-musicas" class="page">
-                <div class="page-header">
-                    <h2><i class="fas fa-music"></i> Todas as Músicas</h2>
-                    <div class="search-container">
-                        <div class="search-box">
-                            <i class="fas fa-search"></i>
-                            <input type="text" id="search-musica" placeholder="Buscar música...">
-                        </div>
-                        <select id="filter-momento">
-                            <option value="">Todos os Momentos</option>
-                            <option value="Entrada">Entrada</option>
-                            <option value="Ato Penitencial">Ato Penitencial</option>
-                            <option value="Glória">Glória</option>
-                            <option value="Salmo">Salmo</option>
-                            <option value="Aclamação">Aclamação</option>
-                            <option value="Ofertório">Ofertório</option>
-                            <option value="Santo">Santo</option>
-                            <option value="Comunhão">Comunhão</option>
-                            <option value="Pós-Comunhão">Pós-Comunhão</option>
-                            <option value="Final">Final</option>
-                        </select>
-                        <select id="filter-tom">
-                            <option value="">Todos os Tons</option>
-                            <option value="C">C</option>
-                            <option value="D">D</option>
-                            <option value="E">E</option>
-                            <option value="F">F</option>
-                            <option value="G">G</option>
-                            <option value="A">A</option>
-                            <option value="B">B</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="musicas-grid" id="todas-musicas-grid">
-                    <!-- Carregado dinamicamente -->
-                </div>
-            </section>
-
-            <!-- Todas as Missas -->
-            <section id="todas-missas" class="page">
-                <div class="page-header">
-                    <h2><i class="fas fa-book"></i> Todas as Missas</h2>
-                    <button id="nova-missa" class="btn-primary">
-                        <i class="fas fa-plus"></i> Nova Missa
-                    </button>
-                </div>
-
-                <div class="missas-grid" id="missas-grid">
-                    <!-- Carregado dinamicamente -->
-                </div>
-            </section>
-
-            <!-- Configurações -->
-            <section id="configuracoes" class="page">
-                <div class="page-header">
-                    <h2><i class="fas fa-cog"></i> Configurações</h2>
-                </div>
-
-                <div class="config-container">
-                    <div class="config-card">
-                        <h3><i class="fas fa-palette"></i> Cores Litúrgicas</h3>
-                        <div class="color-options">
-                            <div class="color-option" data-color="branco" style="background-color: #FFFFFF;">
-                                <span>Branco</span>
-                            </div>
-                            <div class="color-option" data-color="vermelho" style="background-color: #FF0000;">
-                                <span>Vermelho</span>
-                            </div>
-                            <div class="color-option" data-color="verde" style="background-color: #008000;">
-                                <span>Verde</span>
-                            </div>
-                            <div class="color-option" data-color="roxo" style="background-color: #800080;">
-                                <span>Roxo</span>
-                            </div>
-                            <div class="color-option" data-color="rosa" style="background-color: #FFC0CB;">
-                                <span>Rosa</span>
-                            </div>
-                            <div class="color-option" data-color="preto" style="background-color: #000000; color: white;">
-                                <span>Preto</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="config-card">
-                        <h3><i class="fas fa-sliders-h"></i> Preferências</h3>
-                        <div class="preferences">
-                            <label>
-                                <input type="checkbox" id="auto-expand" checked>
-                                Expandir automaticamente
-                            </label>
-                            <label>
-                                <input type="checkbox" id="show-chords" checked>
-                                Mostrar acordes
-                            </label>
-                            <label>
-                                Tamanho da fonte:
-                                <input type="range" id="font-size" min="12" max="24" value="16">
-                                <span id="font-size-value">16px</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="config-card">
-                        <h3><i class="fas fa-database"></i> Gerenciamento</h3>
-                        <div class="management-actions">
-                            <button id="export-data" class="btn-secondary">
-                                <i class="fas fa-download"></i> Exportar Dados
-                            </button>
-                            <button id="import-data" class="btn-secondary">
-                                <i class="fas fa-upload"></i> Importar Dados
-                            </button>
-                            <button id="clear-cache" class="btn-secondary">
-                                <i class="fas fa-trash"></i> Limpar Cache
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
-
-        <!-- Rodapé -->
-        <footer class="main-footer">
-            <div class="footer-content">
-                <div class="footer-info">
-                    <p><i class="fas fa-church"></i> Sistema Litúrgico v1.0</p>
-                    <p id="current-date">Carregando data...</p>
-                </div>
-                <div class="footer-status">
-                    <span id="connection-status" class="status-connected">
-                        <i class="fas fa-wifi"></i> Conectado
-                    </span>
-                </div>
-            </div>
-        </footer>
-    </div>
-
-    <!-- Modal para visualização de música -->
-    <div id="music-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="modal-title">Título da Música</h3>
-                <button class="modal-close">&times;</button>
-            </div>
-            <div class="modal-body" id="modal-body">
-                <!-- Conteúdo da música -->
-            </div>
-            <div class="modal-footer">
-                <button class="btn-primary" id="modal-print">
-                    <i class="fas fa-print"></i> Imprimir
-                </button>
-                <button class="btn-secondary" id="modal-copy">
-                    <i class="fas fa-copy"></i> Copiar Letra
-                </button>
-            </div>
+<div class="app-container">
+    <div class="banner-container">
+        <img src="img/banner.jpg" alt="Missa no Shopping Singapura." class="banner">
+        <div class="banner-overlay">
+            <div class="banner-title">3ª Semana do Tempo Comum | Quinta-feira</div>
+            <div class="banner-subtitle">Missa no Shopping Singapura.</div>
         </div>
     </div>
 
-    <!-- Modal para nova missa -->
-    <div id="new-missa-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Criar Nova Missa</h3>
-                <button class="modal-close">&times;</button>
-            </div>
-            <div class="modal-body">
-                <form id="new-missa-form">
-                    <div class="form-group">
-                        <label for="new-missa-date">Data:</label>
-                        <input type="date" id="new-missa-date" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="new-missa-title">Título:</label>
-                        <input type="text" id="new-missa-title" placeholder="Ex: Epifania do Senhor" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="new-missa-subtitle">Subtítulo:</label>
-                        <input type="text" id="new-missa-subtitle" placeholder="Ex: Solenidade | Domingo">
-                    </div>
-                    <div class="form-group">
-                        <label for="new-missa-color">Cor Litúrgica:</label>
-                        <select id="new-missa-color" required>
-                            <option value="branco">Branco</option>
-                            <option value="vermelho">Vermelho</option>
-                            <option value="verde">Verde</option>
-                            <option value="roxo">Roxo</option>
-                            <option value="rosa">Rosa</option>
-                            <option value="preto">Preto</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="new-missa-type">Tipo:</label>
-                        <select id="new-missa-type" required>
-                            <option value="Solenidade">Solenidade</option>
-                            <option value="Festa">Festa</option>
-                            <option value="Memória">Memória</option>
-                            <option value="Domingo">Domingo</option>
-                            <option value="Semana">Semana</option>
-                        </select>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="submit" form="new-missa-form" class="btn-primary">
-                    <i class="fas fa-save"></i> Salvar Missa
-                </button>
-            </div>
+<!-- Liturgia do Dia Expansível (será preenchida automaticamente) -->
+<div class="liturgy-section">
+    <div class="liturgy-header">
+        <h2><i class="fas fa-book-bible liturgy-icon"></i> Liturgia da Celebração</h2>
+        <span class="liturgy-arrow">▼</span>
+    </div>
+    <div class="liturgy-content">
+        <div style="text-align: center; padding: 20px;">
+            <i class="fas fa-spinner fa-spin fa-2x"></i>
+            <p>Carregando liturgia do dia...</p>
+        </div>
+    </div>
+</div>
+
+    <div class="controls">
+        <div class="font-controls">
+            <span>Tamanho da fonte:</span>
+            <button class="font-btn" id="decrease-font" title="Diminuir fonte">
+                <i class="fas fa-minus"></i>
+            </button>
+            <button class="font-btn" id="reset-font" title="Fonte padrão">
+                A
+            </button>
+            <button class="font-btn" id="increase-font" title="Aumentar fonte">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="search-input" placeholder="Buscar música...">
         </div>
     </div>
 
-    <script src="js/ministerio.js"></script>
+    <div class="music-list" id="music-list">
+        <!-- As músicas serão inseridas aqui pelo JavaScript -->
+    </div>
+
+    <!-- Menu de Navegação no Final -->
+    <div class="liturgy-menu">
+        <h2><i class="fas fa-list-alt"></i> Navegação Rápida</h2>
+        <div class="liturgy-links" id="liturgy-links">
+            <!-- Os links serão gerados pelo JavaScript -->
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <i class="fas fa-church"></i>
+                <span>37 anos de Sacerdócio</span>
+            </div>
+            <div class="footer-actions">
+                <button class="action-btn" id="expand-all">
+                    <i class="fas fa-expand"></i> Expandir Tudo
+                </button>
+                <button class="action-btn" id="collapse-all">
+                    <i class="fas fa-compress"></i> Recolher Tudo
+                </button>
+            </div>
+        </div>
+        <p style="margin-top: 10px; font-size: 0.8rem; opacity: 0.9;">Em ação de graças pelo ministério do Pe. Celso</p>
+    </div>
+</div>
+
+<script src="js/ministerio.js"></script>
 </body>
 </html>
