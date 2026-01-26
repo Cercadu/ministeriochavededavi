@@ -66,127 +66,223 @@ body {
     opacity: 0.95;
 }
 
-header {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
-    color: white;
-    padding: 20px;
-    text-align: center;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+/* ============ LITURGIA ============ */
+.liturgy-section {
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    margin: 15px;
     border-radius: 12px;
-    margin: 0 15px 20px 15px;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    border: 2px solid var(--accent);
 }
 
-.header-content {
+.liturgy-header {
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    color: white;
+    padding: 15px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     position: relative;
-    z-index: 2;
 }
 
-.header-decoration {
+.liturgy-header::after {
+    content: '';
     position: absolute;
-    top: 0;
+    bottom: 0;
     left: 0;
     right: 0;
-    bottom: 0;
-    background:
-            radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
-            radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%);
-}
-
-h1 {
-    font-size: 1.8rem;
-    margin-bottom: 10px;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-    font-weight: 700;
-}
-
-.subtitle {
-    font-size: 1.1rem;
-    opacity: 0.95;
-    margin-bottom: 8px;
-    font-weight: 500;
-}
-
-.celebration-info {
-    background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
-    padding: 10px 20px;
-    border-radius: 25px;
-    display: inline-block;
-    margin-top: 15px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.2);
-}
-
-.anniversary-badge {
+    height: 3px;
     background: var(--accent);
-    color: var(--dark);
-    padding: 8px 20px;
-    border-radius: 30px;
-    font-weight: bold;
-    margin-top: 10px;
-    display: inline-block;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
 }
 
-/* Estilos para controles da liturgia */
+.liturgy-header h2 {
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.liturgy-icon {
+    font-size: 1.2rem;
+}
+
+.liturgy-arrow {
+    transition: transform 0.3s;
+}
+
 .liturgy-controls {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px 20px;
     display: flex;
     gap: 10px;
-    margin-top: 10px;
-    flex-wrap: wrap;
     align-items: center;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
 }
 
 .liturgy-controls input[type="date"] {
-    padding: 5px;
-    border-radius: 4px;
-    border: 1px solid var(--primary);
+    padding: 10px 15px;
+    border: 2px solid var(--accent);
+    border-radius: 5px;
     background: white;
     color: var(--dark);
-    font-size: 0.9rem;
+    font-weight: bold;
+    flex: 1;
+    max-width: 200px;
 }
 
-.liturgy-controls button.font-btn {
-    background: var(--accent);
+.liturgy-controls button {
+    padding: 10px 20px;
+    background: linear-gradient(135deg, var(--accent) 0%, #FFC107 100%);
     color: var(--dark);
     border: none;
-    border-radius: 4px;
-    padding: 5px 10px;
+    border-radius: 5px;
     cursor: pointer;
+    font-weight: bold;
     display: flex;
     align-items: center;
-    gap: 5px;
-    font-size: 0.9rem;
+    gap: 8px;
+    transition: all 0.3s ease;
 }
 
-.liturgy-controls button.font-btn:hover {
-    background: white;
-    transform: scale(1.05);
+.liturgy-controls button:hover {
+    background: linear-gradient(135deg, #FFC107 0%, #FFA000 100%);
+    transform: translateY(-2px);
 }
 
-/* Estilo para mensagens de erro/informação */
-.liturgy-content div[style*="background: #ffebee"] {
-    border-radius: 8px;
-    margin: 20px 0;
+.liturgy-content {
+    background-color: white;
+    display: none;
+    border-left: 3px solid var(--accent);
+    padding: 20px;
+    white-space: pre-line;
+    line-height: 1.8;
 }
 
-/* Ajuste para responsividade dos controles */
-@media (max-width: 480px) {
-    .liturgy-controls {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    
-    .liturgy-controls input[type="date"] {
-        width: 100%;
-    }
+.liturgy-content.expanded {
+    display: block;
 }
 
+/* Estilos para textos da liturgia */
+.liturgia-data {
+    background: var(--light);
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    text-align: center;
+    border-left: 4px solid var(--primary);
+}
+
+.liturgia-data h3 {
+    color: var(--dark);
+    margin: 0;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.leitura-item {
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.leitura-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.leitura-titulo {
+    color: var(--primary);
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    padding-left: 25px;
+    position: relative;
+}
+
+.leitura-titulo i {
+    position: absolute;
+    left: 0;
+    top: 2px;
+    color: var(--primary);
+}
+
+.leitura-texto {
+    line-height: 1.6;
+    text-align: justify;
+    margin-bottom: 15px;
+    font-size: 1.05rem;
+}
+
+.salmo-refrao {
+    background: rgba(184, 134, 11, 0.1);
+    padding: 15px;
+    border-radius: 5px;
+    margin: 15px 0;
+    font-style: italic;
+    border-left: 4px solid var(--primary);
+    font-weight: bold;
+}
+
+.versiculos-container {
+    margin: 15px 0;
+}
+
+.versiculo {
+    margin-bottom: 10px;
+    padding-left: 20px;
+    position: relative;
+}
+
+.numero-versiculo {
+    position: absolute;
+    left: 0;
+    font-weight: bold;
+    color: var(--primary);
+}
+
+.aclamacao {
+    background: rgba(255, 215, 0, 0.15);
+    padding: 15px;
+    border-radius: 5px;
+    margin: 15px 0;
+    text-align: center;
+    border-left: 4px solid var(--accent);
+}
+
+.aclamacao-texto {
+    color: var(--primary);
+    font-weight: bold;
+    font-style: italic;
+    margin-bottom: 10px;
+}
+
+.versiculo-evangelho {
+    color: var(--secondary);
+    font-style: italic;
+}
+
+.referencia {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px dashed #dee2e6;
+    text-align: center;
+    font-weight: bold;
+}
+
+.role {
+    color: #e74c3c;
+}
+
+.resposta {
+    color: var(--secondary);
+    margin-left: 5px;
+}
+
+/* ============ CONTROLES ============ */
 .controls {
     display: flex;
     justify-content: space-between;
@@ -246,6 +342,7 @@ h1 {
     color: var(--dark);
 }
 
+/* ============ MÚSICAS ============ */
 .music-list {
     padding: 15px;
 }
@@ -353,6 +450,7 @@ h1 {
     border-radius: 3px;
 }
 
+/* ============ MENU NAVEGAÇÃO ============ */
 .liturgy-menu {
     background: white;
     padding: 15px;
@@ -386,6 +484,7 @@ h1 {
     color: var(--dark);
     transition: all 0.3s;
     border-left: 4px solid var(--secondary);
+    cursor: pointer;
 }
 
 .liturgy-link:hover {
@@ -398,6 +497,7 @@ h1 {
     font-size: 1.1rem;
 }
 
+/* ============ FOOTER ============ */
 .footer {
     background: linear-gradient(to right, var(--primary), var(--secondary));
     color: white;
@@ -437,6 +537,9 @@ h1 {
     cursor: pointer;
     transition: all 0.2s;
     font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
 .action-btn:hover {
@@ -457,6 +560,10 @@ h1 {
     transition: all 0.3s;
     text-align: center;
     max-width: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
 .back-to-liturgy:hover {
@@ -464,39 +571,10 @@ h1 {
     transform: translateY(-2px);
 }
 
-.anniversary-message {
-    background: linear-gradient(135deg, var(--light), white);
-    padding: 20px;
-    margin: 15px;
-    border-radius: 12px;
-    text-align: center;
-    border: 2px dashed var(--primary);
-    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-}
-
-.anniversary-message h3 {
-    color: var(--primary);
-    margin-bottom: 10px;
-}
-
-.priest-photo {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 5px solid var(--primary);
-    margin: 15px auto;
-    display: block;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-}
-
+/* ============ RESPONSIVIDADE ============ */
 @media (max-width: 768px) {
     :root {
         --font-size: 15px;
-    }
-
-    h1 {
-        font-size: 1.6rem;
     }
 
     .banner-title {
@@ -530,15 +608,26 @@ h1 {
     .liturgy-links {
         grid-template-columns: 1fr;
     }
+
+    .liturgy-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .liturgy-controls input[type="date"] {
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .liturgy-controls button {
+        width: 100%;
+        justify-content: center;
+    }
 }
 
 @media (max-width: 480px) {
     :root {
         --font-size: 14px;
-    }
-
-    h1 {
-        font-size: 1.4rem;
     }
 
     .moment-header {
@@ -547,10 +636,5 @@ h1 {
 
     .song-item {
         padding: 12px;
-    }
-
-    .priest-photo {
-        width: 120px;
-        height: 120px;
     }
 }
