@@ -865,10 +865,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     setupSearch();
     
-    // Buscar liturgia
-    setTimeout(() => {
-        fetchLiturgia();
-    }, 100);
 });
 
 
@@ -892,24 +888,46 @@ function carregarLiturgia(data = null) {
         });
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+    carregarLiturgia(); // hoje
+});
+
+function carregarLiturgia(data = null) {
+    let url = "https://api-liturgia-diaria.vercel.app/";
+
+    if (data) {
+        url += `?date=${data}`;
+    }
+
+    fetch(url)
+        .then(res => res.json())
+        .then(json => renderizarLiturgia(json.today))
+        .catch(err => {
+            console.error(err);
+            document.getElementById("liturgyContent").innerHTML =
+                "<p>Erro ao carregar a liturgia.</p>";
+        });
+}
+
 function renderizarLiturgia(l) {
     const content = document.getElementById("liturgyContent");
 
     content.innerHTML = `
-        <h3>${l.celebracao}</h3>
-        <p><strong>Data:</strong> ${l.data}</p>
-        <p><strong>Cor Litúrgica:</strong> ${l.cor}</p>
+        <h3>${l.entry_title}</h3>
+        <p><strong>Data:</strong> ${l.date}</p>
+        <p><strong>Cor Litúrgica:</strong> ${l.color}</p>
 
         <hr>
 
-        <h4>Primeira Leitura</h4>
-        <p>${l.leituras?.primeira || "—"}</p>
+        <h4>${l.readings.first_reading.title}</h4>
+        <p>${formatReadingText(l.readings.first_reading.text)}</p>
 
-        <h4>Salmo</h4>
-        <p>${l.leituras?.salmo || "—"}</p>
+        <h4>${l.psalm.title}</h4>
+        <p><span class="liturgy-role">R.</span> ${l.psalm.response}</p>
+        <p>${l.psalm.content_psalm.join("<br><br>")}</p>
 
-        <h4>Evangelho</h4>
-        <p>${l.leituras?.evangelho || "—"}</p>
+        <h4>${l.readings.gospel.title}</h4>
+        <p>${formatReadingText(l.readings.gospel.text)}</p>
     `;
 }
 
@@ -917,38 +935,5 @@ function buscarPorData() {
     const data = document.getElementById("dataLiturgia").value;
     if (data) {
         carregarLiturgia(data);
-    }
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-    carregarLiturgia(); // hoje
-});
-
-async function fetchLiturgia(data = null) {
-    try {
-        let url = "https://api-liturgia-diaria.vercel.app/";
-
-        if (data) {
-            url += data;
-        }
-
-        const response = await fetch(url);
-        const json = await response.json();
-
-        document.getElementById("liturgyContent").innerHTML = `
-            <h3>${json.data} — ${json.cor}</h3>
-            <p><strong>Primeira Leitura:</strong> ${json.primeiraLeitura?.referencia}</p>
-            <p>${json.primeiraLeitura?.texto}</p>
-
-            <p><strong>Salmo:</strong> ${json.salmo?.referencia}</p>
-            <p>${json.salmo?.texto}</p>
-
-            <p><strong>Evangelho:</strong> ${json.evangelho?.referencia}</p>
-            <p>${json.evangelho?.texto}</p>
-        `;
-    } catch (e) {
-        document.getElementById("liturgyContent").innerHTML =
-            "<p>Erro ao carregar a liturgia.</p>";
-        console.error(e);
     }
 }
