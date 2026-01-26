@@ -5,45 +5,91 @@ const musicData = [
         icon: "fas fa-door-open",
         songs: [
             {
-                title: "É CHEGADO O TEMPO",
-                key: "D",
-                lyrics: `[Intro] D9  D9/F#  G9  G7M  Gm7 
+                title: "Festa do Cordeiro",
+                key: "C",
+                lyrics: `[Intro] D  D/C  G/B  A
+        D  D/C  D/F#  G  
+        A  G/B  A
 
-D9            A/C#   Bm                    A 
-   É chegado o tempo     de se olhar por dentro 
-G9       G7M    D9/F#   G9   G7M  A4 
-Tempo de se esvaziar,   de   recomeçar 
-G9              D9/F#          G9  A 
-Tempo da graça, tempo de acreditar 
+   D       D/C
+Cantai, cantai ao Senhor Deus
+   G/B       A4
+Cantai, sua glória entre as nações
+  G
+Entrai com alegria, dons e oferendas
+    A4          A
+Nos átrios do Senhor
+   D       D/C
+Louvai, louvai ao Senhor Deus
+    G/B    A4
+Louvai, aquele que venceu
+   G
+Na Cruz nos deu a vida, curou nossas feridas
+     A4          A
+Seu sangue nos lavou
+   G              G   A     Bm          A4  A
+Trazei o mundo inteiro    à festa do Cordeiro
+G                A    G/B A/C#
+Vinde, vinde celebrar
 
-D9                A/C#   Bm                   D9/F# 
-   Eis o tempo da espera     onde o brilho da estrela 
-G9         D9/F#  G9/E   A4 
-Vem nos preparar, nos anunciar 
-G9      G7M   G9/E      A4     A11 
-Está chegando o      Emanuel 
+          D                     G  
+Reina o Senhor, eterno é o Seu Amor
+   D/F#     Em           D/F#      A G/B A/C# A
+Vestido de glória e majestade está aqui
+          D      D     Em  D/F# G   A Bm
+Reina o Senhor, eterno é o Seu Amor
+      Em          D/F#       A4  A 
+Sua beleza tudo recria, tudo refaz
 
-D9              A/C#               G9 
-Ele virá, nos trará sua paz e sua luz 
- G7M  G9/E       A4 
-Iluminará nossas vidas 
- D9              A/C#               G9 
-Cristo Jesus salvador reinará sobre nós e assim 
-    G9/E       A4 
-Cantaremos sua glória! 
-D9              A/C#               G9 
-Ele virá, nos trará sua paz e sua luz 
- G7M  G9/E       A4 
-Iluminará nossas vidas 
-D9              A/C#                G9 
-Cristo Jesus salvador reinará sobre nós e assim 
+( D  C  C  G )  
 
-    G7M           Bm   A   G9 
-Cantaremos sua glória! 
-    G7M           Bm   A   G9 
-Cantaremos sua glória! 
-                  Bm 
-Cantaremos sua glória!`
+   D       D/C
+Cantai, cantai ao Senhor Deus
+   G/B       A4
+Cantai, sua glória entre as nações
+  G
+Entrai com alegria, dons e oferendas
+    A4          A
+Nos átrios do Senhor
+   D       D/C
+Louvai, louvai ao Senhor Deus
+    G/B    A4
+Louvai, aquele que venceu
+   G
+Na Cruz nos deu a vida, curou nossas feridas
+     A4          A
+Seu sangue nos lavou
+ G            G   A   Bm            D A/C# A D/F#
+Exultem de alegria os céus e toda a ter----ra
+G                       A4  A
+Diante do Cordeiro vencedor
+
+          D                     G  
+Reina o Senhor, eterno é o Seu Amor
+   D/F#     Em           D/F#      A G/B A/C# A
+Vestido de glória e majestade está aqui
+          D      D     Em  D/F# G   A Bm
+Reina o Senhor, eterno é o Seu Amor
+      Em          D/F#       A4  A 
+Sua beleza tudo recria, tudo refaz
+
+( G  A  G/B  G  A )
+
+          D      D    Em   D/F# G  
+Reina o Senhor, eterno é o Seu Amor
+   D/F#     Em           D/F#      A G/B A/C# A
+Vestido de glória e majestade está aqui
+          D  Em D/F#    D/A            G
+Reina o Senhor,        eterno é o Seu Amor
+      Em          D/F#       A4  A 
+Sua beleza tudo recria, tudo refaz
+
+          G
+Reina o Senhor!
+          Bm
+Reina o Senhor!
+          G    D/F# A   D
+Reina o Senhor`
             }
         ]
     },
@@ -52,60 +98,177 @@ Cantaremos sua glória!`
         icon: "fas fa-hands-praying",
         songs: [
             {
-                title: "KYRIE ELEISON",
-                key: "D",
-                lyrics: `[Intro] D  Em  Bm  A 
-        D  Em  Bm  A4 
+                title: "Kyrie Eleison - JMJ RIO 2013",
+                key: "Bm",
+                lyrics: `[Intro] Bm7  G7M
+        Bm7  G7M
+
+[Primeira Parte]
+
+    Bm7       A      G7M
+Senhor, que viestes salvar
+        Bm7         A/C#  F#4  F#
+Os corações arrependi____dos
+
+[Refrão]
+
+       D  D4  D  A/C#   
+Kyrie  elei____son
+  F#7/A#  F#7  Bm7   
+Elei__________son
+  E4  E  A
+Elei____son
+
+ D       D4  D  A/C#   
+Kyrie  elei____son
+  F#7/A#  F#7  Bm7   
+Elei__________son,
+  E4  E  A
+Elei____son
+
+( Bm7  F#m7  G7M )
+
+[Segunda Parte]
+
+     Bm7         A9        G7M
+Ó, Cristo, que viestes chamar
+        Bm7        A/C#  F#4  F#
+Os pecadores humilhados
+
+[Refrão 2]
+
+      D    D4  D  A/C#   
+Christe  ele____ison
+  F#7/A#  F#7  Bm7   
+Elei__________son
+  E4  E  A  G/A  A  G/A
+Ele____ison
+
+ D         D4  D  A/C#  A/B
+Christe  elei____son
+  F#7/A#  F#/C#  Bm7  Bm7/A     
+Ele____________ison
+  E/G#  E  A
+Ele______ison
+
+( G#m7(5-)  C#7  F#m7  A/B )
+( D7M(6/9)  E7(4) )
+
+[Terceira Parte]
+
+    F#m7            E6   D7M
+Senhor, que intercedeis por nós
+              F#m7           E/G#  C#4
+Junto a Deus Pai que nos perdo_____a
+
+( E/F#  F#  E/F# )
+
+[Refrão]
+
+    B  B/D#  E  B/D#  C#m7  C#m7/B  
+Kyrie      ele______ison
+  A#m11  D#7  G#m7  
+Ele_________ison
+  C#4  C#7  F#  E/F#  F#  E/F#
+Ele_______ison
+
+    B  B/D#  E  B/D#  C#m7  C#m7/B  
+Kyrie      ele______ison
+  A#m11  D#7  G#m7   
+Ele_________ison
+  C#4  C#7  F# 
+Ele_______ison
+
+[Final] E/F#  F#  A7M`
+            }
+        ]
+    },
+     {
+        moment: "Glória",
+        icon: "fas fa-hands-praying",
+        songs: [
+            {
+                title: "Glória a Deus Nas Alturas - ELiana Ribeiro",
+                key: "G",
+                lyrics: `[Intro] D9  C9  D9
+        C9  D9  C9
+
 
 [Primeira Parte] 
-    D 
-Senhor que viestes 
-     Bm7 
-Não para condenar 
-     G7M     D/F# 
-Mas para perdoar 
- Em      Bm    A/C#  ( G/B  A ) 
-Tende piedade de nós 
 
-[Refrão] 
-D Em7  D/F# G 
-Kyrie Eleison 
-D Em7 D/F# G 
-Kyrie Eleison 
-   Bm   A4 A D  G/D 
-Kyrie Eleison 
+  D9                 C9
+Glória a Deus nas alturas
+   G
+E paz na Terra
+                     D9   ( D4  D )
+Aos homens por Ele amados
+    D9        C9
+Senhor Deus, rei dos céus
+ G                D9
+Deus Pai Todo Poderoso
+
+[Ponte 1]
+
+            Am  D9
+Nós vos louva__mos
+              Am  D9
+Nós vos bendize__mos
+            Am  D9
+Nós vos adora__mos
+                Am  D9
+Nós vos glorifica__mos
+                C9
+Nós vos damos graças
+     G             D9
+Por vossa imensa glória
 
 [Segunda Parte] 
- D 
-Cristo que vos alegrais 
- Bm7          G7M    D/F# 
-Pelo pecador arrependido 
-Em        Bm     A/C#   ( G/B  A ) 
-Tende piedade de nós 
 
-[Refrão] 
-D   Em7  D/F# G 
-Christe Eleison 
-D  Em7 D/F# G 
-Christe Eleison 
-   Bm   A4 A D  G/D 
-Christe Eleison 
+               C9
+Senhor Jesus Cristo
+ G        D9    ( D4  D )
+Filho Unigênito
+    D9           C9
+Senhor Deus, Cordeiro de Deus
+ G             D9
+Filho de Deus Pai
 
-[Terceira Parte] 
-    D 
-Senhor que muito perdoais 
-Bm            G7M      D/F# 
-A todo aquele que muito ama 
-Em       Bm     A/C#  ( G/B  A ) 
-Tende piedade de nós 
+[Ponte 2]
 
-[Refrão] 
-D Em7  D/F# G 
-Kyrie Eleison 
-D Em7 D/F# G 
-Kyrie Eleison 
-   Bm   A4 A D 
-Kyrie Eleison`
+ Am                  G
+Vós, que tirais o pecado do mundo
+ C9               D9
+Tende piedade de nós
+ Am                  G
+Vós, que tirais o pecado do mundo
+C9               D9
+Acolhei a nossa súplica
+ Am                  G
+Vós, que estais à direita do Pai
+ C9               D9
+Tende piedade de nós
+
+[Refrão]
+
+               Am  D9
+Só vós sois o Sa_nto
+              Am  D9
+Só vós, o Senhor
+             C9              D9
+Só vós, o Altíssimo, Jesus Cristo
+ E              A
+Com o Espírito Santo
+
+[Final]
+
+                  G       D9
+Na glória de Deus   Pai amém!
+                  G       D9
+Na glória de Deus   Pai amém!
+                  G       D9
+Na glória de Deus   Pai amém!
+                  G       D9
+Na glória de Deus   Pai amém!`
             }
         ]
     },
@@ -114,40 +277,73 @@ Kyrie Eleison`
         icon: "fas fa-book-bible",
         songs: [
             {
-                title: "NOS SEUS DIAS A JUSTIÇA FLORIRÁ",
-                key: "D",
-                lyrics: `G/B A/C#    D         G/B      A/C# 
-Nos seus dias a justiça florirá. 
-A/G         D/F#        Em7     Asus 
-Nos seus dias a justiça florirá. 
+                title: "SALMO 48 (48) - FELIZES OS HUMILDES DE ESPÍRITO, PORQUE DELES É O REINO DOS CÉUS. (Paulo Neto)",
+                key: "F",
+                lyrics: `              
+  F          Gm          F 
+FELIZES OS HUMILDES DE ESPÍRITO, 
+F/A    Bb        C7        F
+PORQUE DELES É O REINO DOS CÉUS. (BIS)
 
-          Em7                                         A4 
-Dai ao Rei vossos poderes, Senhor Deus, 
-              Em7                                       A4 Bm7 
-vossa justiça ao descendente da realeza! 
-            Em   D/F# G         E/G#   A4 
-Com justiça ele governe o vosso povo, 
+   F                                C  F
+1. POR QUE TEMER OS DIAS MAUS E INFELI-ZES,
+Dm                             Bb    C   F
+QUANDO A MALÍCIA DOS PERVERSOS ME CIRCUN-DA?
+F                                  C  F
+POR QUE TEMER OS QUE CONFIAM NAS RIQUEZAS 
+Dm                            Bb   C  F
+E SE GLORIAM NA ABUNDÂNCIA DE SEUS BE-ENS?
 
-                Em7                   A4 
-Nos seus dias a justiça florirá 
-               Em7                                       A4  Bm7 
-e grande paz, até que a lua perca o brilho! 
-               Em     D/F#    G   E/G#  A4 
-De mar a mar estenderá o seu domínio, 
+  F          Gm          F 
+FELIZES OS HUMILDES DE ESPÍRITO, 
+F/A    Bb        C7        F
+PORQUE DELES É O REINO DOS CÉUS.
 
-          Em7                              A4 
-Libertará o indigente que suplica, * 
-     Em7                                            A4 Bm7 
-e o pobre ao qual ninguém quer ajudar. 
-       Em    D/F#  G         E/G#    A4 
-Terá pena do indigente e do infeliz, 
+   F                                   C   F
+2. NINGUÉM SE LIVRA DE SUA MORTE POR DINHEIRO 
+Dm                      Bb     C  F
+NEM A DEUS PODE PAGAR O SEU RESGA-TE. 
+F                                  C  F
+A ISENÇÃO DA PRÓPRIA MORTE NÃO TEM PREÇO;
+Dm                         Bb C  F
+NÃO HÁ RIQUEZA QUE A POSSA AD-QUIRIR, 
+F                               C  F
+NEM DAR AO HOMEM UMA VIDA SEM LIMI-TES 
+Dm                            Bb  C  F
+E GARANTIR-LHE UMA EXISTÊNCIA IMORTA-AL.
 
-              Em7                                 A4 
-Seja bendito o seu nome para sempre! * 
-          Em7                                    A4 Bm7 
-E que dure como o sol sua memória! 
-              Em       D/F# G      E/G#     A4 
-Todos os povos serão nele abençoados,`
+  F          Gm          F 
+FELIZES OS HUMILDES DE ESPÍRITO, 
+F/A    Bb        C7        F
+PORQUE DELES É O REINO DOS CÉUS.
+
+   F                                      C  F
+3. NÃO TE INQUIETES, QUANDO UM HOMEM FICA RI-CO
+Dm                       Bb  C  F
+E AUMENTA A OPULÊNCIA DE SUA CA-SA;
+F                                 C  F
+POIS AO MORRER NÃO LEVARÁ NADA CONSI-GO,
+Dm                        Bb   C   F
+NEM SEU PRESTÍGIO PODERÁ ACOMPANHÁ-LO.
+
+  F          Gm          F 
+FELIZES OS HUMILDES DE ESPÍRITO, 
+F/A    Bb        C7        F
+PORQUE DELES É O REINO DOS CÉUS.
+
+   F                                 C  F
+4. FELICITAVA-SE A SI MESMO ENQUANTO VI-VO: 
+Dm                                Bb    C  F
+TODOS TE APLAUDEM, TUDO BEM, ISTO QUE É VI-DA!
+F                                 C  F
+MAS VAI-SE ELE PARA JUNTO DE SEUS PA-IS,
+Dm                            Bb    C  F
+QUE NUNCA MAIS E NUNCA MAIS VERÃO A LU-UZ!
+
+  F          Gm          F 
+FELIZES OS HUMILDES DE ESPÍRITO, 
+F/A    Bb        C7        F
+PORQUE DELES É O REINO DOS CÉUS. (BIS)`
             }
         ]
     },
@@ -156,19 +352,20 @@ Todos os povos serão nele abençoados,`
         icon: "fas fa-music",
         songs: [
             {
-                title: "ALELUIA",
-                key: "F#m",
-                lyrics: `    E         F#m 
-Aleluia, aleluia! 
-    E         F#m 
-Aleluia, aleluia! 
-
-        Bm        A     Bm 
-O Espírito consagrou-me 
-      D     E    F#m 
-E mandou-me anunciar 
- Bm      F#m    C#7  F#m 
-Boa nova para os pobres!`
+                title: "ACLAMAÇÃO EVANGELHO (TRADICIONAL)",
+                key: "E",
+                lyrics: `   
+E B4 E
+Aleluia, Aleluia, Aleluia,
+A B4 E
+Alelu____ia,
+E
+Meus discípulos, se alegrem
+                    B4
+Saltem mesmo de alegria
+Pois bem grande é a recompensa
+                        E E4
+Que de Deus vão ter um dia!`
             }
         ]
     },
@@ -177,58 +374,32 @@ Boa nova para os pobres!`
         icon: "fas fa-gift",
         songs: [
             {
-                title: "Ó SANTO MESSIAS",
-                key: "Em",
-                lyrics: `[Intro] Em  Bm  Em  Bm  C  D  Em 
+                title: "Venho a Ti - Eliana Ribeiro",
+                key: "G",
+                lyrics: `
+E7+/9   E                                    F#m/Eb 
+Venho a Ti e    sei que não estou mais sozinho
+G#5+/7  Cº
 
-      Em       Bm       Em 
-Solo: muito suspira por ti 
-    Bm     Em  Bm      Em 
-Teu povo fiel, tua israel! 
-            Am       Bm       C 
-Assembleia: muito suspira por ti 
-    D      C   Bm      Em 
-Teu povo fiel, tua israel! 
+               C#m7+  A7+               F#m  D9  A/B
+Muitas vozes se elevam para o céu
+               E7+/9         E                           
+Venho a Ti como aqueles irmãos verdadeiros
+F#m/Eb G#5+/7  Cº
 
-        F#m7(5-) B7     C    G/B 
-Solo: ó san  -  nto messias! 
-              Am B7     Em 
-Assembleia: ó santo messias! 
+            C#m7+      A7+           F#m   A/B
+Que comigo dão a ti seus corações
 
-      Em       Bm        Em 
-Solo: tua lembrança embalsama 
-Bm         Em   Bm         Em 
-Dos que te amam os tristes dias 
-            Am       Bm        C 
-Assembleia: tua lembrança embalsama 
-D          C    Bm         Em 
-Dos que te amam os tristes dias 
-
-        F#m7(5-) B7     C    G/B 
-Solo: ó san  -  nto messias! 
-              Am B7     Em 
-Assembleia: ó santo messias! 
-
-      Em      Bm        Em 
-Solo: a nação que te adorava 
-   Bm         Em       Bm           Em 
-Tornaram-na escrava, encheram-na de dor 
-            Am      Bm        C 
-Assembleia: a nação que te adorava 
-   D          C        Bm           Em 
-Tornaram-na escrava, encheram-na de dor 
-
-        F#m7(5-) B7     C    G/B 
-Solo: ó san  -  nto messias! 
-              Am B7     Em 
-Assembleia: ó santo messias! 
-
-       F#m5-        Em       B      C 
-Solo: apressa-te em vir libertá-la,  
-    Am 
-em vir salvá-la 
-   Bm    Em     Bm    E 
-Bendito senhor! Bendito senhor!`
+   F#m   A/B     E7+ C#m      F#m        A/B       G#m   
+E tu que és o amor,             escuta cada prece de dor 
+ C#m
+de amor
+   A9       B/A  G#m  Gdim F#m            A/B           
+E tu que és a paz                 dá-nos a esperança em 
+             G#m        C#m
+cada momento, Senhor
+    F#m         A/B    E7+ C#m F#m     A/B     E9
+E abre o paraíso a nós,       e abre o paraíso a nós.`
             }
         ]
     },
@@ -237,41 +408,42 @@ Bendito senhor! Bendito senhor!`
         icon: "fas fa-church",
         songs: [
             {
-                title: "SANTO É O SENHOR",
-                key: "G",
-                lyrics: `Intro.:    Em    D    C    G/B     Am     
-Am/G    F#m7(b5)   B4    B 
+                title: "Santo é o Senhor (Na dança da vida) - Comunidade Shalom",
+                key: "Em",
+                lyrics: `[Intro] F#m7(b5)  Em  D  G/B  C  G/B  G  Am  
+        Am/G  F#m7(b5)  B4  B9  F#  A  C  E  B  
 
-Em  D   C   G  D  Em   F      C/E     D4  
-San------to, San----to, Santo é o Senhor 
-D#dim 
+Em  D  C   G  D/F#  Em    F   C/E     D4  D#º
+San___to, San_______to, Santo é o Senhor
+Em  D  C   G  D/F#  Em    F   C/E     D4  D7M 
+San___to, San_______to, Santo é o Senhor
 
-Em  D   C   G  D    Em F      C/E     D4  
-San------to, San----to, Santo é o Senhor 
-Dadd9 
+Am7          Bm7                 C9  ( Am )
+Céus e terra proclamam vossa glória
+F#m7(b5)      B7 ( F#  A  C  E  B  )
+Hosana nas alturas
 
-Am7(9)       Bm7(9)              C 
-Céus e terra proclamam vossa glória 
-  F#m7(b5)      B7add9  Fadd9 
-Hosana nas alturas 
+( D  D  D  C  A  F )
 
-Em  D   C   G  D  Em   F      C/E     D4  
-San------to, San----to, Santo é o Senhor 
-D#dim 
+Em  D  C   G  D/F#  Em    F   C/E     D4  D#º
+San___to, San_______to, Santo é o Senhor
+Em  D  C   G  D/F#  Em    F   C/E     D4  D7M 
+San___to, San_______to, Santo é o Senhor
 
-Em  D   C   G  D    Em F      C/E     D4  
-San------to, San----to, Santo é o Senhor 
-Dadd9 
+Am7               Bm7            C9  ( Am ) 
+Bendito o que vem em nome do Senhor
+F#m7(b5)      B7  Cº  C#7 ( F#  A  C  E  B  )
+Hosana nas alturas
 
-Am7(9)             Bm7            C 
-Bendito o que vem em nome do Senhor 
-  F#m7(b5)      B7  Cdim  C#7 
-Hosana nas alturas 
+F#m  E  D  A  E/G#  F#m   G    D/F#    E4  Fº
+San____to, San_______to, Santo é o Senhor
+F#m  E  D  A  E/G#  F#m   G    D/F#    E4  E 
+San____to, San_______to, Santo é o Senhor
 
-F#m   E  D  A E  F#m  G     D/F#    E4 Fdim 
-San------to, Santo,   Santo é o Senhor 
-F#m   E  D  A E  F#m  G     D/F#    E4 E 
-San------to, Santo,   Santo é o Senhor`
+             A9  G9/A          A9  G9/A
+Santo é o Senhor  Santo é o Senhor
+                  F7M   G9     A  
+Santo é o Senhor  Santo é o Senhor`
             }
         ]
     },
@@ -280,180 +452,70 @@ San------to, Santo,   Santo é o Senhor`
         icon: "fas fa-wine-glass-alt",
         songs: [
             {
-                title: "DA CEPA BROTOU A RAMA",
-                key: "Dm",
-                lyrics: `[Intro] Dm  Gm  A7  Dm 
+                title: "Entre Nós - Ministério Amor e Adoração",
+                key: "F",
+                lyrics: `
+[Intro] C  C#º  Bb/D  C/E  F  Bb/F  F
 
-[Refrão] 
-    Dm            A7 
-Da cepa brotou a rama 
-                   Dm 
-Da rama brotou a flor 
-     D            Gm 
-Da flor nasceu Maria 
-      Dm     A7   Dm 
-De Maria, o Salvador 
+  F      C/E   Dm7    A/C#    Bb9
+O Pão do céu, está aqui entre nós
+      F/A  Bb    C9
+É o Cordeiro de Deus
+  F    C/E      Dm7   A/C#     Bb
+Amor maior, não há em nenhum lugar
+        F/A       Bb9    C9
+Que o sacrifício deste altar
 
-    Dm            A7 
-Da cepa brotou a rama 
-                   Dm 
-Da rama brotou a flor 
-     D            Gm 
-Da flor nasceu Maria 
-      Dm     A7   Dm 
-De Maria, o Salvador 
+F                    Bb/F
+Anjos cantando entre nós
+   F                   C/E Am7  Dm7
+O céu e a terra são um só  coração
+      Bb   Bb/D     C C7
+Nesta santa Comunhão
+   F                      Bb/F
+Jesus visitando a imperfeição
+  F                       C/E  Am7    Dm7
+O homem que encontra redenção, tudo aqui
+      Bb    Dm7    C  C#º  Bb/D  C/E  Bb/F  F
+Nesta santa Comunhão
 
-[Primeira Parte] 
-     Gm        C7 
-O Espírito de Deus 
-      F         A# 
-Sobre ele pousará 
-      Em7(5-)       A7 
-De saber, de entendimento 
-                 Dm 
-Este Espírito será 
+   F     C/E   Dm7   A/C#     Bb
+O dom do Pai, está aqui entre nós
+     F/A       Bb9   C9
+Neste vinho e neste pão
+   F     C/E      Dm11     A/C#       Bb
+Oh luz maior, se acende em nós, comunhão
+      F/A    Bb   C7(4) C7
+É pra nós a salvação
 
-       Gm           C7 
-De conselho e fortaleza 
-     F             A# 
-De ciência e de temor 
-     Em7(5-)   A7 
-Achará sua alegria 
-                    Dm 
-No temor do seu Senhor 
+F                    Bb/F
+Anjos cantando entre nós
+   F                   C/E  Am7  Dm7
+O céu e a terra são um só  coração
+      Bb   Bb/D   C7(4) C7
+Nesta santa Comunhão
+   F                      Bb/F
+Jesus visitando a imperfeição
+  F                       C/E   Am7  Dm7
+O homem que encontra redenção, tudo aqui
 
-[Refrão] 
-    Dm            A7 
-Da cepa brotou a rama 
-                   Dm 
-Da rama brotou a flor 
-     D            Gm 
-Da flor nasceu Maria 
-      Dm     A7   Dm 
-De Maria, o Salvador 
+      Bb    Dm7    C  C#º  Bb/D  C/E  Bb/F
+Nesta santa Comunhão
 
-    Dm            A7 
-Da cepa brotou a rama 
-                   Dm 
-Da rama brotou a flor 
-     D            Gm 
-Da flor nasceu Maria 
-      Dm     A7   Dm 
-De Maria, o Salvador 
+F                    Bb/F
+Anjos cantando entre nós
+   F                   C/E  Am7  Dm7
+O céu e a terra são um só  coração
+      Bb   Bb/D   C7(4) C7
+Nesta santa Comunhão
+   F                      Bb/F
+Jesus visitando a imperfeição
+  F                       C/E   Am7  Dm7
+O homem que encontra redenção, tudo aqui
+      Bb    Dm7    C
+Nesta santa Comunhão
 
-[Segunda Parte] 
-       Gm         C7 
-Não será pela ilusão 
-      F               A# 
-Do olhar, do ouvir falar 
-          Em7(5-)     A7 
-Que ele irá julgar os homens 
-                  Dm 
-Como é praxe acontecer 
-
-        Gm           C7 
-Mas os pobres desta terra 
-        F         A# 
-Com justiça julgará 
-        Em7(5-)  A7 
-E dos fracos o direito 
-                   Dm 
-Ele é quem defenderá 
-
-[Refrão] 
-    Dm            A7 
-Da cepa brotou a rama 
-                   Dm 
-Da rama brotou a flor 
-     D            Gm 
-Da flor nasceu Maria 
-      Dm     A7   Dm 
-De Maria, o Salvador 
-
-    Dm            A7 
-Da cepa brotou a rama 
-                   Dm 
-Da rama brotou a flor 
-     D            Gm 
-Da flor nasceu Maria 
-      Dm     A7   Dm 
-De Maria, o Salvador 
-
-[Terceira Parte] 
-     Gm           C7 
-A palavra de sua boca 
-     F       A# 
-Ferirá o violento 
-     Em7(5-)      A7 
-E o sopro de seus lábios 
-             Dm 
-Matará o avarento 
-
-      Gm       C7 
-A justiça é o cinto 
-        F              A# 
-Que circunda a sua cintura 
-     Em7(5-)     A7 
-E o manto da lealdade 
-              Dm 
-É a sua vestidura 
-
-[Refrão] 
-    Dm            A7 
-Da cepa brotou a rama 
-                   Dm 
-Da rama brotou a flor 
-     D            Gm 
-Da flor nasceu Maria 
-      Dm     A7   Dm 
-De Maria, o Salvador 
-
-    Dm            A7 
-Da cepa brotou a rama 
-                   Dm 
-Da rama brotou a flor 
-     D            Gm 
-Da flor nasceu Maria 
-      Dm     A7   Dm 
-De Maria, o Salvador 
-
-[Quarta Parte] 
-       Gm         C7 
-Neste dia, neste dia 
-      F           A# 
-O incrível, verdadeiro 
-        Em7(5-)    A7 
-Coisa que nunca se viu 
-                   Dm 
-Morar lobo com cordeiro 
-
-     Gm           C7 
-A comer do mesmo pasto 
-         F             A# 
-Tigre e boi, burro e leão 
-        Em7(5-)  A7 
-Por um menino  guiados 
-                 Dm 
-Se confraternizarão 
-
-[Refrão] 
-    Dm            A7 
-Da cepa brotou a rama 
-                   Dm 
-Da rama brotou a flor 
-     D            Gm 
-Da flor nasceu Maria 
-      Dm     A7   Dm 
-De Maria, o Salvador 
-
-    Dm            A7 
-Da cepa brotou a rama 
-                   Dm 
-Da rama brotou a flor 
-     D            Gm 
-Da flor nasceu Maria 
-      Dm     A7   Dm 
-De Maria, o Salvador`
+[Final] C#º  Bb/D  C/E  Bb/F`
             }
         ]
     },
@@ -462,64 +524,125 @@ De Maria, o Salvador`
         icon: "fas fa-praying-hands",
         songs: [
             {
-                title: "UMA GRANDE MISSÃO",
-                key: "C",
-                lyrics: `    C                       Am 
-Um dia, como qualquer outro dia 
-              F    G                 C 
-O Senhor me criou para uma grande  
-   G7 
-missão 
-       C                       Am 
-Um jovem, como qualquer outro jovem 
-              F    G                  C 
-O Senhor me chamou para uma grande missão 
+                title: "Deus É Bom e Fiel - Walmir Alencar",
+                key: "G",
+                lyrics: `[Primeira Parte]
 
-F  G        C  F    G         C 
-Eu nada sabia, eu nada entendia 
-F  G         C   G                C 
-Eu nada previa de uma grande missão 
-F  G          C  F    G     C 
-Eu me encantei, me apaixonei 
-F  G        C  Am   Dm     G        C 
-O barco larguei    por uma grande missão 
+        G
+Caminharei (caminharei)
+             C
+Não me cansarei (não me cansarei)
+        G  F         G
+E seguirei  (e seguirei)
+                 C
+Rumo ao rei dos reis
 
-F         G          C  F         G 
-Eu disse sim, ó Senhor! Eu disse  
-       C 
-sim por amor 
-F         G         C     G          
-Pronto pra ir eu estou para uma  
-        C 
-grande missão 
-F         G        C   F          G 
-Eu disse sim, ó Senhor! Eu disse  
-       C 
-sim por amor 
-F          G       C  Am  Dm        
-Pronto pra ir eu estou   para uma  
-G         C  (G) 
-nova missão 
+(Rumo ao rei dos reis)
 
-    C                          Am 
-Um mundo, como qualquer outro mundo 
-              F    G                   
-O Senhor me elegeu para uma grande  
-C   G 
-missão 
-    C                       Am 
-Um povo, como qualquer outro povo 
-              F    G                 C 
-O Senhor me enviou para uma grande missão 
+        G7
+Caminharei (caminharei)
+             C7(9)
+Não me cansarei (não me cansarei)
+        G7
+E seguirei (e seguirei)
+                 C7(9)
+Rumo ao rei dos reis
 
-F   G        C  F    G      C 
-Eu não resisti, eu quase morri 
-F   G        C  G                  C 
-Chorei e sorri por uma grande missão 
-F  G           C  F  G         C 
-A vida arrisquei, eu tudo deixei 
-F    G       C  Am  Dm       G     C 
-E a cruz carreguei por uma grande missão`
+(Rumo ao rei dos reis)
+
+[Refrão]
+
+                G
+Ele é minha força!
+               Em7
+Deus é bom e fiel
+                 C7(9)
+Ele está sempre perto
+
+Deus é bom e fiel
+                   G
+Vou seguro em sua mão
+               Em7
+Deus é bom e fiel
+                 C7(9)
+Ele está sempre perto
+
+Deus é bom e fiel
+                      G7
+Rendo a ele o meu louvor e gratidão
+
+( C7(9)  G7  C7(9) )
+
+[Segunda Parte]
+
+         G7  
+Eu correrei (eu correrei)
+             C7(9)
+Não me cansarei (não me cansarei)
+        G7
+E seguirei (e seguirei)
+                 C7(9)
+Rumo ao rei dos reis
+
+(Rumo ao rei dos reis)
+
+         G7  
+Eu correrei (eu correrei)
+             C7(9)
+Não me cansarei (não me cansarei)
+        G7
+E seguirei (e seguirei)
+                 C7(9)
+Rumo ao rei dos reis
+
+(Rumo ao rei dos reis)
+
+[Refrão]
+
+                G
+Ele é minha força!
+               Em7
+Deus é bom e fiel
+                 C7(9)
+Ele está sempre perto
+
+Deus é bom e fiel
+                   G
+Vou seguro em sua mão
+               Em7
+Deus é bom e fiel
+                 C7(9)
+Ele está sempre perto
+
+Deus é bom e fiel
+                      G7
+Rendo a ele o meu louvor e gratidão
+
+( C7(9)  G7  C7(9) )
+
+[Refrão]
+
+                G
+Ele é minha força!
+               Em7
+Deus é bom e fiel
+                 C7(9)
+Ele está sempre perto
+
+Deus é bom e fiel
+                   G
+Vou seguro em sua mão
+               Em7
+Deus é bom e fiel
+                 C7(9)
+Ele está sempre perto
+
+Deus é bom e fiel
+                      G7
+Rendo a ele o meu louvor e gratidão
+
+[Final] C7(9)  G7  C7(9)
+        F7  F#7  G7`
             }
         ]
     },
