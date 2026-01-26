@@ -823,344 +823,6 @@ function setupSearch() {
     });
 }
 
-// ============================================================================
-// NOVA FUNCIONALIDADE: Buscar Liturgia da Canção Nova usando API Fetch
-// ============================================================================
-
-// Função principal para buscar a liturgia
-async function fetchLiturgia() {
-    try {
-        // Obter parâmetros da URL ou usar data atual
-        const urlParams = new URLSearchParams(window.location.search);
-        let day = urlParams.get('dia');
-        let month = urlParams.get('mes');
-        let year = urlParams.get('ano');
-        
-        const today = new Date();
-        if (!day) day = today.getDate();
-        if (!month) month = today.getMonth() + 1;
-        if (!year) year = today.getFullYear();
-        
-        // Formatar datas
-        const formattedDay = day.toString().padStart(2, '0');
-        const formattedMonth = month.toString().padStart(2, '0');
-        
-        console.log(`Buscando liturgia para: ${formattedDay}/${formattedMonth}/${year}`);
-        
-        // Primeiro, tentar buscar a página completa usando um proxy mais confiável
-        const liturgiaData = await fetchLiturgiaFromCN(formattedDay, formattedMonth, year);
-        
-        if (liturgiaData && (liturgiaData.primeiraLeitura.texto || liturgiaData.evangelho.texto)) {
-            // Dados obtidos com sucesso
-            formatAndDisplayLiturgia(liturgiaData, formattedDay, formattedMonth, year);
-        } else {
-            // Fallback: mostrar mensagem e manter controles
-            showLiturgiaError(formattedDay, formattedMonth, year);
-        }
-        
-    } catch (error) {
-        console.error('Erro ao buscar liturgia:', error);
-        showLiturgiaError();
-    }
-}
-
-// Nova função usando fetch direto (sem proxy complicado)
-async function fetchLiturgiaFromCN(day, month, year) {
-    try {
-        // Tentar uma abordagem diferente: usar o iframe ou embed
-        const url = `https://liturgia.cancaonova.com/pb/liturgia/?sDia=${day}&sMes=${month}&sAno=${year}`;
-        
-        // Usar um serviço de proxy mais simples
-        const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
-        
-        const response = await fetch(proxyUrl, {
-            headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-            }
-        });
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const html = await response.text();
-        
-        // Analisar o HTML
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-        
-        return extractLiturgiaFromHTML(doc);
-        
-    } catch (error) {
-        console.error('Erro na busca direta:', error);
-        // Tentar método alternativo
-        return await fetchLiturgiaAlternative(day, month, year);
-    }
-}
-
-// Função melhorada para extrair dados do HTML
-function extractLiturgiaFromHTML(doc) {
-    const data = {
-        titulo: '',
-        corLiturgica: '',
-        primeiraLeitura: { titulo: '', texto: '' },
-        salmo: { titulo: '', texto: '', refrao: '' },
-        evangelho: { titulo: '', texto: '' },
-        cor: 'verde'
-    };
-    
-    try {
-        // Extrair título
-        const tituloElement = doc.querySelector('.entry-title');
-        if (tituloElement) {
-            data.titulo = tituloElement.textContent.trim();
-        }
-        
-        // Extrair cor litúrgica
-        const corElement = doc.querySelector('.cor-liturgica');
-        if (corElement) {
-            const corText = corElement.textContent.trim();
-            const corMatch = corText.match(/Cor Litúrgica:\s*(.+)/i);
-            if (corMatch) {
-                data.corLiturgica = corText;
-                data.cor = corMatch[1].trim();
-            }
-        }
-        
-        // Método robusto: buscar por texto em todo o documento
-        const fullText = doc.body.textContent || doc.body.innerText;
-        
-        // Buscar Primeira Leitura
-        const primeiraMatch = fullText.match(/Primeira Leitura\s*\(([^)]+)\)([\s\S]*?)(?=Palavra do Senhor|Salmo|Evangelho|Responsório)/i);
-        if (primeiraMatch) {
-            data.primeiraLeitura.titulo = `PRIMEIRA LEITURA (${primeiraMatch[1].trim()})`;
-            data.primeiraLeitura.texto = primeiraMatch[2].trim();
-        }
-        
-        // Buscar Salmo/Responsório
-        const salmoMatch = fullText.match(/(Responsório|Salmo)[\s\S]*?\(([^)]+)\)([\s\S]*?)(?=R\.|Evangelho|Segunda Leitura)/i);
-        if (salmoMatch) {
-            data.salmo.titulo = `${salmoMatch[1].toUpperCase()} (${salmoMatch[2].trim()})`;
-            let salmoTexto = salmoMatch[3].trim();
-            
-            // Extrair refrão
-            const refraoMatch = salmoTexto.match(/-\s*(.+?)(?=\n|$)/);
-            if (refraoMatch) {
-                data.salmo.refrao = refraoMatch[1].trim();
-            }
-            
-            data.salmo.texto = salmoTexto;
-        }
-        
-        // Buscar Evangelho
-        const evangelhoMatch = fullText.match(/Evangelho\s*\(([^)]+)\)([\s\S]*?)(?=Palavra da Salvação|Ritos|Liturgia|Oração)/i);
-        if (evangelhoMatch) {
-            data.evangelho.titulo = `EVANGELHO (${evangelhoMatch[1].trim()})`;
-            data.evangelho.texto = evangelhoMatch[2].trim();
-        }
-        
-        // Se não encontrou por regex, tentar buscar elementos específicos
-        if (!data.primeiraLeitura.texto) {
-            const tabContent = doc.querySelector('.tab-content');
-            if (tabContent) {
-                const panes = tabContent.querySelectorAll('.tab-pane');
-                panes.forEach(pane => {
-                    const paneText = pane.textContent || pane.innerText;
-                    if (paneText.includes('Primeira Leitura')) {
-                        data.primeiraLeitura.texto = paneText.replace(/Primeira Leitura\s*\([^)]+\)/i, '')
-                                                              .replace(/Palavra do Senhor.*/i, '')
-                                                              .trim();
-                    } else if (paneText.includes('Salmo') || paneText.includes('Responsório')) {
-                        data.salmo.texto = paneText.replace(/(Responsório|Salmo)[\s\S]*?\([^)]+\)/i, '').trim();
-                    } else if (paneText.includes('Evangelho')) {
-                        data.evangelho.texto = paneText.replace(/Evangelho\s*\([^)]+\)/i, '')
-                                                        .replace(/Palavra da Salvação.*/i, '')
-                                                        .trim();
-                    }
-                });
-            }
-        }
-        
-    } catch (error) {
-        console.error('Erro na extração:', error);
-    }
-    
-    return data;
-}
-
-// Método alternativo: usar iframe embutido
-async function fetchLiturgiaAlternative(day, month, year) {
-    // Esta função pode ser expandida para usar outras fontes
-    // Por enquanto, retorna dados vazios para o fallback
-    return null;
-}
-
-// Função para formatar e exibir a liturgia
-function formatAndDisplayLiturgia(liturgiaData, day, month, year) {
-    const liturgyContent = document.querySelector('.liturgy-content');
-    if (!liturgyContent) return;
-    
-    // Mapear cores litúrgicas
-    const colorMap = {
-        'verde': '#228B22',
-        'roxo': '#800080', 
-        'branco': '#FFFFFF',
-        'vermelho': '#DC143C',
-        'rosa': '#FF69B4',
-        'dourado': '#FFD700',
-        'azul': '#1E90FF'
-    };
-    
-    // Atualizar cores CSS
-    const corLower = (liturgiaData.cor || 'verde').toLowerCase();
-    if (colorMap[corLower]) {
-        document.documentElement.style.setProperty('--primary', colorMap[corLower]);
-        document.documentElement.style.setProperty('--liturgical-color', colorMap[corLower]);
-    }
-    
-    // Formatar data
-    const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
-                  'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-    const dataFormatada = `${parseInt(day)} de ${meses[parseInt(month)-1]} de ${year}`;
-    
-    // Verificar se temos leituras
-    const hasReadings = liturgiaData.primeiraLeitura.texto || liturgiaData.salmo.texto || liturgiaData.evangelho.texto;
-    
-    // Criar conteúdo HTML
-    let html = `
-        <strong>LITURGIA DO DIA</strong><br><br>
-        
-        <strong>${liturgiaData.titulo || 'Liturgia Diária'}</strong><br>
-        ${dataFormatada}<br>
-        (Cor litúrgica: ${liturgiaData.cor || 'verde'})<br><br>
-        
-        <strong>RITOS INICIAIS</strong><br><br>
-        
-        <span class="liturgy-role">Sacerdote:</span> Em nome do Pai, do Filho ✠ e do Espírito Santo.<br>
-        <span class="liturgy-response">Amém.</span><br><br>
-        
-        <span class="liturgy-role">Sacerdote:</span> A graça de nosso Senhor Jesus Cristo, o amor do Pai e a comunhão do Espírito Santo estejam convosco.<br>
-        <span class="liturgy-response">Bendito seja Deus, que nos reuniu no amor de Cristo!</span><br><br>
-    `;
-    
-    // Adicionar Primeira Leitura
-    if (liturgiaData.primeiraLeitura.texto) {
-        html += `
-            <div class="liturgy-reading">
-                <div class="liturgy-reading-title">${liturgiaData.primeiraLeitura.titulo || 'PRIMEIRA LEITURA'}</div>
-                ${formatReadingText(liturgiaData.primeiraLeitura.texto)}<br><br>
-                <span class="liturgy-role">Leitor:</span> Palavra do Senhor.<br>
-                <span class="liturgy-response">Graças a Deus.</span>
-            </div><br>
-        `;
-    } else if (!hasReadings) {
-        html += `
-            <div class="liturgy-reading">
-                <div class="liturgy-reading-title">PRIMEIRA LEITURA</div>
-                <em>Leitura não disponível automaticamente.</em><br><br>
-                <span class="liturgy-role">Leitor:</span> Palavra do Senhor.<br>
-                <span class="liturgy-response">Graças a Deus.</span>
-            </div><br>
-        `;
-    }
-    
-    // Adicionar Salmo
-    if (liturgiaData.salmo.texto) {
-        html += `
-            <div class="liturgy-reading">
-                <div class="liturgy-reading-title">${liturgiaData.salmo.titulo || 'SALMO RESPONSORIAL'}</div>
-                ${liturgiaData.salmo.refrao ? 
-                    `<span class="liturgy-role">R.</span> <span class="liturgy-response">${liturgiaData.salmo.refrao}</span><br><br>` : 
-                    ''}
-                ${formatPsalmText(liturgiaData.salmo.texto, liturgiaData.salmo.refrao)}
-            </div><br>
-        `;
-    } else if (!hasReadings) {
-        html += `
-            <div class="liturgy-reading">
-                <div class="liturgy-reading-title">SALMO RESPONSORIAL</div>
-                <em>Salmo não disponível automaticamente.</em>
-            </div><br>
-        `;
-    }
-    
-    // Adicionar Evangelho
-    if (liturgiaData.evangelho.texto) {
-        html += `
-            <div class="liturgy-reading">
-                <div class="liturgy-reading-title">${liturgiaData.evangelho.titulo || 'EVANGELHO'}</div>
-                <span class="liturgy-role">Aclamação:</span> Aleluia, Aleluia, Aleluia.<br>
-                <span class="liturgy-role">V.</span> Preparai o caminho do Senhor, endireitai suas veredas!<br><br>
-                
-                Proclamação do Evangelho de Jesus Cristo.<br><br>
-                
-                <span class="liturgy-role">Sacerdote:</span> O Senhor esteja convosco.<br>
-                <span class="liturgy-response">Ele está no meio de nós.</span><br><br>
-                
-                ${formatReadingText(liturgiaData.evangelho.texto)}<br><br>
-                
-                <span class="liturgy-role">Sacerdote:</span> Palavra da Salvação.<br>
-                <span class="liturgy-response">Glória a vós, Senhor.</span>
-            </div><br>
-        `;
-    } else if (!hasReadings) {
-        html += `
-            <div class="liturgy-reading">
-                <div class="liturgy-reading-title">EVANGELHO</div>
-                <em>Evangelho não disponível automaticamente.</em><br><br>
-                <span class="liturgy-role">Sacerdote:</span> Palavra da Salvação.<br>
-                <span class="liturgy-response">Glória a vós, Senhor.</span>
-            </div><br>
-        `;
-    }
-    
-    // Adicionar partes fixas
-    html += `
-        <strong>LITURGIA EUCARÍSTICA</strong><br><br>
-        
-        <span class="liturgy-role">Oração sobre as oferendas:</span> Aceitai, ó Deus, as oferendas que vos apresentamos. Fazei que esta Eucaristia seja para nós fonte de graça e renovação. Por Cristo, nosso Senhor.<br>
-        <span class="liturgy-response">Amém.</span><br><br>
-        
-        <strong>RITOS FINAIS</strong><br><br>
-        
-        <span class="liturgy-role">Oração após a comunhão:</span> Deus eterno e todo-poderoso, que nos alimentastes com o pão da vida, fazei que nosso coração se encha de vossa graça. Por Cristo, nosso Senhor.<br>
-        <span class="liturgy-response">Amém.</span><br><br>
-        
-        <span class="liturgy-role">Bênção solene:</span> O Deus, que nos reuniu nesta celebração, vos abençoe e guarde. ✠ Amém.<br>
-        Que Ele ilumine o vosso caminho e fortaleça vossa fé. ✠ Amém.<br>
-        E que todos nós, aqui reunidos, sejamos testemunhas do seu amor. ✠ Amém.<br><br>
-        
-        <span class="liturgy-role">Sacerdote:</span> E a bênção de Deus todo-poderoso, Pai, Filho e Espírito Santo, desça sobre vós e permaneça para sempre.<br>
-        <span class="liturgy-response">Amém.</span><br><br>
-        
-        <span class="liturgy-role">Sacerdote:</span> Ide em paz, levando a alegria desta celebração!<br>
-        <span class="liturgy-response">Graças a Deus!</span>
-    `;
-    
-    // Adicionar link para site oficial
-    html += `
-        <div style="margin-top: 20px; padding: 10px; background: var(--light); border-left: 4px solid var(--primary); border-radius: 4px; font-size: 0.9em;">
-            <i class="fas fa-external-link-alt"></i> 
-            <strong>Para as leituras completas:</strong> 
-            <a href="https://liturgia.cancaonova.com/pb/liturgia/?sDia=${day}&sMes=${month}&sAno=${year}" target="_blank" style="color: var(--primary);">
-                Acesse o site oficial da Canção Nova
-            </a>
-        </div>
-    `;
-    
-    // Inserir conteúdo
-    liturgyContent.innerHTML = html;
-    
-    // Atualizar título
-    const liturgyHeader = document.querySelector('.liturgy-header h2');
-    if (liturgyHeader) {
-        liturgyHeader.innerHTML = `<i class="fas fa-book-bible liturgy-icon"></i> Liturgia - ${dataFormatada}`;
-    }
-    
-    // Adicionar controles
-    addLiturgyControls(day, month, year);
-}
-
 // Funções auxiliares
 function formatReadingText(text) {
     return text.replace(/\.\s/g, '.<br>')
@@ -1186,137 +848,6 @@ function formatPsalmText(text, refrao) {
     return formatted;
 }
 
-// Função para mostrar erro
-function showLiturgiaError(day, month, year) {
-    const liturgyContent = document.querySelector('.liturgy-content');
-    if (!liturgyContent) return;
-    
-    const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
-                  'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-    const dataFormatada = `${parseInt(day)} de ${meses[parseInt(month)-1]} de ${year}`;
-    
-    liturgyContent.innerHTML = `
-        <strong>LITURGIA DO DIA</strong><br><br>
-        
-        <strong>Liturgia Diária</strong><br>
-        ${dataFormatada}<br>
-        (Cor litúrgica: verde)<br><br>
-        
-        <div style="background: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin: 10px 0; border-radius: 4px;">
-            <i class="fas fa-info-circle"></i> <strong>Informação:</strong><br>
-            As leituras não puderam ser carregadas automaticamente.<br>
-            <a href="https://liturgia.cancaonova.com/pb/liturgia/?sDia=${day}&sMes=${month}&sAno=${year}" target="_blank" style="color: var(--primary); font-weight: bold;">
-                Clique aqui para acessar as leituras no site da Canção Nova
-            </a>
-        </div><br>
-        
-        <strong>RITOS INICIAIS</strong><br><br>
-        
-        <span class="liturgy-role">Sacerdote:</span> Em nome do Pai, do Filho ✠ e do Espírito Santo.<br>
-        <span class="liturgy-response">Amém.</span><br><br>
-        
-        <span class="liturgy-role">Sacerdote:</span> A graça de nosso Senhor Jesus Cristo, o amor do Pai e a comunhão do Espírito Santo estejam convosco.<br>
-        <span class="liturgy-response">Bendito seja Deus, que nos reuniu no amor de Cristo!</span><br><br>
-        
-        <strong>LITURGIA EUCARÍSTICA</strong><br><br>
-        
-        <span class="liturgy-role">Oração sobre as oferendas:</span> Aceitai, ó Deus, as oferendas que vos apresentamos. Fazei que esta Eucaristia seja para nós fonte de graça e renovação. Por Cristo, nosso Senhor.<br>
-        <span class="liturgy-response">Amém.</span><br><br>
-        
-        <strong>RITOS FINAIS</strong><br><br>
-        
-        <span class="liturgy-role">Oração após a comunhão:</span> Deus eterno e todo-poderoso, que nos alimentastes com o pão da vida, fazei que nosso coração se encha de vossa graça. Por Cristo, nosso Senhor.<br>
-        <span class="liturgy-response">Amém.</span><br><br>
-        
-        <span class="liturgy-role">Bênção solene:</span> O Deus, que nos reuniu nesta celebração, vos abençoe e guarde. ✠ Amém.<br>
-        Que Ele ilumine o vosso caminho e fortaleça vossa fé. ✠ Amém.<br>
-        E que todos nós, aqui reunidos, sejamos testemunhas do seu amor. ✠ Amém.<br><br>
-        
-        <span class="liturgy-role">Sacerdote:</span> E a bênção de Deus todo-poderoso, Pai, Filho e Espírito Santo, desça sobre vós e permaneça para sempre.<br>
-        <span class="liturgy-response">Amém.</span><br><br>
-        
-        <span class="liturgy-role">Sacerdote:</span> Ide em paz, levando a alegria desta celebração!<br>
-        <span class="liturgy-response">Graças a Deus!</span>
-    `;
-    
-    // Atualizar título
-    const liturgyHeader = document.querySelector('.liturgy-header h2');
-    if (liturgyHeader) {
-        liturgyHeader.innerHTML = `<i class="fas fa-book-bible liturgy-icon"></i> Liturgia - ${dataFormatada}`;
-    }
-    
-    // Adicionar controles mesmo com erro
-    if (day && month && year) {
-        addLiturgyControls(day, month, year);
-    }
-}
-
-// Função para adicionar controles
-function addLiturgyControls(day, month, year) {
-    const liturgyHeader = document.querySelector('.liturgy-header');
-    if (!liturgyHeader) return;
-    
-    // Remover controles existentes
-    const existingControls = liturgyHeader.querySelector('.liturgy-controls');
-    if (existingControls) {
-        existingControls.remove();
-    }
-    
-    // Criar novos controles
-    const controlsDiv = document.createElement('div');
-    controlsDiv.className = 'liturgy-controls';
-    
-    // Botão Hoje
-    const todayBtn = document.createElement('button');
-    todayBtn.className = 'font-btn';
-    todayBtn.innerHTML = '<i class="fas fa-calendar-day"></i> Hoje';
-    todayBtn.title = 'Buscar liturgia do dia atual';
-    todayBtn.onclick = () => {
-        const today = new Date();
-        window.location.href = `?dia=${today.getDate()}&mes=${today.getMonth() + 1}&ano=${today.getFullYear()}`;
-    };
-    
-    // Seletor de data
-    const dateInput = document.createElement('input');
-    dateInput.type = 'date';
-    dateInput.value = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-    
-    // Botão Buscar
-    const goBtn = document.createElement('button');
-    goBtn.className = 'font-btn';
-    goBtn.innerHTML = '<i class="fas fa-search"></i>';
-    goBtn.title = 'Buscar liturgia desta data';
-    goBtn.onclick = () => {
-        const selectedDate = new Date(dateInput.value);
-        window.location.href = `?dia=${selectedDate.getDate()}&mes=${selectedDate.getMonth() + 1}&ano=${selectedDate.getFullYear()}`;
-    };
-    
-    // Botão Recarregar
-    const reloadBtn = document.createElement('button');
-    reloadBtn.className = 'font-btn';
-    reloadBtn.innerHTML = '<i class="fas fa-sync-alt"></i>';
-    reloadBtn.title = 'Recarregar liturgia';
-    reloadBtn.onclick = () => {
-        reloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-        setTimeout(() => {
-            fetchLiturgia();
-            reloadBtn.innerHTML = '<i class="fas fa-sync-alt"></i>';
-        }, 500);
-    };
-    
-    // Montar controles
-    controlsDiv.appendChild(todayBtn);
-    controlsDiv.appendChild(dateInput);
-    controlsDiv.appendChild(goBtn);
-    controlsDiv.appendChild(reloadBtn);
-    
-    // Inserir após o título
-    const titleDiv = liturgyHeader.querySelector('h2');
-    if (titleDiv) {
-        titleDiv.parentNode.insertBefore(controlsDiv, titleDiv.nextSibling);
-    }
-}
-
 // Inicialização
 document.addEventListener('DOMContentLoaded', function() {
     // Executar funções existentes
@@ -1339,3 +870,85 @@ document.addEventListener('DOMContentLoaded', function() {
         fetchLiturgia();
     }, 100);
 });
+
+
+// ============================================================================
+// NOVA FUNCIONALIDADE: Buscar Liturgia via API
+// ============================================================================
+
+function carregarLiturgia(data = null) {
+    let url = "https://api-liturgia-diaria.vercel.app/";
+
+    if (data) {
+        url += `?date=${data}`;
+    }
+
+    fetch(url)
+        .then(res => res.json())
+        .then(data => renderizarLiturgia(data))
+        .catch(() => {
+            document.getElementById("liturgyContent").innerHTML =
+                "<p>Erro ao carregar a liturgia.</p>";
+        });
+}
+
+function renderizarLiturgia(l) {
+    const content = document.getElementById("liturgyContent");
+
+    content.innerHTML = `
+        <h3>${l.celebracao}</h3>
+        <p><strong>Data:</strong> ${l.data}</p>
+        <p><strong>Cor Litúrgica:</strong> ${l.cor}</p>
+
+        <hr>
+
+        <h4>Primeira Leitura</h4>
+        <p>${l.leituras?.primeira || "—"}</p>
+
+        <h4>Salmo</h4>
+        <p>${l.leituras?.salmo || "—"}</p>
+
+        <h4>Evangelho</h4>
+        <p>${l.leituras?.evangelho || "—"}</p>
+    `;
+}
+
+function buscarPorData() {
+    const data = document.getElementById("dataLiturgia").value;
+    if (data) {
+        carregarLiturgia(data);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    carregarLiturgia(); // hoje
+});
+
+async function fetchLiturgia(data = null) {
+    try {
+        let url = "https://api-liturgia-diaria.vercel.app/";
+
+        if (data) {
+            url += data;
+        }
+
+        const response = await fetch(url);
+        const json = await response.json();
+
+        document.getElementById("liturgyContent").innerHTML = `
+            <h3>${json.data} — ${json.cor}</h3>
+            <p><strong>Primeira Leitura:</strong> ${json.primeiraLeitura?.referencia}</p>
+            <p>${json.primeiraLeitura?.texto}</p>
+
+            <p><strong>Salmo:</strong> ${json.salmo?.referencia}</p>
+            <p>${json.salmo?.texto}</p>
+
+            <p><strong>Evangelho:</strong> ${json.evangelho?.referencia}</p>
+            <p>${json.evangelho?.texto}</p>
+        `;
+    } catch (e) {
+        document.getElementById("liturgyContent").innerHTML =
+            "<p>Erro ao carregar a liturgia.</p>";
+        console.error(e);
+    }
+}
