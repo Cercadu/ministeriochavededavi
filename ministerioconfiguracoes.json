@@ -1,0 +1,26 @@
+{
+    "theme": "light",
+    "colors": {
+        "branco": "#FFFFFF",
+        "vermelho": "#FF0000",
+        "verde": "#008000",
+        "roxo": "#800080",
+        "rosa": "#FFC0CB",
+        "preto": "#000000"
+    },
+    "autoExpand": true,
+    "showChords": true,
+    "fontSize": 16,
+    "defaultMomentos": [
+        "Entrada",
+        "Ato Penitencial",
+        "Glória",
+        "Salmo",
+        "Aclamação",
+        "Ofertório",
+        "Santo",
+        "Comunhão",
+        "Pós-Comunhão",
+        "Final"
+    ]
+}

@@ -3,1366 +3,322 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Epifania do Senhor, Solenidade | Domingo</title>
+    <title>Sistema Litúrgico - Ministério de Música</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary: #B8860B; /* Dourado para celebração */
-            --secondary: #8B4513; /* Marrom dourado */
-            --accent: #FFD700; /* Dourado vibrante */
-            --light: #FFF8DC; /* Branco amarelado suave */
-            --dark: #2C1810; /* Marrom escuro */
-            --liturgical-color: #DAA520; /* Dourado litúrgico */
-            --font-size: 16px;
-            --liturgical-white: #FFFFFF;
-            --liturgical-gold: #FFD700;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background: var(--liturgical-white);
-            color: var(--dark);
-            font-size: var(--font-size);
-            line-height: 1.6;
-            min-height: 100vh;
-        }
-
-        .app-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding-bottom: 20px;
-        }
-
-        .banner-container {
-            width: 100%;
-            overflow: hidden;
-            border-radius: 0 0 20px 20px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .banner {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        .banner-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(to top, rgba(184, 134, 11, 0.9), transparent);
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .banner-title {
-            font-size: 1.8rem;
-            margin-bottom: 5px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .banner-subtitle {
-            font-size: 1.2rem;
-            opacity: 0.95;
-        }
-
-        .anniversary-message {
-            background: linear-gradient(135deg, var(--light), white);
-            padding: 20px;
-            margin: 15px;
-            border-radius: 12px;
-            text-align: center;
-            border: 2px dashed var(--primary);
-            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-        }
-
-        .anniversary-message h3 {
-            color: var(--primary);
-            margin-bottom: 10px;
-        }
-
-        .anniversary-badge {
-            background: var(--liturgical-gold);
-            color: var(--dark);
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-weight: bold;
-            margin-top: 10px;
-            display: inline-block;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-        }
-
-        .liturgy-section {
-            background: white;
-            margin: 15px;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-            border: 2px solid var(--liturgical-gold);
-        }
-
-        .liturgy-header {
-            background: linear-gradient(to right, var(--liturgical-gold), var(--primary));
-            color: white;
-            padding: 15px;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative;
-        }
-
-        .liturgy-header::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--accent);
-        }
-
-        .liturgy-header h2 {
-            font-size: 1.3rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .liturgy-icon {
-            font-size: 1.2rem;
-        }
-
-        .liturgy-arrow {
-            transition: transform 0.3s;
-        }
-
-        .liturgy-content {
-            background-color: white;
-            display: none;
-            border-left: 3px solid var(--accent);
-            padding: 0;
-        }
-
-        .liturgy-content.expanded {
-            display: block;
-        }
-
-        .liturgy-role {
-            font-weight: bold;
-            color: var(--primary);
-            margin-top: 15px;
-            display: block;
-        }
-
-        .liturgy-response {
-            font-style: italic;
-            color: var(--secondary);
-            margin-left: 20px;
-            display: block;
-            margin-bottom: 10px;
-        }
-
-        .liturgy-reading {
-            background: rgba(255, 215, 0, 0.05);
-            padding: 15px;
-            margin: 0;
-            border-bottom: 1px solid #eee;
-        }
-
-        .liturgy-reading:last-child {
-            border-bottom: none;
-        }
-
-        .liturgy-reading-title {
-            font-weight: bold;
-            color: var(--primary);
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-        }
-
-        .reading-arrow {
-            font-size: 0.8rem;
-        }
-
-        .reading-content {
-            white-space: pre-line;
-            line-height: 1.8;
-            margin-top: 10px;
-            display: none;
-        }
-
-        .reading-content.expanded {
-            display: block;
-        }
-
-        .controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 15px;
-            background-color: var(--primary);
-            color: white;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            margin: 0 15px;
-            border-radius: 8px;
-        }
-
-        .font-controls {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .font-btn {
-            background: var(--accent);
-            color: var(--dark);
-            border: none;
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-
-        .font-btn:hover {
-            transform: scale(1.1);
-            background: white;
-        }
-
-        .search-box {
-            display: flex;
-            align-items: center;
-            background: white;
-            border-radius: 20px;
-            padding: 5px 12px;
-            width: 180px;
-        }
-
-        .search-box input {
-            border: none;
-            outline: none;
-            width: 100%;
-            padding: 5px;
-            background: transparent;
-            color: var(--dark);
-        }
-
-        .music-list {
-            padding: 15px;
-        }
-
-        .moment-section {
-            margin-bottom: 20px;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-            scroll-margin-top: 80px;
-            border: 1px solid var(--primary);
-        }
-
-        .moment-header {
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            color: white;
-            padding: 15px;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative;
-        }
-
-        .moment-header::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--accent);
-        }
-
-        .moment-header h2 {
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .moment-icon {
-            font-size: 1.1rem;
-        }
-
-        .moment-arrow {
-            transition: transform 0.3s;
-        }
-
-        .moment-content {
-            background-color: white;
-            display: none;
-            border-left: 3px solid var(--accent);
-        }
-
-        .moment-content.expanded {
-            display: block;
-        }
-
-        .song-item {
-            padding: 15px;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        .song-item:last-child {
-            border-bottom: none;
-        }
-
-        .song-title {
-            font-weight: bold;
-            margin-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: var(--primary);
-        }
-
-        .song-key {
-            background-color: var(--accent);
-            color: var(--dark);
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: bold;
-        }
-
-        .song-lyrics {
-            white-space: pre-line;
-            line-height: 1.8;
-            padding: 15px;
-            background-color: var(--light);
-            border-radius: 8px;
-            border-left: 4px solid var(--secondary);
-            margin-top: 10px;
-            font-size: calc(var(--font-size) + 2px);
-            text-align: center;
-            font-family: 'Courier New', monospace;
-        }
-
-        .chord {
-            color: var(--primary);
-            font-weight: bold;
-            background: rgba(255, 215, 0, 0.1);
-            padding: 2px 4px;
-            border-radius: 3px;
-        }
-
-        .liturgy-menu {
-            background: white;
-            padding: 15px;
-            margin: 15px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            border: 2px solid var(--primary);
-        }
-
-        .liturgy-menu h2 {
-            color: var(--primary);
-            margin-bottom: 15px;
-            text-align: center;
-            font-size: 1.3rem;
-        }
-
-        .liturgy-links {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 10px;
-        }
-
-        .liturgy-link {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 15px;
-            background: var(--light);
-            border-radius: 8px;
-            text-decoration: none;
-            color: var(--dark);
-            transition: all 0.3s;
-            border-left: 4px solid var(--secondary);
-        }
-
-        .liturgy-link:hover {
-            background: var(--accent);
-            color: var(--dark);
-            transform: translateX(5px);
-        }
-
-        .liturgy-link i {
-            font-size: 1.1rem;
-        }
-
-        .footer {
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            color: white;
-            text-align: center;
-            padding: 15px;
-            font-size: 0.9rem;
-            margin: 20px 15px 0 15px;
-            border-radius: 12px 12px 0 0;
-        }
-
-        .footer-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .footer-logo {
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .footer-actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .action-btn {
-            background: transparent;
-            border: 1px solid var(--accent);
-            color: var(--accent);
-            padding: 6px 12px;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 0.8rem;
-        }
-
-        .action-btn:hover {
-            background: var(--accent);
-            color: var(--dark);
-        }
-
-        .back-to-liturgy {
-            display: block;
-            margin: 15px auto;
-            padding: 10px 20px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
-            text-align: center;
-            max-width: 200px;
-        }
-
-        .back-to-liturgy:hover {
-            background: var(--secondary);
-            transform: translateY(-2px);
-        }
-
-        .color-info {
-            background: linear-gradient(135deg, var(--liturgical-white), var(--liturgical-gold));
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            margin-top: 10px;
-            display: inline-block;
-            border: 1px solid var(--liturgical-gold);
-        }
-
-        @media (max-width: 768px) {
-            :root {
-                --font-size: 15px;
-            }
-
-            h1 {
-                font-size: 1.6rem;
-            }
-
-            .banner-title {
-                font-size: 1.4rem;
-            }
-
-            .banner-subtitle {
-                font-size: 1rem;
-            }
-
-            .moment-header h2 {
-                font-size: 1.1rem;
-            }
-
-            .controls {
-                flex-direction: column;
-                gap: 10px;
-                padding: 10px;
-            }
-
-            .search-box {
-                width: 100%;
-                max-width: 300px;
-            }
-
-            .footer-content {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .liturgy-links {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 480px) {
-            :root {
-                --font-size: 14px;
-            }
-
-            h1 {
-                font-size: 1.4rem;
-            }
-
-            .moment-header {
-                padding: 12px;
-            }
-
-            .song-item {
-                padding: 12px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<div class="app-container">
-    <div class="banner-container">
-        <img src="img/banner.jpg" alt="Epifania do Senhor, Solenidade | Domingo" class="banner">
-        <div class="banner-overlay">
-            <div class="banner-title">Missa Domingo 04/01/2026</div>
-            <div class="banner-subtitle">Epifania do Senhor, Solenidade | Domingo</div>
-        </div>
-    </div>
-
-    <!-- Liturgia do Dia Expansível -->
-    <div class="liturgy-section">
-        <div class="liturgy-header">
-            <h2><i class="fas fa-book-bible liturgy-icon"></i> Liturgia da Celebração</h2>
-            <span class="liturgy-arrow">▼</span>
-        </div>
-        <div class="liturgy-content">
-            <div class="liturgy-reading">
-                <div class="liturgy-reading-title" onclick="toggleReading(this)">
-                    <span>MISSA Dominical</span>
-                    <span class="reading-arrow">▼</span>
-                </div>
-                <div class="reading-content">
-                    Epifania do Senhor, Solenidade | Domingo<br>
-                    (Cor litúrgica: branco)
+    <div class="app-container">
+        <!-- Cabeçalho -->
+        <header class="main-header">
+            <div class="header-top">
+                <h1><i class="fas fa-church"></i> Sistema Litúrgico</h1>
+                <div class="header-actions">
+                    <button id="theme-toggle" class="btn-icon" title="Alternar tema">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button id="print-btn" class="btn-icon" title="Imprimir">
+                        <i class="fas fa-print"></i>
+                    </button>
                 </div>
             </div>
+            
+            <!-- Menu Principal -->
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="#home" class="nav-active"><i class="fas fa-home"></i> Início</a></li>
+                    <li><a href="#missa-hoje"><i class="fas fa-calendar-alt"></i> Missa do Dia</a></li>
+                    <li><a href="#todas-musicas"><i class="fas fa-music"></i> Todas as Músicas</a></li>
+                    <li><a href="#todas-missas"><i class="fas fa-book"></i> Todas as Missas</a></li>
+                    <li><a href="#configuracoes"><i class="fas fa-cog"></i> Configurações</a></li>
+                </ul>
+            </nav>
+        </header>
 
-            <div class="liturgy-reading">
-                <div class="liturgy-reading-title" onclick="toggleReading(this)">
-                    <span>RITOS INICIAIS</span>
-                    <span class="reading-arrow">▼</span>
+        <!-- Conteúdo Principal -->
+        <main class="main-content" id="main-content">
+            <!-- Página Inicial -->
+            <section id="home" class="page active">
+                <div class="welcome-banner">
+                    <h2>Bem-vindo ao Sistema Litúrgico</h2>
+                    <p>Selecione uma opção no menu acima para começar</p>
                 </div>
-                <div class="reading-content">
-                    <span class="liturgy-role">Sacerdote:</span> Em nome do Pai, do Filho ✠ e do Espírito Santo.
-                    <span class="liturgy-response">Amém.</span>
-
-                    <span class="liturgy-role">Sacerdote:</span> A graça de nosso Senhor Jesus Cristo, o amor do Pai e a comunhão do Espírito Santo estejam convosco.
-                    <span class="liturgy-response">Bendito seja Deus, que nos reuniu no amor de Cristo!</span>
+                
+                <div class="quick-stats">
+                    <div class="stat-card">
+                        <i class="fas fa-music"></i>
+                        <h3>Total de Músicas</h3>
+                        <p id="total-musicas">Carregando...</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-calendar"></i>
+                        <h3>Missas Cadastradas</h3>
+                        <p id="total-missas">Carregando...</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-users"></i>
+                        <h3>Próxima Missa</h3>
+                        <p id="proxima-missa">Carregando...</p>
+                    </div>
                 </div>
-            </div>
-
-            <div class="liturgy-reading">
-                <div class="liturgy-reading-title" onclick="toggleReading(this)">
-                    <span>PRIMEIRA LEITURA (Is 60,1-6)</span>
-                    <span class="reading-arrow">▼</span>
-                </div>
-                <div class="reading-content">
-                    Leitura do Livro do Profeta Isaías.
-
-                    1 Levanta-te, acende as luzes, Jerusalém, porque chegou a tua luz, apareceu sobre ti a glória do Senhor. 2 Eis que está a terra envolvida em trevas, e nuvens escuras cobrem os povos; mas sobre ti apareceu o Senhor, e sua glória já se manifesta sobre ti. 3 Os povos caminham à tua luz e os reis ao clarão de tua aurora. 4 Levanta os olhos ao redor e vê: todos se reuniram e vieram a ti; teus filhos vêm chegando de longe com tuas filhas, carregadas nos braços. 5 Ao vê-los, ficarás radiante, com o coração vibrando e batendo forte, pois com eles virão as riquezas de além-mar e mostrarão o poderio de suas nações; 6 será uma inundação de camelos e dromedários de Madiã e Efa a te cobrir; virão todos os de Sabá, trazendo ouro e incenso e proclamando a glória do Senhor.
-
-                    <span class="liturgy-role">Leitor:</span> Palavra do Senhor.
-                    <span class="liturgy-response">Graças a Deus.</span>
-                </div>
-            </div>
-
-            <div class="liturgy-reading">
-                <div class="liturgy-reading-title" onclick="toggleReading(this)">
-                    <span>SALMO RESPONSORIAL (Sl 71[72],1-2.7-8.10-13)</span>
-                    <span class="reading-arrow">▼</span>
-                </div>
-                <div class="reading-content">
-                    <span class="liturgy-role">R.</span> <span class="liturgy-response">As nações de toda a terra, hão de adorar-vos, ó Senhor!</span>
-
-                    Dai ao Rei vossos poderes, Senhor Deus, vossa justiça ao descendente da realeza! Com justiça ele governe o vosso povo, com equidade ele julgue os vossos pobres.
-                    <span class="liturgy-role">R.</span> <span class="liturgy-response">As nações de toda a terra, hão de adorar-vos, ó Senhor!</span>
-
-                    Nos seus dias a justiça florirá e grande paz, até que a lua perca o brilho! De mar a mar estenderá o seu domínio, e desde o rio até os confins de toda a terra!
-                    <span class="liturgy-role">R.</span> <span class="liturgy-response">As nações de toda a terra, hão de adorar-vos, ó Senhor!</span>
-
-                    Os reis de Társis e das ilhas hão de vir e oferecer-lhe seus presentes e seus dons; e também os reis de Seba e de Sabá hão de trazer-lhe oferendas e tributos. Os reis de toda a terra hão de adorá-lo, e todas as nações hão de servi-lo.
-                    <span class="liturgy-role">R.</span> <span class="liturgy-response">As nações de toda a terra, hão de adorar-vos, ó Senhor!</span>
-
-                    Libertará o indigente que suplica, e o pobre ao qual ninguém quer ajudar. Terá pena do indigente e do infeliz, e a vida dos humildes salvará.
-                    <span class="liturgy-role">R.</span> <span class="liturgy-response">As nações de toda a terra, hão de adorar-vos, ó Senhor!</span>
-                </div>
-            </div>
-
-            <div class="liturgy-reading">
-                <div class="liturgy-reading-title" onclick="toggleReading(this)">
-                    <span>SEGUNDA LEITURA (Ef 3,2-3a.5-6)</span>
-                    <span class="reading-arrow">▼</span>
-                </div>
-                <div class="reading-content">
-                    Leitura da Carta de São Paulo aos Efésios.
-
-                    Irmãos: 2 Se ao menos soubésseis da graça que Deus me concedeu para realizar o seu plano a vosso respeito, 3a e como, por revelação, tive conhecimento do mistério. 5 Este mistério, Deus não o fez conhecer aos homens das gerações passadas mas acaba de o revelar agora, pelo Espírito, aos seus santos apóstolos e profetas: 6 os pagãos são admitidos à mesma herança, são membros do mesmo corpo, são associados à mesma promessa em Jesus Cristo, por meio do Evangelho.
-
-                    <span class="liturgy-role">Leitor:</span> Palavra do Senhor.
-                    <span class="liturgy-response">Graças a Deus.</span>
-                </div>
-            </div>
-
-            <div class="liturgy-reading">
-                <div class="liturgy-reading-title" onclick="toggleReading(this)">
-                    <span>EVANGELHO (Mt 2,1-12)</span>
-                    <span class="reading-arrow">▼</span>
-                </div>
-                <div class="reading-content">
-                    <span class="liturgy-role">Aclamação:</span> Aleluia, Aleluia, Aleluia.
-                    <span class="liturgy-role">V.</span> Vimos sua estrela no Oriente e viemos adorar o Senhor.
-
-                    Proclamação do Evangelho de Jesus Cristo segundo Mateus.
-
-                    <span class="liturgy-role">Sacerdote:</span> O Senhor esteja convosco.
-                    <span class="liturgy-response">Ele está no meio de nós.</span>
-
-                    <span class="liturgy-role">Sacerdote:</span> Proclamação do Evangelho de Jesus Cristo segundo Mateus.
-                    <span class="liturgy-response">Glória a vós, Senhor.</span>
-
-                    1 Tendo nascido Jesus na cidade de Belém, na Judeia, no tempo do rei Herodes, eis que alguns magos do Oriente chegaram a Jerusalém, 2 perguntando: "Onde está o rei dos judeus, que acaba de nascer? Nós vimos a sua estrela no Oriente e viemos adorá-lo". 3 Ao saber disso, o rei Herodes ficou perturbado, assim como toda a cidade de Jerusalém. 4 Reunindo todos os sumos sacerdotes e os mestres da Lei, perguntava-lhes onde o Messias deveria nascer. 5 Eles responderam: "Em Belém, na Judeia, pois assim foi escrito pelo profeta: 6 'E tu, Belém, terra de Judá, de modo algum és a menor entre as principais cidades de Judá, porque de ti sairá um chefe que vai ser o pastor de Israel, o meu povo'". 7 Então Herodes chamou em segredo os magos e procurou saber deles cuidadosamente quando a estrela tinha aparecido. 8 Depois os enviou a Belém, dizendo: "Ide e procurai obter informações exatas sobre o menino. E, quando o encontrardes, avisai-me, para que também eu vá adorá-lo". 9 Depois que ouviram o rei, eles partiram. E a estrela, que tinham visto no Oriente, ia adiante deles, até parar sobre o lugar onde estava o menino. 10 Ao verem de novo a estrela, os magos sentiram uma alegria muito grande. 11 Quando entraram na casa, viram o menino com Maria, sua mãe. Ajoelharam-se diante dele, e o adoraram. Depois abriram seus cofres e lhe ofereceram presentes: ouro, incenso e mirra. 12 Avisados em sonho para não voltarem a Herodes, retornaram para a sua terra, seguindo outro caminho.
-
-                    <span class="liturgy-role">Sacerdote:</span> Palavra da Salvação.
-                    <span class="liturgy-response">Glória a vós, Senhor.</span>
-                </div>
-            </div>
-
-            <div class="liturgy-reading">
-                <div class="liturgy-reading-title" onclick="toggleReading(this)">
-                    <span>LITURGIA EUCARÍSTICA</span>
-                    <span class="reading-arrow">▼</span>
-                </div>
-                <div class="reading-content">
-                    <span class="liturgy-role">Oração sobre as oferendas:</span> Aceitai, ó Deus, as oferendas que vos apresentamos, ao celebrarmos os 37 anos de sacerdócio do vosso servo Celso. Fazei que esta Eucaristia seja para ele e para nós fonte de graça e renovação. Por Cristo, nosso Senhor.
-                    <span class="liturgy-response">Amém.</span>
-                </div>
-            </div>
-
-            <div class="liturgy-reading">
-                <div class="liturgy-reading-title" onclick="toggleReading(this)">
-                    <span>RITOS FINAIS</span>
-                    <span class="reading-arrow">▼</span>
-                </div>
-                <div class="reading-content">
-                    <span class="liturgy-role">Oração após a comunhão:</span> Deus eterno e todo-poderoso, que nos alimentastes com o pão da vida, fazei que o ministério do vosso servo Celso continue produzindo frutos abundantes em nossa comunidade. Por Cristo, nosso Senhor.
-                    <span class="liturgy-response">Amém.</span>
-
-                    <span class="liturgy-role">Bênção solene:</span> O Deus, que chamou o Pe. Celso ao ministério sacerdotal, vos abençoe e guarde. ✠ Amém.
-                    Que Ele ilumine o seu caminho e fortaleça seu ministério. ✠ Amém.
-                    E que todos nós, aqui reunidos, sejamos testemunhas do seu amor. ✠ Amém.
-
-                    <span class="liturgy-role">Sacerdote:</span> E a bênção de Deus todo-poderoso, Pai, Filho e Espírito Santo, desça sobre vós e permaneça para sempre.
-                    <span class="liturgy-response">Amém.</span>
-
-                    <span class="liturgy-role">Sacerdote:</span> Ide em paz, levando a alegria desta celebração!
-                    <span class="liturgy-response">Graças a Deus!</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="controls">
-        <div class="font-controls">
-            <span>Tamanho da fonte:</span>
-            <button class="font-btn" id="decrease-font" title="Diminuir fonte">
-                <i class="fas fa-minus"></i>
-            </button>
-            <button class="font-btn" id="reset-font" title="Fonte padrão">
-                A
-            </button>
-            <button class="font-btn" id="increase-font" title="Aumentar fonte">
-                <i class="fas fa-plus"></i>
-            </button>
-        </div>
-
-        <div class="search-box">
-            <i class="fas fa-search"></i>
-            <input type="text" id="search-input" placeholder="Buscar música...">
-        </div>
-    </div>
-
-    <div class="music-list" id="music-list">
-        <!-- As músicas serão inseridas aqui pelo JavaScript -->
-    </div>
-
-    <!-- Menu de Navegação no Final -->
-    <div class="liturgy-menu">
-        <h2><i class="fas fa-list-alt"></i> Navegação Rápida</h2>
-        <div class="liturgy-links" id="liturgy-links">
-            <!-- Os links serão gerados pelo JavaScript -->
-        </div>
-    </div>
-
-    <div class="footer">
-        <div class="footer-content">
-            <div class="footer-logo">
-                <i class="fas fa-church"></i>
-                <span>37 anos de Sacerdócio</span>
-            </div>
-            <div class="footer-actions">
-                <button class="action-btn" id="expand-all">
-                    <i class="fas fa-expand"></i> Expandir Tudo
-                </button>
-                <button class="action-btn" id="collapse-all">
-                    <i class="fas fa-compress"></i> Recolher Tudo
-                </button>
-            </div>
-        </div>
-        <p style="margin-top: 10px; font-size: 0.8rem; opacity: 0.9;">Em ação de graças pelo ministério do Pe. Celso</p>
-    </div>
-</div>
-
-<script>
-    // Dados das músicas para a Missa de Ação de Graças (com as músicas que você forneceu)
- 
-   const musicData = [
-        {
-            moment: "Entrada",
-            icon: "fas fa-door-open",
-            songs: [
-                {
-                    title: "VINDE CRISTÃOS",
-                    key: "*",
-                    lyrics: `Vinde, cristãos, vinde à porfia
-                             Hinos cantemos de louvor
-                             Hinos de paz e de alegria
-                             Hinos de anjos do Senhor  
-
-                             Glória a Deus nas alturas
-                             Glória a Deus nas alturas
-
-                             Foi nesta noite venturosa
-                             Do nascimento do Senhor
-                             Que anjos de voz harmoniosa
-                             Deram a Deus o seu louvor
-
-                             Glória a Deus nas alturas 
-                             Glória a Deus nas alturas
-
-                             Vinde juntar-vos aos pastores
-                             Vinde com eles a Belém
-                             Vinde correndo pressurosos
-                             O Salvador que enfim nos vem
-
-                            Glória a Deus nas alturas
-                            Glória in Excelsis Deo`
-                }
-            ]
-        },
-        {
-            moment: "Ato Penitencial",
-            icon: "fas fa-hands-praying",
-            songs: [
-                {
-                    title: "Perdoa-me - Comunidade Católica Shalom",
-                    key: "*",
-                    lyrics:`Senhor, que Te deixaste ferir
-                            Do Teu sangue vem a Paz!
-                            Aqui estou, perdoa-me!
-
-                            Kyrie eleison
-                            Kyrie eleison
-                            Kyrie eleison, oh
-
-                            Oh, Cristo, elevado na cruz
-                            És Amigo do pecador!
-                            Aqui estou, perdoa-me!
-
-                            Christe eleison
-                            Christe eleison
-                            Christe eleison, oh
-
-                            Senhor, da morte, vencedor
-                            Verdadeiro filho de Deus!
-                            Aqui estou, perdoa-me!
-
-                            Kyrie eleison
-                            Kyrie eleison
-                            Kyrie eleison, oh`
-                }
-            ]
-        },
-        {
-            moment: "Glória",
-            icon: "fas fa-hands-praying",
-            songs: [
-                {
-                    title: " Glória a Deus Nas Alturas - Eliana Ribeiro",
-                    key: "*",
-                    lyrics:`Glória a Deus nas alturas
-                            E paz na terra aos homens por Ele amados
-                            Senhor Deus, Rei dos céus, Deus Pai todo-poderoso
-
-                            Nós vos louvamos
-                            Nós vos bendizemos
-                            Nós vos adoramos
-                            Nós vos glorificamos
-                            Nós vos damos graças por vossa imensa glória
-
-                            Senhor Jesus Cristo, Filho Unigênito
-                            Senhor Deus, Cordeiro de Deus, Filho de Deus Pai
-                            Vós que tirais o pecado do mundo, tende piedade de nós
-                            Vós que tirais o pecado do mundo, acolhei a nossa súplica
-                            Vós que estais à direita do Pai
-
-                            Tende piedade de nós
-                            Só vós sois Santo
-                            Só vós o Senhor
-                            Só vós o Altíssimo, Jesus Cristo
-
-                            Com o Espírito Santo
-                            Na glória de Deus Pai, amém!
-                            Na glória de Deus Pai, amém!
-                            Na glória de Deus Pai, amém!
-                            Na glória de Deus Pai, amém!`
-                }
-            ]
-        },
-        {
-            moment: "Salmo",
-            icon: "fas fa-book-bible",
-            songs: [
-                {
-                    title: "NOS SEUS DIAS A JUSTIÇA FLORIRÁ",
-                    key: "*",
-                    lyrics: `- As nações de toda a terra, hão de adorar-vos, ó Senhor!
-
-- As nações de toda a terra, hão de adorar-vos, ó Senhor!
-
-- Dai ao Rei vossos poderes, Senhor Deus, vossa justiça ao descendente da realeza! Com justiça ele governe o vosso povo, com equidade ele julgue os vossos pobres. 
-
-- Nos seus dias a justiça florirá e grande paz, até que a lua perca o brilho! De mar a mar estenderá o seu domínio, e desde o rio até os confins de toda a terra! 
-
-- Os reis de Társis e das ilhas hão de vir e oferecer-lhe seus presentes e seus dons; e também os reis de Seba e de Sabá hão de trazer-lhe oferendas e tributos. Os reis de toda a terra hão de adorá-lo, e todas as nações hão de servi-lo. 
-
-- Libertará o indigente que suplica, e o pobre ao qual ninguém quer ajudar. Terá pena do indigente e do infeliz, e a vida dos humildes salvará. `
-                }
-            ]
-        },
-        {
-            moment: "Aclamação",
-            icon: "fas fa-music",
-            songs: [
-                {
-                    title: "ALELUIA",
-                    key: "F#m",
-                    lyrics: ` Aleluia, Aleluia, Aleluia.
-- Vimos sua estrela no Oriente e viemos adorar o Senhor.`
-                }
-            ]
-        },
-        {
-            moment: "Ofertório",
-            icon: "fas fa-gift",
-            songs: [
-                {
-                    title: "Cristãos, Vinde Todos (Adeste Fideles) - Eliana Ribeiro / Maikel Marques",
-                    key: "*",
-                    lyrics: `
-
-[Intro] G  C  D
-
-[Primeira Parte]
-
-G               D     G              D
-Cristãos, vinde todos com alegres cantos
-Em        A   D     A      D
-Ó, vinde, ó, vinde até Belém
-G    C    G
-Vede nascido
-D        Em   D
-Vosso Rei eterno
-
-
-[Refrão]
-
-G
-Ó, vinde, adoremos
-                 D
-Ó, vinde, adoremos
-    C  G/B Am  D Em   G   D  G
-Ó, vinde, adoremos o Salvador
-
-
-[Segunda Parte]
-
-G          D      G             D
-Humildes pastores deixam seu rebanho
-Em   A    D          A       D
-E alegres acorrem ao Rei do céu
-G     C     G
-Nós, igualmente
-D     Em       D
-Cheios de alegria
-
-
-[Refrão]
-
-G
-Ó, vinde, adoremos
-                D
-Ó, vinde, adoremos
-   C    Am     D   Em   G   D
-Ó, vinde, adoremos o Salvador
-
-
-[Interlúdio]
-
- Am  Em  D
- Am  Em  D
- Am  G  C
-
-
-[Terceira Parte]
-
-G         D   G                   D
-O Deus invisível de eterna grandeza
-Em     A     D         A          D
-Sob o véu de humildade, podemos ver
-G      C    G
-Deus pequenino
-D     Em            D
-Deus envolto em faixas
-
-
-[Refrão]
-
-G
-Ó, vinde, adoremos
-                 D
-Ó, vinde, adoremos
-   C     Am   D   Em  G  D  G
-Ó, vinde, adoremos o Salvador
-
-
-Final
-
-C D  G
-O Salvador
-O Salvador
-Vinde e adoremos, ohh  ohhhh  ohhhh
-Ele chegoU
-O Salvador
-       `
-                }
-            ]
-        },
-        {
-            moment: "Santo",
-            icon: "fas fa-church",
-            songs: [
-                {
-                    title: "SANTO É O SENHOR",
-                    key: "G",
-                    lyrics: `Intro.:    Em    D    C    G/B     Am     
-Am/G    F#m7(b5)   B4    B 
-
-Em  D   C   G  D  Em   F      C/E     D4  
-San------to, San----to, Santo é o Senhor 
-D#dim 
-
-Em  D   C   G  D    Em F      C/E     D4  
-San------to, San----to, Santo é o Senhor 
-Dadd9 
-
-Am7(9)       Bm7(9)              C 
-Céus e terra proclamam vossa glória 
-  F#m7(b5)      B7add9  Fadd9 
-Hosana nas alturas 
-
-Em  D   C   G  D  Em   F      C/E     D4  
-San------to, San----to, Santo é o Senhor 
-D#dim 
-
-Em  D   C   G  D    Em F      C/E     D4  
-San------to, San----to, Santo é o Senhor 
-Dadd9 
-
-Am7(9)             Bm7            C 
-Bendito o que vem em nome do Senhor 
-  F#m7(b5)      B7  Cdim  C#7 
-Hosana nas alturas 
-
-F#m   E  D  A E  F#m  G     D/F#    E4 Fdim 
-San------to, Santo,   Santo é o Senhor 
-F#m   E  D  A E  F#m  G     D/F#    E4 E 
-San------to, Santo,   Santo é o Senhor`
-                }
-            ]
-        },
-        {
-            moment: "Comunhão",
-            icon: "fas fa-wine-glass-alt",
-            songs: [
-                {
-                    title: "Simplesmente Amar - Vida Reluz",
-                    key: "*",
-                    lyrics: `
-O amor nasceu em meio ao frio de uma noite
-Sem um lugar para ficar, desaconchego, sim
-Palhas para deitar e, ao Seu redor, os animais que ali moravam
-Mesmo sendo Rei, pobre se fez, só por amor
-
-Simplesmente amar
-É o que importa para quem quiser servir
-Simplesmente amar
-É a condição maior suprema do servir
-Eis a verdadeira vocação
-Simplesmente amar
-
-O amor cresceu em meio a nós e ao homem se igualou
-Não procurou Seus interesses, não
-Do próximo quis lavar os pés como sinal de igualdade
-Na cruz se entregou e perdoou só por amor
-
-Simplesmente amar
-É o que importa para quem quiser servir
-Simplesmente amar
-É a condição maior suprema do servir
-Eis a verdadeira vocação
-Simplesmente amar
-
-Como dizer, Senhor, Te amo, sem mesmo vê-lo?
-E ser incapaz de amar o outro que está ao lado e se pode ver?
-O que não ama não conhece a Deus
-Porque Deus é amor`
-                }
-            ]
-        },
-        {
-            moment: "Pós-Comunhão",
-            icon: "fas fa-praying-hands",
-            songs: [
-                {
-                    title: "",
-                    key: "*",
-                    lyrics: `------------`
-                }
-            ]
-        },
-        {
-            moment: "Final",
-            icon: "fas fa-flag",
-            songs: [
-                {
-                    title: "*",
-                    key: "*",
-                    lyrics: `------------`
-                }
-            ]
-        }
-    ];
-    // Função para criar links da liturgia
-    function createLiturgyLinks() {
-        const liturgyContainer = document.getElementById('liturgy-links');
-        liturgyContainer.innerHTML = '';
-
-        musicData.forEach((moment, index) => {
-            const link = document.createElement('a');
-            link.className = 'liturgy-link';
-            link.href = `#moment-${index}`;
-            link.innerHTML = `
-                    <i class="${moment.icon}"></i>
-                    <span>${moment.moment}</span>
-                `;
-
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                const targetSection = document.getElementById(`moment-${index}`);
-                if (targetSection) {
-                    // Expande a seção
-                    const content = targetSection.querySelector('.moment-content');
-                    content.classList.add('expanded');
-                    const arrow = targetSection.querySelector('.moment-arrow');
-                    arrow.textContent = '▲';
-
-                    // Rola suavemente até a seção
-                    targetSection.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-
-            liturgyContainer.appendChild(link);
-        });
-    }
-
-    // Função para renderizar as músicas
-    function renderMusicList() {
-        const musicListContainer = document.getElementById('music-list');
-        musicListContainer.innerHTML = '';
-
-        musicData.forEach((moment, momentIndex) => {
-            const momentSection = document.createElement('div');
-            momentSection.className = 'moment-section';
-            momentSection.id = `moment-${momentIndex}`;
-
-            const momentHeader = document.createElement('div');
-            momentHeader.className = 'moment-header';
-            momentHeader.innerHTML = `
-                    <h2><i class="${moment.icon} moment-icon"></i> ${moment.moment}</h2>
-                    <span class="moment-arrow">▼</span>
-                `;
-
-            const momentContent = document.createElement('div');
-            momentContent.className = 'moment-content';
-
-            moment.songs.forEach((song, songIndex) => {
-                const songItem = document.createElement('div');
-                songItem.className = 'song-item';
-                songItem.innerHTML = `
-                        <div class="song-title">
-                            <span>${song.title}</span>
-                            <span class="song-key">${song.key}</span>
-                        </div>
-                        <div class="song-lyrics">${formatLyrics(song.lyrics)}</div>
-                        <button class="back-to-liturgy" onclick="scrollToLiturgy()">
-                            <i class="fas fa-arrow-left"></i> Voltar para a Liturgia
+            </section>
+
+            <!-- Missa do Dia -->
+            <section id="missa-hoje" class="page">
+                <div class="page-header">
+                    <h2><i class="fas fa-calendar-alt"></i> Missa do Dia</h2>
+                    <div class="date-selector">
+                        <input type="date" id="missa-date" value="2026-01-04">
+                        <button id="load-missa" class="btn-primary">
+                            <i class="fas fa-sync"></i> Carregar Missa
                         </button>
-                    `;
+                    </div>
+                </div>
 
-                momentContent.appendChild(songItem);
-            });
+                <div class="missa-container">
+                    <!-- Informações da Missa -->
+                    <div class="missa-info-card">
+                        <div class="liturgical-color" id="liturgical-color-indicator">
+                            <span id="color-name">Branco</span>
+                        </div>
+                        <div class="missa-details">
+                            <h3 id="missa-title">Epifania do Senhor</h3>
+                            <p id="missa-subtitle">Solenidade | Domingo</p>
+                            <p><strong>Data:</strong> <span id="missa-data">04/01/2026</span></p>
+                            <p><strong>Cor Litúrgica:</strong> <span id="missa-cor">Branco</span></p>
+                            <p><strong>Tipo:</strong> <span id="missa-tipo">Solenidade</span></p>
+                        </div>
+                    </div>
 
-            // Adicionar evento de clique para expandir/contrair o momento
-            momentHeader.addEventListener('click', function() {
-                momentContent.classList.toggle('expanded');
-                const arrow = this.querySelector('.moment-arrow');
-                arrow.textContent = momentContent.classList.contains('expanded') ? '▲' : '▼';
-            });
+                    <!-- Liturgia -->
+                    <div class="liturgy-section">
+                        <h3><i class="fas fa-book-bible"></i> Liturgia da Celebração</h3>
+                        <div id="liturgia-content">
+                            <!-- Carregado dinamicamente -->
+                        </div>
+                    </div>
 
-            momentSection.appendChild(momentHeader);
-            momentSection.appendChild(momentContent);
-            musicListContainer.appendChild(momentSection);
-        });
-    }
+                    <!-- Músicas da Missa -->
+                    <div class="musicas-section">
+                        <h3><i class="fas fa-music"></i> Músicas para esta Missa</h3>
+                        <div id="musicas-missa">
+                            <!-- Carregado dinamicamente -->
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-    // Função para rolar até a liturgia
-    function scrollToLiturgy() {
-        const liturgySection = document.querySelector('.liturgy-section');
-        if (liturgySection) {
-            liturgySection.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
+            <!-- Todas as Músicas -->
+            <section id="todas-musicas" class="page">
+                <div class="page-header">
+                    <h2><i class="fas fa-music"></i> Todas as Músicas</h2>
+                    <div class="search-container">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="search-musica" placeholder="Buscar música...">
+                        </div>
+                        <select id="filter-momento">
+                            <option value="">Todos os Momentos</option>
+                            <option value="Entrada">Entrada</option>
+                            <option value="Ato Penitencial">Ato Penitencial</option>
+                            <option value="Glória">Glória</option>
+                            <option value="Salmo">Salmo</option>
+                            <option value="Aclamação">Aclamação</option>
+                            <option value="Ofertório">Ofertório</option>
+                            <option value="Santo">Santo</option>
+                            <option value="Comunhão">Comunhão</option>
+                            <option value="Pós-Comunhão">Pós-Comunhão</option>
+                            <option value="Final">Final</option>
+                        </select>
+                        <select id="filter-tom">
+                            <option value="">Todos os Tons</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                            <option value="E">E</option>
+                            <option value="F">F</option>
+                            <option value="G">G</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                        </select>
+                    </div>
+                </div>
 
-            // Expande a liturgia
-            const liturgyContent = document.querySelector('.liturgy-content');
-            liturgyContent.classList.add('expanded');
-            const liturgyArrow = document.querySelector('.liturgy-arrow');
-            liturgyArrow.textContent = '▲';
-        }
-    }
+                <div class="musicas-grid" id="todas-musicas-grid">
+                    <!-- Carregado dinamicamente -->
+                </div>
+            </section>
 
-    // Função para tornar a liturgia expansível
-    function setupLiturgyExpansion() {
-        const liturgyHeader = document.querySelector('.liturgy-header');
-        const liturgyContent = document.querySelector('.liturgy-content');
-        const liturgyArrow = document.querySelector('.liturgy-arrow');
+            <!-- Todas as Missas -->
+            <section id="todas-missas" class="page">
+                <div class="page-header">
+                    <h2><i class="fas fa-book"></i> Todas as Missas</h2>
+                    <button id="nova-missa" class="btn-primary">
+                        <i class="fas fa-plus"></i> Nova Missa
+                    </button>
+                </div>
 
-        liturgyHeader.addEventListener('click', function() {
-            liturgyContent.classList.toggle('expanded');
-            liturgyArrow.textContent = liturgyContent.classList.contains('expanded') ? '▲' : '▼';
-        });
-    }
+                <div class="missas-grid" id="missas-grid">
+                    <!-- Carregado dinamicamente -->
+                </div>
+            </section>
 
-    // Função para alternar as leituras individuais
-    function toggleReading(title) {
-        const content = title.nextElementSibling;
-        const arrow = title.querySelector('.reading-arrow');
-        content.classList.toggle('expanded');
-        arrow.textContent = content.classList.contains('expanded') ? '▲' : '▼';
-    }
+            <!-- Configurações -->
+            <section id="configuracoes" class="page">
+                <div class="page-header">
+                    <h2><i class="fas fa-cog"></i> Configurações</h2>
+                </div>
 
-    // Função para formatar acordes nas letras
-    function formatLyrics(lyrics) {
-        // Destacar acordes entre colchetes
-        return lyrics.replace(/\[(.*?)\]/g, '<span class="chord">[$1]</span>');
-    }
+                <div class="config-container">
+                    <div class="config-card">
+                        <h3><i class="fas fa-palette"></i> Cores Litúrgicas</h3>
+                        <div class="color-options">
+                            <div class="color-option" data-color="branco" style="background-color: #FFFFFF;">
+                                <span>Branco</span>
+                            </div>
+                            <div class="color-option" data-color="vermelho" style="background-color: #FF0000;">
+                                <span>Vermelho</span>
+                            </div>
+                            <div class="color-option" data-color="verde" style="background-color: #008000;">
+                                <span>Verde</span>
+                            </div>
+                            <div class="color-option" data-color="roxo" style="background-color: #800080;">
+                                <span>Roxo</span>
+                            </div>
+                            <div class="color-option" data-color="rosa" style="background-color: #FFC0CB;">
+                                <span>Rosa</span>
+                            </div>
+                            <div class="color-option" data-color="preto" style="background-color: #000000; color: white;">
+                                <span>Preto</span>
+                            </div>
+                        </div>
+                    </div>
 
-    // Funções para controle de fonte
-    function increaseFontSize() {
-        const root = document.documentElement;
-        let currentSize = parseFloat(getComputedStyle(root).getPropertyValue('--font-size'));
-        if (currentSize < 22) {
-            root.style.setProperty('--font-size', (currentSize + 1) + 'px');
-        }
-    }
+                    <div class="config-card">
+                        <h3><i class="fas fa-sliders-h"></i> Preferências</h3>
+                        <div class="preferences">
+                            <label>
+                                <input type="checkbox" id="auto-expand" checked>
+                                Expandir automaticamente
+                            </label>
+                            <label>
+                                <input type="checkbox" id="show-chords" checked>
+                                Mostrar acordes
+                            </label>
+                            <label>
+                                Tamanho da fonte:
+                                <input type="range" id="font-size" min="12" max="24" value="16">
+                                <span id="font-size-value">16px</span>
+                            </label>
+                        </div>
+                    </div>
 
-    function decreaseFontSize() {
-        const root = document.documentElement;
-        let currentSize = parseFloat(getComputedStyle(root).getPropertyValue('--font-size'));
-        if (currentSize > 12) {
-            root.style.setProperty('--font-size', (currentSize - 1) + 'px');
-        }
-    }
+                    <div class="config-card">
+                        <h3><i class="fas fa-database"></i> Gerenciamento</h3>
+                        <div class="management-actions">
+                            <button id="export-data" class="btn-secondary">
+                                <i class="fas fa-download"></i> Exportar Dados
+                            </button>
+                            <button id="import-data" class="btn-secondary">
+                                <i class="fas fa-upload"></i> Importar Dados
+                            </button>
+                            <button id="clear-cache" class="btn-secondary">
+                                <i class="fas fa-trash"></i> Limpar Cache
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
 
-    function resetFontSize() {
-        document.documentElement.style.setProperty('--font-size', '16px');
-    }
+        <!-- Rodapé -->
+        <footer class="main-footer">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <p><i class="fas fa-church"></i> Sistema Litúrgico v1.0</p>
+                    <p id="current-date">Carregando data...</p>
+                </div>
+                <div class="footer-status">
+                    <span id="connection-status" class="status-connected">
+                        <i class="fas fa-wifi"></i> Conectado
+                    </span>
+                </div>
+            </div>
+        </footer>
+    </div>
 
-    // Função para expandir/recolher todas as seções
-    function expandAll() {
-        // Expandir todas as leituras da liturgia
-        document.querySelectorAll('.reading-content').forEach(content => {
-            content.classList.add('expanded');
-        });
-        document.querySelectorAll('.reading-arrow').forEach(arrow => {
-            arrow.textContent = '▲';
-        });
-        
-        // Expandir todas as músicas
-        document.querySelectorAll('.moment-content').forEach(content => {
-            content.classList.add('expanded');
-        });
-        document.querySelectorAll('.moment-arrow').forEach(arrow => {
-            arrow.textContent = '▲';
-        });
-        
-        // Expandir a liturgia principal
-        document.querySelector('.liturgy-content').classList.add('expanded');
-        document.querySelector('.liturgy-arrow').textContent = '▲';
-    }
+    <!-- Modal para visualização de música -->
+    <div id="music-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Título da Música</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- Conteúdo da música -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" id="modal-print">
+                    <i class="fas fa-print"></i> Imprimir
+                </button>
+                <button class="btn-secondary" id="modal-copy">
+                    <i class="fas fa-copy"></i> Copiar Letra
+                </button>
+            </div>
+        </div>
+    </div>
 
-    function collapseAll() {
-        // Recolher todas as leituras da liturgia
-        document.querySelectorAll('.reading-content').forEach(content => {
-            content.classList.remove('expanded');
-        });
-        document.querySelectorAll('.reading-arrow').forEach(arrow => {
-            arrow.textContent = '▼';
-        });
-        
-        // Recolher todas as músicas
-        document.querySelectorAll('.moment-content').forEach(content => {
-            content.classList.remove('expanded');
-        });
-        document.querySelectorAll('.moment-arrow').forEach(arrow => {
-            arrow.textContent = '▼';
-        });
-        
-        // Recolher a liturgia principal
-        document.querySelector('.liturgy-content').classList.remove('expanded');
-        document.querySelector('.liturgy-arrow').textContent = '▼';
-    }
+    <!-- Modal para nova missa -->
+    <div id="new-missa-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Criar Nova Missa</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="new-missa-form">
+                    <div class="form-group">
+                        <label for="new-missa-date">Data:</label>
+                        <input type="date" id="new-missa-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-missa-title">Título:</label>
+                        <input type="text" id="new-missa-title" placeholder="Ex: Epifania do Senhor" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-missa-subtitle">Subtítulo:</label>
+                        <input type="text" id="new-missa-subtitle" placeholder="Ex: Solenidade | Domingo">
+                    </div>
+                    <div class="form-group">
+                        <label for="new-missa-color">Cor Litúrgica:</label>
+                        <select id="new-missa-color" required>
+                            <option value="branco">Branco</option>
+                            <option value="vermelho">Vermelho</option>
+                            <option value="verde">Verde</option>
+                            <option value="roxo">Roxo</option>
+                            <option value="rosa">Rosa</option>
+                            <option value="preto">Preto</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-missa-type">Tipo:</label>
+                        <select id="new-missa-type" required>
+                            <option value="Solenidade">Solenidade</option>
+                            <option value="Festa">Festa</option>
+                            <option value="Memória">Memória</option>
+                            <option value="Domingo">Domingo</option>
+                            <option value="Semana">Semana</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" form="new-missa-form" class="btn-primary">
+                    <i class="fas fa-save"></i> Salvar Missa
+                </button>
+            </div>
+        </div>
+    </div>
 
-    // Função de busca
-    function setupSearch() {
-        const searchInput = document.getElementById('search-input');
-        searchInput.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-
-            document.querySelectorAll('.moment-section').forEach(section => {
-                const momentHeader = section.querySelector('.moment-header h2').textContent.toLowerCase();
-                const songs = section.querySelectorAll('.song-item');
-                let hasMatch = false;
-
-                songs.forEach(song => {
-                    const title = song.querySelector('.song-title span').textContent.toLowerCase();
-                    const lyrics = song.querySelector('.song-lyrics').textContent.toLowerCase();
-
-                    if (title.includes(searchTerm) || lyrics.includes(searchTerm)) {
-                        song.style.display = 'block';
-                        hasMatch = true;
-                    } else {
-                        song.style.display = 'none';
-                    }
-                });
-
-                // Mostrar/ocultar seção baseado nos resultados
-                section.style.display = hasMatch || momentHeader.includes(searchTerm) ? 'block' : 'none';
-            });
-        });
-    }
-
-    // Inicialização
-    document.addEventListener('DOMContentLoaded', function() {
-        // Criar links da liturgia
-        createLiturgyLinks();
-
-        // Renderizar músicas
-        renderMusicList();
-
-        // Configurar expansão da liturgia
-        setupLiturgyExpansion();
-
-        // Expandir a liturgia e as primeiras leituras por padrão
-        document.querySelector('.liturgy-content').classList.add('expanded');
-        document.querySelector('.liturgy-arrow').textContent = '▲';
-        
-        // Expandir algumas leituras principais por padrão
-        const defaultReadings = document.querySelectorAll('.liturgy-reading:nth-child(-n+3) .reading-content');
-        const defaultArrows = document.querySelectorAll('.liturgy-reading:nth-child(-n+3) .reading-arrow');
-        
-        defaultReadings.forEach(content => {
-            content.classList.add('expanded');
-        });
-        
-        defaultArrows.forEach(arrow => {
-            arrow.textContent = '▲';
-        });
-
-        // Adicionar eventos aos botões de controle de fonte
-        document.getElementById('increase-font').addEventListener('click', increaseFontSize);
-        document.getElementById('decrease-font').addEventListener('click', decreaseFontSize);
-        document.getElementById('reset-font').addEventListener('click', resetFontSize);
-
-        // Adicionar eventos aos botões de expandir/recolher
-        document.getElementById('expand-all').addEventListener('click', expandAll);
-        document.getElementById('collapse-all').addEventListener('click', collapseAll);
-
-        // Configurar busca
-        setupSearch();
-    });
-</script>
+    <script src="js/ministerio.js"></script>
 </body>
 </html>

@@ -1,0 +1,20 @@
+{
+    "missas": [
+        {
+            "data": "04/01/2026",
+            "titulo": "Epifania do Senhor",
+            "subtitulo": "Solenidade | Domingo",
+            "cor_liturgica": "branco",
+            "tipo": "Solenidade",
+            "pasta": "01022026"
+        },
+        {
+            "data": "11/01/2026",
+            "titulo": "Batismo do Senhor",
+            "subtitulo": "Festa | Domingo",
+            "cor_liturgica": "branco",
+            "tipo": "Festa",
+            "pasta": "11012026"
+        }
+    ]
+}
