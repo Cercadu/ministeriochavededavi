@@ -2,92 +2,1510 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ação de Graças - 37 anos de Sacerdócio do Pe. Celso</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Sopra em Nós 2026 - Músicos</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Courier New', monospace, sans-serif;
+        }
+
+        :root {
+            --primary: #c41e3a;
+            --secondary: #8b1c2f;
+            --accent: #ffd700;
+            --light: #fff8f0;
+            --dark: #2c1810;
+            --cinzas: #4a0e4e;
+            --font-size: 16px;
+            --bg-code: #f9f9f9;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e7ec 100%);
+            color: var(--dark);
+            font-size: var(--font-size);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 10px;
+        }
+
+        /* Banner */
+        .banner {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 30px 20px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(196, 30, 58, 0.3);
+        }
+
+        .banner h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .banner h2 {
+            font-size: 1.3rem;
+            font-weight: 400;
+            opacity: 0.95;
+        }
+
+        .banner .data {
+            margin-top: 10px;
+            font-size: 1rem;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 20px;
+            border-radius: 30px;
+            display: inline-block;
+        }
+
+        /* Abas */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px;
+            background: white;
+            border: none;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .tab[data-event="cinzas"].active {
+            background: var(--cinzas);
+        }
+
+        /* Controles */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--primary);
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .controls.cinzas {
+            background: var(--cinzas);
+        }
+
+        .font-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .font-btn {
+            background: var(--accent);
+            color: var(--dark);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .font-btn:hover {
+            transform: scale(1.1);
+            background: white;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: white;
+            border-radius: 25px;
+            padding: 5px 15px;
+            width: 200px;
+        }
+
+        .search-box input {
+            border: none;
+            outline: none;
+            width: 100%;
+            padding: 8px;
+            background: transparent;
+        }
+
+        /* Seções */
+        .event-section {
+            display: none;
+        }
+
+        .event-section.active {
+            display: block;
+        }
+
+        /* Cards de horário */
+        .time-card {
+            background: white;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            overflow: hidden;
+            border-left: 6px solid var(--primary);
+        }
+
+        .time-header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .time-header h3 {
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .time-header .horario {
+            background: var(--accent);
+            color: var(--dark);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .time-content {
+            padding: 25px;
+            display: none;
+        }
+
+        .time-content.expanded {
+            display: block;
+        }
+
+        .local-info {
+            background: var(--light);
+            padding: 12px 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            border: 1px solid rgba(196, 30, 58, 0.2);
+        }
+
+        .local-info span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Músicas */
+        .musica-item {
+            margin-bottom: 35px;
+            padding-bottom: 25px;
+            border-bottom: 2px dashed #ddd;
+        }
+
+        .musica-item:last-child {
+            border-bottom: none;
+        }
+
+        .musica-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .musica-titulo {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .musica-tom {
+            background: var(--accent);
+            color: var(--dark);
+            padding: 6px 15px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .musica-letra {
+            background: var(--bg-code);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            margin: 15px 0;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .musica-letra .cifra {
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .btn-letra {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-letra:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Missa de Cinzas */
+        .liturgy-card {
+            background: white;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            overflow: hidden;
+            border-left: 6px solid var(--cinzas);
+        }
+
+        .liturgy-header {
+            background: linear-gradient(to right, var(--cinzas), #6a1e6e);
+            color: white;
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .liturgy-header h3 {
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .liturgy-content {
+            padding: 25px;
+            display: none;
+        }
+
+        .liturgy-content.expanded {
+            display: block;
+        }
+
+        .leitura {
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 10px;
+        }
+
+        .leitura-titulo {
+            color: var(--cinzas);
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            text-align: center;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 30px;
+            font-size: 1rem;
+        }
+
+        .footer.cinzas {
+            background: linear-gradient(135deg, var(--cinzas), #6a1e6e);
+        }
+
+        @media (max-width: 768px) {
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .search-box {
+                width: 100%;
+            }
+            
+            .time-header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+            
+            .musica-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
 </head>
 <body>
-<div class="app-container">
-    <div class="banner-container">
-        <img src="img/banner.jpg" alt="Missa no Shopping Singapura." class="banner">
-        <div class="banner-overlay">
-            <div class="banner-title">3ª Semana do Tempo Comum | Quinta-feira</div>
-            <div class="banner-subtitle">Missa no Shopping Singapura.</div>
-        </div>
-    </div>
-
-    <!-- Liturgia do Dia -->
-    <div class="liturgy-section">
-        <div class="liturgy-header" id="liturgyHeader">
-            <h2>
-                <i class="fas fa-book-bible liturgy-icon"></i>
-                Liturgia da Celebração
-            </h2>
-            <span class="liturgy-arrow" id="liturgyArrow">▼</span>
-        </div>
-        
-        <div class="liturgy-controls">
-            <input type="date" id="dataLiturgia">
-            <button id="buscarLiturgia"><i class="fas fa-search"></i> Buscar</button>
+    <div class="app-container">
+        <!-- Banner -->
+        <div class="banner">
+            <h1>🙏 SOPRA EM NÓS 2026</h1>
+            <h2>Retiro de Carnaval</h2>
+            <div class="data"><i class="fas fa-calendar-alt"></i> 17 a 18 de Fevereiro</div>
         </div>
 
-        <div class="liturgy-content" id="liturgyContent">
-            <p>Carregando liturgia...</p>
-        </div>
-    </div>
-
-    <div class="controls">
-        <div class="font-controls">
-            <span>Tamanho da fonte:</span>
-            <button class="font-btn" id="decrease-font" title="Diminuir fonte">
-                <i class="fas fa-minus"></i>
+        <!-- Abas -->
+        <div class="tabs">
+            <button class="tab active" data-event="retiro" id="tab-retiro">
+                <i class="fas fa-calendar-alt"></i> Cronograma do Retiro
             </button>
-            <button class="font-btn" id="reset-font" title="Fonte padrão">
-                A
-            </button>
-            <button class="font-btn" id="increase-font" title="Aumentar fonte">
-                <i class="fas fa-plus"></i>
+            <button class="tab" data-event="cinzas" id="tab-cinzas">
+                <i class="fas fa-cross"></i> Missa de Cinzas
             </button>
         </div>
 
-        <div class="search-box">
-            <i class="fas fa-search"></i>
-            <input type="text" id="search-input" placeholder="Buscar música...">
-        </div>
-    </div>
-
-    <div class="music-list" id="music-list">
-        <!-- As músicas serão inseridas aqui pelo JavaScript -->
-    </div>
-
-    <!-- Menu de Navegação no Final -->
-    <div class="liturgy-menu">
-        <h2><i class="fas fa-list-alt"></i> Navegação Rápida</h2>
-        <div class="liturgy-links" id="liturgy-links">
-            <!-- Os links serão gerados pelo JavaScript -->
-        </div>
-    </div>
-
-    <div class="footer">
-        <div class="footer-content">
-            <div class="footer-logo">
-                <i class="fas fa-church"></i>
-                <span>37 anos de Sacerdócio</span>
+        <!-- Controles -->
+        <div class="controls" id="controls">
+            <div class="font-controls">
+                <span><i class="fas fa-text-height"></i> Tamanho:</span>
+                <button class="font-btn" id="decrease-font"><i class="fas fa-minus"></i></button>
+                <button class="font-btn" id="reset-font">A</button>
+                <button class="font-btn" id="increase-font"><i class="fas fa-plus"></i></button>
             </div>
-            <div class="footer-actions">
-                <button class="action-btn" id="expand-all">
-                    <i class="fas fa-expand"></i> Expandir Tudo
-                </button>
-                <button class="action-btn" id="collapse-all">
-                    <i class="fas fa-compress"></i> Recolher Tudo
-                </button>
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="search-input" placeholder="Buscar música...">
             </div>
         </div>
-        <p style="margin-top: 10px; font-size: 0.8rem; opacity: 0.9;">Em ação de graças pelo ministério do Pe. Celso</p>
-    </div>
-</div>
 
-<script src="js/ministerio.js"></script>
+        <!-- Evento RETIRO -->
+        <div id="event-retiro" class="event-section active"></div>
+
+        <!-- Evento MISSA DE CINZAS -->
+        <div id="event-cinzas" class="event-section"></div>
+
+        <!-- Footer -->
+        <div class="footer" id="footer">
+            <i class="fas fa-music"></i> Equipe de Músicos - Vinde e Louvai!
+        </div>
+    </div>
+
+    <script>
+        // ============================================================================
+        // DADOS DO RETIRO COM TODAS AS MÚSICAS
+        // ============================================================================
+
+        const retiroData = [
+            {
+                horario: "17:30",
+                titulo: "Acolhida pelo Santuário",
+                local: "Altar Campal",
+                responsaveis: "Padre Pedro",
+                musicas: [
+                    {
+                        titulo: "Deus quero louvar-te",
+                        tom: "E",
+                        letra: `[Intro] E  B/D#  C#m
+        E  B/D#  C#m
+        A  B  E  B7
+
+              E      B/D#  C#m
+Deus quero louvar-te
+          E     B/D#  C#m
+Quero adorar-te
+              A                 B
+Quero te servir, quero transmitir
+                E   B7
+Deus quero louvar-te
+                E    B/D# C#m
+Deus quero louvar-te
+          E     B/D#  C#m
+Quero adorar-te
+              A
+Sempre ao cantar
+             B                   E   B/D#  C#m
+Eu só quero dar glórias ao meu Deus
+
+C#m         A       C#m        A
+Eu vou caminhando, vivendo o amor
+C#m                A                     B  C  C#m 
+Erguendo os meus braços, eu louvo ao Senhor
+C#m          B      C#m        B
+Quero proclamá-lo     no dia a dia
+C#m        A                B
+Sempre cantando glória, aleluia!
+B        B7  B
+A-lê-lu-i a`
+                    },
+                    {
+                        titulo: "Quem É Esta Que Avança Como Aurora?",
+                        tom: "E",
+                        letra: `       E          B           C#m  A  B
+Quem é esta que avança como aurora
+   E              B
+Temível como um exército
+               C#m   A  B
+Em ordem de batalha
+     E            B            C#m A  B
+Brilhante como o sol e como a lua
+    E         B                 C#m A  B
+Mostrando o caminho aos filhos seus?
+
+        E         B
+Ah, ah, ah, minha alma
+                 C#m A  B   E 
+Glorifica ao Senhor
+
+     B       C#m   A  B  E  
+Meu espírito exulta
+    B             C#m A  B
+Em Deus, meu salvador`
+                    },
+                    {
+                        titulo: "A Escolhida",
+                        tom: "E",
+                        letra: `[Intro] E  A  E  C#m
+        F# ( A  B ) E  B
+
+[Primeira Parte]
+
+E                     B
+Uma entre todas foi a escolhida
+ C#m                     G#m
+Foste tu Maria a serva preferida
+ A             E
+Mãe do meu Senhor
+ F#              B
+Mãe do meu salvador
+
+[Refrão]
+
+   E     A                  E
+Maria, cheia de graça e consolo
+ C#m                    F#
+Venha caminhar com teu povo
+ A         B        E  B
+Nossa mãe sempre será
+
+   E     A                  E
+Maria, cheia de graça e consolo
+ C#m                    F#
+Venha caminhar com teu povo
+ A         B        E  B
+Nossa mãe sempre será
+
+[Segunda Parte]
+
+ E                    B
+Roga pelos pecadores desta Terra
+ C#m                       G#m
+Roga pelo povo que em seu Deus espera
+ A             E
+Mãe do meu Senhor
+ F#              B
+Mãe do meu salvador
+
+[Refrão]`
+                    },
+                    {
+                        titulo: "Gálatas 4,6 (Aba Pai!)",
+                        tom: "C",
+                        letra: `Introd. D  D9  D
+
+   C                G/B              F/A   Fm/Ab      
+A prova de que sois filhos é que Deus enviou      aos 
+       C
+vossos corações
+    Dm            Em        F     Fm/Ab         C     
+O Espírito de seu Filho que clama, clama: "Aba, Pai!" 
+F6/G
+       (bis)
+
+C        G/B  Am       Em  F          C/E       Dm   
+Aba, Pai!      Aba, Pai!     Aba, Pai!  Aba, Pai!  
+    G4 G
+Aba, Pai!`
+                    }
+                ]
+            },
+            {
+                horario: "18:45",
+                titulo: "Apresentação Comunidade Hineni",
+                local: "Altar Campal",
+                responsaveis: "Márcio e Lucas",
+                musicas: [
+                    {
+                        titulo: "Hineni",
+                        tom: "D",
+                        letra: `[Intro] D  G  Bm  A
+        D  G  Bm  A
+
+D                      G
+Aqui estou Senhor sem nenhuma distração
+Bm                      A
+Ouço o teu chamar, mais perto eu quero estar
+   D                   G
+Se é pra te servir, eis aqui as minhas mãos
+   Bm                   A
+Se é pra te adorar, eis aqui o meu coração
+
+D         G            Bm           A
+Toma minha vida, Faz de mim o teu altar
+D         G            Bm           A       D  G  Bm  A
+Toma minha vida, Eu nasci pra te adorar Hineni
+D         G            Bm           A
+Toma minha vida, Faz de mim o teu altar
+D          G            Bm         A        D  G
+Toma minha vida, Eu nasci pra te adorar Hineni
+      Bm  A
+Hineni
+
+   Bm        D    G
+Se tu entregaste, tudo o que tens
+Bm                         A
+Eu também entrego, eu também entrego
+   Bm        D      G
+Se tu entregaste, tua vida por mim
+Bm                        A            F#m
+Eu também entrego, minha vida eu te entrego
+
+   Bm        F#m/A G
+Se tu entregaste,  tudo o que tens
+Bm                 A
+Eu também entrego, eu também entrego
+   Bm        D/F#     G
+Se tu entregaste, tua vida por mim
+Bm                                 A7
+Eu também entrego, minha vida eu te entrego`
+                    }
+                ]
+            },
+            {
+                horario: "20:15",
+                titulo: "Pós Jantar",
+                local: "Cozinha",
+                responsaveis: "Equipe",
+                musicas: [
+                    {
+                        titulo: "Iê, Iê, Iê de Jesus",
+                        tom: "E",
+                        letra: `Intr: (D G A G)
+
+E              A           B7           A
+Iê, Iê, Iê, Iê, Iê, Iê, Iê, Iê, Iê, Lê, Iê, Iê...
+ E           A              B7          A
+Uou, Ou, Ou, Uou, Ou, Uou, Uou, Ou, Ou, Uou, Ou, Uou... (2x)
+
+ E      A   B7   A           E        A / B7 / A
+Reza, Reza, Reza. Nós Rezaremos (2x)
+ E      A         B7  A        E        A / B7 / A
+Louva, Louva, Louva, Nós Louvaremos (2x)
+
+E              A          B7            A
+Iê, Iê, Iê, Iê, Iê, Iê, Iê, Iê, Iê, Iê, Iê, Iê...
+ E           A              B7              A
+Uou, Ou, Ou, Uou, Ou, Uou, Uou, Ou, Ou, Uou, Ou, Uou... (2x)
+
+E         A   B7    A           E        A / B7 / A
+Corre, Corre, Corre, Nós Correremos (2x)
+E        A   B7  A           E        A / B7 / A
+Pula, Pula, Pula, Nós Pularemos (2x)`
+                    },
+                    {
+                        titulo: "Obra Nova",
+                        tom: "E",
+                        letra: `E        G#m      A      B
+Turururu Turururu a .... a
+E        G#m      A      B
+Turururu Turururu a .... a
+
+E                    G#m A        B
+Cristo quer fazer em mim uma obra nova
+E           G#m A            B
+E o meu coração quer modificar
+E                    G#m A        B
+Cristo quer fazer em mim uma obra nova
+E           G#m A           B
+E o meu coração quer modificar
+
+G#m            C#m            A                  B
+Ele tem muitos planos pra mim, vida nova quer me dar
+G#m           C#m    A          B
+Basta abrir o coração e ele agira
+
+E            G#m   A                B
+Vem Espirito Santo, vem nos transformar
+E            G#m  A              B
+Vem Espirito Santo teu amor nos dar
+E            G#m  A                  B
+Vem Espirito Santo, vem nos transformar
+E            G#m   A             B
+Vem Espirito Santo teu amor nos dar`
+                    }
+                ]
+            },
+            {
+                horario: "20:30",
+                titulo: "O Espírito nos Torna Pequenos",
+                local: "Estacionamento e Capela",
+                responsaveis: "Márcio, Marco e João Carlos",
+                musicas: [
+                    {
+                        titulo: "Regaço Acolhedor",
+                        tom: "G",
+                        letra: `[Intro] Em7  Em7(5+)  Em7  
+        C7M  D9  Em7
+
+[Primeira Parte]
+
+        C9
+Ó, minh'alma
+   D9          Em7
+Retorna à tua paz
+        C9             D9
+Como criança bem tranquila
+            G    D/F#       Em7
+No regaço acolhedor de sua mãe
+
+        C9
+Ó, minh'alma
+   D9          Em
+Retorna à tua paz
+        C9             D9
+Como criança bem tranquila
+            G    D/F#       Em7
+No regaço acolhedor de sua mãe
+
+[Segunda Parte]
+
+       C9  D9               G  
+Minha mãe     é a Virgem Maria
+    D/F#    Em7  Em7/D
+É Ela que agora vai
+        C9          D9
+Me acolher, me abraçar
+        G       D/F#    Em7
+Me perdoar, me compreender
+
+        C9          D9         Em7 (Riff 1)
+Me acalmar, me ensinar, me educar
+       C9  D9    Em7
+Me formar,    me amar`
+                    }
+                ]
+            },
+            {
+                horario: "22:15",
+                titulo: "Pregação - Neto Pinhal",
+                local: "Sala de Reunião",
+                responsaveis: "Neto Pinhal",
+                musicas: [
+                    {
+                        titulo: "Louvado Seja o Meu Senhor",
+                        tom: "G",
+                        letra: `G
+Louvado seja o meu Senhor
+Em
+Louvado seja o meu Senhor
+C              Am
+Louvado seja o meu Senhor
+D              D7
+Louvado seja o meu Senhor
+
+        G
+1. Por todas as suas criaturas
+     Em
+Pelo sol e pela lua
+          C            Am
+Pelas estrelas do firmamento
+     D            D7
+Pela água e pelo fogo.
+
+          G
+2. Por aqueles que agora são felizes
+      Em
+Por aqueles que agora choram
+       C              Am
+Por aqueles que agora nascem
+       D              D7
+Por aqueles que agora morrem.
+
+          G
+3. O que dá sentido a vida
+   Em
+É amar-te e louvar-te
+      C          Am
+Para que a nossa vida
+      D             D7
+Seja sempre uma canção`
+                    },
+                    {
+                        titulo: "A Alegria",
+                        tom: "G",
+                        letra: `G           G7
+A alegria está no coraçao
+     C                  G
+De quem já conhece a Jesus
+G            Em
+A verdadeira paz só tem aquele
+     Am            D7
+Que ja conhece a Jesus
+
+G                 G7
+O sentimento mais precioso
+     C              Cm
+Que vem do nosso senhor
+      G          C           D7         G
+é o amor que só tem quem já conhece a Jesus
+
+       G                    G7
+Posso pisar numa tropa e saltar as muralhas
+     C          Cm
+Aleluiaaaa! Aleluiaaa!
+
+G                 G7
+Ele é a rocha da minha salvação
+     C               Cm
+Com ele nao há mais condenação
+
+   G                    G7
+Posso pisar numa tropa e saltar as muralhas
+     C          Cm
+Aleluiaaaa! Aleluiaaa!
+
+   G    G7      C    Cm     G    Em      Am   D7
+Alelu...ia,  alelu...ia, alelu...ia,  alelu...ia.
+
+G                 G7
+O sentimento mais precioso
+     C             Cm
+Que vem do nosso senhor
+      G          C            D7        G   
+é o amor que só tem quem já conhece a Jesus`
+                    },
+                    {
+                        titulo: "Porque Ele Vive",
+                        tom: "G",
+                        letra: `[Intro] G9  D  Am  C 
+        G9  D  Am
+        G9  D  Am  C 
+        F  C/E  G9
+
+[Refrão] 
+
+            G9  G9/B
+Porque Ele vive
+              C
+Posso crer no amanhã
+            G9
+Porque Ele vive
+           D
+Temor não há
+
+            G9
+Mas eu bem sei, eu sei
+             C
+Que a minha vida
+          G9            D
+Está nas mãos do meu Jesus
+            G9
+Que vivo está
+
+[Primeira Parte] 
+
+                        C
+Deus enviou seu Filho amado
+         G9             Am  D
+Pra perdoar, pra me salvar 
+            G9            C
+Na cruz morreu por meu pecado
+Am      G9/B  Em              D/F#
+   Mas ressur_giu e vivo com o Pai está
+            C
+Porque Ele vive
+
+[Refrão]`
+                    },
+                    {
+                        titulo: "Pedi e Recebereis",
+                        tom: "Gm",
+                        letra: `[Intro] Gm  D# A# F
+
+ Gm              D#               A#            F
+Há uma promessa que quer se cumprir em meio a nós
+Gm                 D#         A#        F
+É o próprio Senhor quem diz: pedi e recebereis
+
+       Cm            D#
+Nenhum mal irá resistir
+       A#           F
+Os mares irão se abrir
+          Cm                D#
+Quando a boca de Deus declarar
+   A#     F       D#
+Milagres neste lugar
+
+       Gm                     D#
+Se eu orar, se eu clamar as muralhas não
+        A#              F
+Resistirão ao poder de meu Deus
+
+       Gm                     D#
+Se eu orar, se eu clamar as muralhas não
+        A#              F
+Resistirão ao poder de meu Deus
+
+       G#m                    E
+Se eu orar, se eu clamar as muralhas não
+        B              F#      Gm
+Resistirão ao poder de meu Deus`
+                    }
+                ]
+            },
+            {
+                horario: "00:15",
+                titulo: "Pois a Promessa é para Todos",
+                local: "Santuário",
+                responsaveis: "Yan",
+                musicas: [
+                    {
+                        titulo: "A Nós Descei, Divina Luz",
+                        tom: "D",
+                        letra: `[Intro] D  A7
+
+          D     A7    D  A7
+A nós descei, divina luz!
+          D      G  A   D  Am7  D7
+A nós descei, divina luz!
+
+    G       A        D  A/C#  Bm
+Em nossas almas acendei
+
+     Em       A        D  A/C#  Bm
+O  amor, o amor de Jesus!
+     Em       A        D  D7
+O  amor, o amor de Jesus!
+
+        G       A
+Vinde, Santo Espírito
+     F#m7   Bm7
+E do céu mandai
+       Em      A            A7     D  D7
+De tua luz um raio, de tua luz um raio!
+        G        A
+Vinde, Pai dos pobres
+   F#m7     Bm7
+Doador dos dons
+        Em   A             A7   D  A7
+Luz dos corações, luz dos corações!`
+                    },
+                    {
+                        titulo: "O Céu Se Abre",
+                        tom: "G",
+                        letra: `[Intro] G  G7M  G/B  C  C9
+        Em  D  G/B  C  C9
+
+G                      Bm
+Hoje o céu se abre pra derramar
+          C               G       F  D4  D
+Sobre os corações toda a graça do Pai
+
+ G                  Bm
+Eu também quero me derramar
+               C     Am               F    D4  D
+De todo o meu coração    nos braços do Pai
+
+[Refrão]
+
+G    G7M           C7M   C6            Em
+Vem,     Espírito Santo,    com teu poder
+  D              C
+Tocar meu ser, fluir em mim (2x)
+
+G                      Bm
+Hoje o céu se abre pra derramar
+          C               G      F  D4  D
+Sobre os corações toda a graça do Pai
+
+ G                  Bm
+Eu também quero me derramar
+               C     Am             F    D4  D
+De todo o meu coração    nos braços do Pai
+
+[Refrão]`
+                    },
+                    {
+                        titulo: "Refrigera Minh'alma",
+                        tom: "E",
+                        letra: `[Intro] E  A9  E  A9
+
+ E              E7M         A9  F#m7
+Sopra Espírito Santo, sobre nós
+ E              E7M         A9  F#m7
+Sopra Espírito Santo, sobre nós
+ E              E7M         A9  F#m7
+Sopra Espírito Santo, sobre nós
+ E              E7M         A9  F#m7
+Sopra Espírito Santo, sobre nós
+
+      C#m7             B/A          A  F#m7
+Refrigera minhalma e faz-me fiel a Ti
+      C#m7             B/A          A9  F#m7
+Refrigera minhalma e faz-me fiel a Ti
+      C#m7             B/A          A  F#m7
+Refrigera minhalma e faz-me fiel a Ti
+      C#m7             B/A          A9  F#m7
+Refrigera minhalma e faz-me fiel a ti`
+                    }
+                ]
+            },
+            {
+                horario: "01:45",
+                titulo: "Lanche",
+                local: "Abaixo do Mezanino",
+                responsaveis: "Equipe da Cozinha",
+                musicas: [
+                    {
+                        titulo: "O Senhor É Rei",
+                        tom: "Cm",
+                        letra: `[Intro] Cm  A# G# F  G#
+        Cm  A# G# F  G#
+        Cm  A# Cm  A# 
+        Cm  A# Cm  A#   
+        G#7M G#6 G#7M G#6 
+        Fm  G7(4/9) G7(4)
+
+[Primeira Parte]
+
+Cm                A#/D           
+   O Senhor é Rei 
+D#                         A# B°
+  O Senhor é meu pastor e Rei
+Cm               A#/D                
+   O Senhor é Rei
+D#                         A# G7(4/9) G7(4)
+  O Senhor é meu pastor e Rei
+
+Cm                      A#/D           
+   O Senhor está no céu
+D#                     A#4 A#     
+  O Senhor está no mar
+         G#    G7   Cm  G# F  A#4 A#
+Na extensão do infinito 
+Cm                      A#/D           
+   O Senhor está no céu
+D#                     A#4 A#     
+  O Senhor está no mar
+         G#    G7   Cm  G# F  A#
+Na extensão do infinito 
+
+[Refrão]
+
+D#            Cm  A#         Gm7
+  Está no céu,      está no mar
+Cm          G#         A#4 A# A#4 A# G#
+   Na extensão do infinito
+D#            Cm  A#         Gm7
+  Está no céu,      está no mar
+Cm          G#         A#4 A# A#4 A# G#
+   Na extensão do infinito`
+                    }
+                ]
+            },
+            {
+                horario: "02:00",
+                titulo: "Momento Luz",
+                local: "Jardim da Luz",
+                responsaveis: "Lucas",
+                musicas: [
+                    {
+                        titulo: "Me Aceita de Volta",
+                        tom: "D",
+                        letra: `[Intro] D  D/F#  G
+
+D            D/F#                G
+Voltei aqui, Só tua criança, Continuo com os mesmo passos Lentos
+           D     D/F#        G
+Só tua criança, Mamãe, Só tua criança
+D                             D/F#
+Teu cheiro me chamou de longe, vim sarar minhas feridas como
+G
+Antes
+G                   Bm          A9   G
+Sou só tua criança, só tua criança
+
+
+    Em                 G           Bm                A
+Eu vou voltar pro teu colo e pro calor das suas roupas
+    Em            G         Bm           A
+Me saciar da tua mesa, Na vontade do meu Pai
+   D    D/F#           G
+Mamãe, Me aceita de Volta
+ D    D/F#           G         A9                D
+Mamãe, Me aceita de Volta, sua casa é o meu lugar
+
+[Refrão]
+
+ D    D/F#             G
+Mamãe, Me aceita de Volta
+ D    D/F#             G                      D
+Mamãe, Me aceita de Volta, sua casa é o meu lugar`
+                    }
+                ]
+            },
+            {
+                horario: "03:30",
+                titulo: "Acende em Nós o Fogo do Espírito",
+                local: "Frente ao Altar Campal",
+                responsaveis: "Hineni",
+                musicas: [
+                    {
+                        titulo: "Vem, Vem, Vem, Espírito Santo",
+                        tom: "G",
+                        letra: `[Primeira Parte]
+
+ G         Em7           C
+Vem, vem, vem, Espírito Santo
+                    D7               G  D7
+Transforma a minha vida, quero renascer
+ G         Em7           C
+Vem, vem, vem, Espírito Santo
+                    D7               G  G7
+Transforma a minha vida, quero renascer
+
+[Refrão]
+
+             C              D
+Quero abandonar-me em seu amor
+       Bm                      Em
+Encharcar-me em seus rios, Senhor
+      C            D              Dm7  G
+Derrubar as barreiras em meu coração
+
+  G7         C              D
+Quero abandonar-me em seu amor
+       Bm                      Em
+Encharcar-me em seus rios, Senhor
+      C            D              G  D7
+Derrubar as barreiras em meu coração
+
+[Primeira Parte]
+
+ G         Em7           C  
+Vem, vem, vem, Espírito Santo
+                    D7               G  D7
+Transforma a minha vida, quero renascer
+ G         Em7           C
+Vem, vem, vem, Espírito Santo
+                    D7               G  G7
+Transforma a minha vida, quero renascer
+
+[Refrão]`
+                    }
+                ]
+            }
+        ];
+
+        // ============================================================================
+        // DADOS DA MISSA DE CINZAS
+        // ============================================================================
+
+        const cinzasData = {
+            liturgia: {
+                primeiraLeitura: "Jl 2,12-18",
+                salmo: "Sl 50(51) - Misericórdia, ó Senhor, pois pecamos",
+                segundaLeitura: "2Cor 5,20-6,2",
+                evangelho: "Mt 6,1-6.16-18"
+            },
+            musicas: [
+                {
+                    momento: "🎵 Entrada",
+                    musicas: [
+                        { titulo: "Convertei-vos e Crede no Evangelho", tom: "Em", letra: "Convertei-vos e crede no Evangelho\nO Reino de Deus está chegando\nConvertei-vos e crede no Evangelho\nO Senhor está nos chamando" }
+                    ]
+                },
+                {
+                    momento: "🙏 Ato Penitencial",
+                    musicas: [
+                        { titulo: "Kyrie Eleison", tom: "Em", letra: "Kyrie eleison\nKyrie eleison\nChriste eleison\nChriste eleison\nKyrie eleison" }
+                    ]
+                },
+                {
+                    momento: "📖 Salmo",
+                    musicas: [
+                        { titulo: "Salmo 50", tom: "Dm", letra: "Misericórdia, ó Senhor, pois pecamos\nMisericórdia, ó Senhor, pois pecamos" }
+                    ]
+                },
+                {
+                    momento: "📖 Aclamação",
+                    musicas: [
+                        { titulo: "Aclamação", tom: "E", letra: "Oxalá ouvísseis hoje a sua voz\nNão fecheis os corações\nOxalá ouvísseis hoje a sua voz" }
+                    ]
+                },
+                {
+                    momento: "🎁 Ofertório",
+                    musicas: [
+                        { titulo: "Perdoa o Teu Povo", tom: "G", letra: "Perdoa o teu povo, Senhor\nPerdoa o teu povo, Senhor\nNão fiques irado para sempre\nPerdoa o teu povo, Senhor" }
+                    ]
+                },
+                {
+                    momento: "🙏 Santo",
+                    musicas: [
+                        { titulo: "Santo", tom: "D", letra: "Santo, Santo, Santo\nSenhor Deus do Universo\nO céu e a terra proclamam a vossa glória" }
+                    ]
+                },
+                {
+                    momento: "🍞 Comunhão",
+                    musicas: [
+                        { titulo: "Quem Come Deste Pão", tom: "F", letra: "Quem come deste pão\nViverá para sempre\nQuem bebe deste vinho\nEm mim permanecerá" }
+                    ]
+                },
+                {
+                    momento: "🙌 Pós-Comunhão",
+                    musicas: [
+                        { titulo: "Transforma-me, Senhor", tom: "G", letra: "Transforma-me, Senhor\nTransforma-me, Senhor\nFaz-me novo como a argila\nNas mãos do oleiro" }
+                    ]
+                },
+                {
+                    momento: "🎌 Final",
+                    musicas: [
+                        { titulo: "Caminhando para a Páscoa", tom: "C", letra: "Caminhando para a Páscoa\nCom Jesus nós vamos\nQuarenta dias de preparação\nNos convertendo, nos amando" }
+                    ]
+                }
+            ]
+        };
+
+        // ============================================================================
+        // FUNÇÕES DE RENDERIZAÇÃO
+        // ============================================================================
+
+        function renderizarRetiro() {
+            const container = document.getElementById('event-retiro');
+            container.innerHTML = '';
+
+            retiroData.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'time-card';
+
+                // Header
+                const header = document.createElement('div');
+                header.className = 'time-header';
+                header.innerHTML = `
+                    <h3><i class="fas fa-clock"></i> ${item.titulo}</h3>
+                    <span class="horario">${item.horario}</span>
+                `;
+
+                // Content
+                const content = document.createElement('div');
+                content.className = 'time-content';
+
+                // Local e responsáveis
+                const localInfo = document.createElement('div');
+                localInfo.className = 'local-info';
+                localInfo.innerHTML = `
+                    <span><i class="fas fa-map-marker-alt"></i> ${item.local}</span>
+                    <span><i class="fas fa-user"></i> ${item.responsaveis}</span>
+                `;
+                content.appendChild(localInfo);
+
+                // Músicas
+                item.musicas.forEach((musica, musIndex) => {
+                    const musicaDiv = document.createElement('div');
+                    musicaDiv.className = 'musica-item';
+
+                    const musicaHeader = document.createElement('div');
+                    musicaHeader.className = 'musica-header';
+                    musicaHeader.innerHTML = `
+                        <span class="musica-titulo">${musica.titulo}</span>
+                        <span class="musica-tom">${musica.tom}</span>
+                    `;
+
+                    const letraDiv = document.createElement('div');
+                    letraDiv.className = 'musica-letra';
+                    letraDiv.id = `letra-${index}-${musIndex}`;
+                    letraDiv.style.display = 'none';
+                    letraDiv.textContent = musica.letra;
+
+                    const btnLetra = document.createElement('button');
+                    btnLetra.className = 'btn-letra';
+                    btnLetra.innerHTML = '<i class="fas fa-chevron-down"></i> Ver letra completa';
+                    btnLetra.onclick = () => {
+                        if (letraDiv.style.display === 'none') {
+                            letraDiv.style.display = 'block';
+                            btnLetra.innerHTML = '<i class="fas fa-chevron-up"></i> Esconder letra';
+                        } else {
+                            letraDiv.style.display = 'none';
+                            btnLetra.innerHTML = '<i class="fas fa-chevron-down"></i> Ver letra completa';
+                        }
+                    };
+
+                    musicaDiv.appendChild(musicaHeader);
+                    musicaDiv.appendChild(btnLetra);
+                    musicaDiv.appendChild(letraDiv);
+                    content.appendChild(musicaDiv);
+                });
+
+                header.onclick = () => {
+                    content.classList.toggle('expanded');
+                };
+
+                card.appendChild(header);
+                card.appendChild(content);
+                container.appendChild(card);
+            });
+        }
+
+        function renderizarCinzas() {
+            const container = document.getElementById('event-cinzas');
+            container.innerHTML = '';
+
+            // Card da Liturgia
+            const liturgiaCard = document.createElement('div');
+            liturgiaCard.className = 'liturgy-card';
+
+            const liturgiaHeader = document.createElement('div');
+            liturgiaHeader.className = 'liturgy-header';
+            liturgiaHeader.innerHTML = `
+                <h3><i class="fas fa-book-bible"></i> Liturgia da Missa</h3>
+                <span class="horario"><i class="fas fa-chevron-down"></i></span>
+            `;
+
+            const liturgiaContent = document.createElement('div');
+            liturgiaContent.className = 'liturgy-content';
+            liturgiaContent.innerHTML = `
+                <div class="leitura">
+                    <div class="leitura-titulo">📖 Primeira Leitura</div>
+                    <div>${cinzasData.liturgia.primeiraLeitura}</div>
+                </div>
+                <div class="leitura">
+                    <div class="leitura-titulo">🎵 Salmo Responsorial</div>
+                    <div>${cinzasData.liturgia.salmo}</div>
+                </div>
+                <div class="leitura">
+                    <div class="leitura-titulo">📖 Segunda Leitura</div>
+                    <div>${cinzasData.liturgia.segundaLeitura}</div>
+                </div>
+                <div class="leitura">
+                    <div class="leitura-titulo">📖 Evangelho</div>
+                    <div>${cinzasData.liturgia.evangelho}</div>
+                </div>
+            `;
+
+            liturgiaHeader.onclick = () => {
+                liturgiaContent.classList.toggle('expanded');
+            };
+
+            liturgiaCard.appendChild(liturgiaHeader);
+            liturgiaCard.appendChild(liturgiaContent);
+            container.appendChild(liturgiaCard);
+
+            // Músicas da Missa
+            cinzasData.musicas.forEach((momento, idx) => {
+                const musicCard = document.createElement('div');
+                musicCard.className = 'time-card';
+                musicCard.style.borderLeftColor = 'var(--cinzas)';
+
+                const musicHeader = document.createElement('div');
+                musicHeader.className = 'time-header';
+                musicHeader.style.background = 'linear-gradient(to right, var(--cinzas), #6a1e6e)';
+                musicHeader.innerHTML = `
+                    <h3><i class="${momento.momento.includes('🎵') ? 'fas fa-music' : momento.momento.includes('🙏') ? 'fas fa-pray' : 'fas fa-book'}"></i> ${momento.momento}</h3>
+                `;
+
+                const musicContent = document.createElement('div');
+                musicContent.className = 'time-content';
+
+                momento.musicas.forEach((musica, musIndex) => {
+                    const musicaDiv = document.createElement('div');
+                    musicaDiv.className = 'musica-item';
+
+                    const musicaHeader = document.createElement('div');
+                    musicaHeader.className = 'musica-header';
+                    musicaHeader.innerHTML = `
+                        <span class="musica-titulo">${musica.titulo}</span>
+                        <span class="musica-tom">${musica.tom}</span>
+                    `;
+
+                    const letraDiv = document.createElement('div');
+                    letraDiv.className = 'musica-letra';
+                    letraDiv.id = `cinzas-${idx}-${musIndex}`;
+                    letraDiv.style.display = 'none';
+                    letraDiv.textContent = musica.letra;
+
+                    const btnLetra = document.createElement('button');
+                    btnLetra.className = 'btn-letra';
+                    btnLetra.innerHTML = '<i class="fas fa-chevron-down"></i> Ver letra';
+                    btnLetra.onclick = () => {
+                        if (letraDiv.style.display === 'none') {
+                            letraDiv.style.display = 'block';
+                            btnLetra.innerHTML = '<i class="fas fa-chevron-up"></i> Esconder letra';
+                        } else {
+                            letraDiv.style.display = 'none';
+                            btnLetra.innerHTML = '<i class="fas fa-chevron-down"></i> Ver letra';
+                        }
+                    };
+
+                    musicaDiv.appendChild(musicaHeader);
+                    musicaDiv.appendChild(btnLetra);
+                    musicaDiv.appendChild(letraDiv);
+                    musicContent.appendChild(musicaDiv);
+                });
+
+                musicHeader.onclick = () => {
+                    musicContent.classList.toggle('expanded');
+                };
+
+                musicCard.appendChild(musicHeader);
+                musicCard.appendChild(musicContent);
+                container.appendChild(musicCard);
+            });
+        }
+
+        // ============================================================================
+        // FUNÇÕES DE CONTROLE
+        // ============================================================================
+
+        let currentEvent = 'retiro';
+
+        function switchEvent(event) {
+            currentEvent = event;
+            
+            document.querySelectorAll('.tab').forEach(tab => {
+                if (tab.dataset.event === event) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+
+            document.querySelectorAll('.event-section').forEach(section => {
+                if (section.id === `event-${event}`) {
+                    section.classList.add('active');
+                } else {
+                    section.classList.remove('active');
+                }
+            });
+
+            const controls = document.getElementById('controls');
+            const footer = document.getElementById('footer');
+            
+            if (event === 'cinzas') {
+                controls.classList.add('cinzas');
+                footer.classList.add('cinzas');
+            } else {
+                controls.classList.remove('cinzas');
+                footer.classList.remove('cinzas');
+            }
+        }
+
+        function increaseFontSize() {
+            const root = document.documentElement;
+            let current = parseFloat(getComputedStyle(root).getPropertyValue('--font-size'));
+            if (current < 22) root.style.setProperty('--font-size', (current + 1) + 'px');
+        }
+
+        function decreaseFontSize() {
+            const root = document.documentElement;
+            let current = parseFloat(getComputedStyle(root).getPropertyValue('--font-size'));
+            if (current > 12) root.style.setProperty('--font-size', (current - 1) + 'px');
+        }
+
+        function resetFontSize() {
+            document.documentElement.style.setProperty('--font-size', '16px');
+        }
+
+        function setupSearch() {
+            const searchInput = document.getElementById('search-input');
+            searchInput.addEventListener('input', function() {
+                const term = this.value.toLowerCase();
+                const activeSection = document.querySelector('.event-section.active');
+                
+                activeSection.querySelectorAll('.time-card').forEach(card => {
+                    const text = card.textContent.toLowerCase();
+                    if (text.includes(term) || term === '') {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        // ============================================================================
+        // INICIALIZAÇÃO
+        // ============================================================================
+
+        document.addEventListener('DOMContentLoaded', function() {
+            renderizarRetiro();
+            renderizarCinzas();
+
+            document.getElementById('tab-retiro').addEventListener('click', () => switchEvent('retiro'));
+            document.getElementById('tab-cinzas').addEventListener('click', () => switchEvent('cinzas'));
+
+            document.getElementById('increase-font').addEventListener('click', increaseFontSize);
+            document.getElementById('decrease-font').addEventListener('click', decreaseFontSize);
+            document.getElementById('reset-font').addEventListener('click', resetFontSize);
+
+            setupSearch();
+        });
+    </script>
 </body>
 </html>
