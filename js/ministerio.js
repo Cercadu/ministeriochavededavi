@@ -1,961 +1,1686 @@
 // ============================================================================
-// DADOS DA LITURGIA DIÁRIA
+// SISTEMA DE BANCO DE DADOS LOCAL E CONTROLES DINÂMICOS - CHAVE DE DAVI
 // ============================================================================
 
-const dadosLiturgia = {
-    data: new Date().toISOString().split('T')[0],
-    titulo: "3ª Semana do Tempo Comum | Segunda-feira",
-    leituras: [
-        {
-            tipo: "primeira",
-            titulo: "Primeira Leitura (2 Sm 7,18-19.24-29)",
-            texto: `Naqueles dias, o rei Davi foi apresentar-se ao Senhor e disse: "Quem sou eu, Senhor Deus, e o que é a minha família, para que me tenhas conduzido até aqui? E ainda isto te pareceu pouco, Senhor Deus, e tu falaste também da casa do teu servo para um futuro distante, e agora me tratas segundo as riquezas de um homem ilustre, Senhor Deus! Firmaste o teu povo de Israel, para que fosse o teu povo para sempre, e tu, Senhor, te tornaste o seu Deus. Agora, pois, Senhor Deus, confirma para sempre a palavra que falaste a respeito de teu servo e de sua casa, e faze o que disseste. Que o teu nome seja engrandecido para sempre, e se diga: 'O Senhor dos exércitos é o Deus de Israel!' E a casa de teu servo Davi permanecerá firme diante de ti. Porque tu mesmo, Senhor dos exércitos, Deus de Israel, revelaste ao teu servo, dizendo: 'Edificarei uma casa para ti!' Por isso o teu servo encontrou coragem para fazer-te esta oração. Agora, Senhor Deus, tu és Deus, as tuas palavras são verdadeiras e fizeste ao teu servo todas essas promessas. Digna-te agora abençoar a casa de teu servo, para que permaneça sempre diante de ti, porque tu, Senhor Deus, o disseste; e com a tua bênção, será abençoada para sempre a casa de teu servo".`,
-            referencia: "Palavra do Senhor.",
-            resposta: "Graças a Deus."
-        },
-        {
-            tipo: "salmo",
-            titulo: "Salmo Responsorial (Sl 131)",
-            refrao: "O Senhor lhe dará o trono de seu pai Davi.",
-            versiculos: [
-                "Levanta-te, Senhor, e vem para o teu repouso, vós, a arca de vossa santidade! Que teus sacerdotes se revistam de justiça, e de alegria os teus fiéis!",
-                "Por amor de Davi, teu servo, não afastes de seu filho a tua face! O Senhor jurou a Davi, numa promessa que não retratará: 'Um herdeiro que é fruto do teu ventre eu colocarei sobre o teu trono!'",
-                "Se teus filhos guardarem minha aliança e os preceitos que lhes hei de ensinar, também os seus filhos, para sempre, hão de sentar-se sobre o teu trono!'"
-            ],
-            referencia: "Palavra do Senhor.",
-            resposta: "Graças a Deus."
-        },
-        {
-            tipo: "evangelho",
-            titulo: "Evangelho (Mc 4,21-25)",
-            aclamacao: "Aleluia, aleluia, aleluia.",
-            versiculo: "Eu sou a luz do mundo; aquele que me segue não andará nas trevas, mas terá a luz da vida.",
-            texto: `Naquele tempo, disse Jesus à multidão: "Quem é que traz uma lâmpada para colocá-la debaixo de uma vasilha ou debaixo da cama? Ao contrário, não a põe no candeeiro? Assim, tudo o que está escondido deve ser revelado, e tudo o que está em segredo deve ser trazido à luz. Quem tem ouvidos para ouvir, ouça!" Jesus disse ainda: "Prestai atenção no que ouvis: com a mesma medida com que medirdes, também vós sereis medidos; e vos será dado ainda mais. Pois àquele que tem, será dado ainda mais; daquele que não tem, será tirado até mesmo o que ele tem".`,
-            referencia: "Palavra da Salvação.",
-            resposta: "Glória a vós, Senhor."
-        }
-    ]
-};
+// Escala cromática de notas para transposição
+const notasSharp = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+const flatsMap = { 'Db': 'C#', 'Eb': 'D#', 'Gb': 'F#', 'Ab': 'G#', 'Bb': 'A#' };
 
-// ============================================================================
-// DADOS DAS MÚSICAS
-// ============================================================================
+// Regex global para detectar acordes individuais
+const chordTokenRegex = /^[A-G][#b]?(?:m|maj|min|sus|dim|aug|add|alt|\+)?\d*(?:b\d|#\d)?(?:\/[A-G][#b]?)?$/i;
 
-const musicData = [
+// Músicas pré-carregadas (com acordes posicionados ACIMA das letras)
+const DEFAULT_SONGS = [
     {
-        moment: "Entrada",
-        icon: "fas fa-door-open",
-        songs: [
-            {
-                title: "Festa do Cordeiro",
-                key: "C",
-                lyrics: `[Intro] D  D/C  G/B  A
-        D  D/C  D/F#  G  
-        A  G/B  A
+        id: "corpus-entrada",
+        titulo: "Povo de Reis Assembleia Santa",
+        tomPadrao: "E",
+        tags: ["Entrada"],
+        linkYoutube: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        letra: `[Intro]
+E   A   B   E   A   B
 
-   D       D/C
-Cantai, cantai ao Senhor Deus
-   G/B       A4
-Cantai, sua glória entre as nações
-  G
-Entrai com alegria, dons e oferendas
-    A4          A
-Nos átrios do Senhor
-   D       D/C
-Louvai, louvai ao Senhor Deus
-    G/B    A4
-Louvai, aquele que venceu
-   G
-Na Cruz nos deua a vida, curou nossas feridas
-     A4          A
-Seu sangue nos lavou
-   G              G   A     Bm          A4  A
-Trazei o mundo inteiro    à festa do Cordeiro
-G                A    G/B A/C#
-Vinde, vinde celebrar
+[Refrão]
+E                 A        B
+Assembleia santa, povo de reis,
+E                 B      A        E
+Império dos sacerdotes, povo de Deus,
+E             B        A         B       E
+Cantai ao vosso Senhor! Cantai ao vosso Senhor!
 
-          D                     G  
-Reina o Senhor, eterno é o Seu Amor
-   D/F#     Em           D/F#      A G/B A/C# A
-Vestido de glória e majestade está aqui
-          D      D     Em  D/F# G   A Bm
-Reina o Senhor, eterno é o Seu Amor
-      Em          D/F#       A4  A 
-Sua beleza tudo recria, tudo refaz
+[Estrofe 1]
+C#m                         F#m           B
+1. Nós vos louvamos, ó Cristo, Estrela da Manhã,
+A                     F#m             B
+Nós vos bendizemos, caminho da salvação.
+C#m                         F#m            B
+Nós vos glorificamos, ó pão da nossa vida,
+A                     F#m              B
+Nós vos adoramos, defensor dos pecadores.
 
-( D  C  C  G )  
-
-   D       D/C
-Cantai, cantai ao Senhor Deus
-   G/B       A4
-Cantai, sua glória entre as nações
-  G
-Entrai com alegria, dons e oferendas
-    A4          A
-Nos átrios do Senhor
-   D       D/C
-Louvai, louvai ao Senhor Deus
-    G/B    A4
-Louvai, aquele que venceu
-   G
-Na Cruz nos deu a vida, curou nossas feridas
-     A4          A
-Seu sangue nos lavou
- G            G   A   Bm            D A/C# A D/F#
-Exultem de alegria os céus e toda a ter----ra
-G                       A4  A
-Diante do Cordeiro vencedor
-
-          D                     G  
-Reina o Senhor, eterno é o Seu Amor
-   D/F#     Em           D/F#      A G/B A/C# A
-Vestido de glória e majestade está aqui
-          D      D     Em  D/F# G   A Bm
-Reina o Senhor, eterno é o Seu Amor
-      Em          D/F#       A4  A 
-Sua beleza tudo recria, tudo refaz
-
-( G  A  G/B  G  A )
-
-          D      D    Em   D/F# G  
-Reina o Senhor, eterno é o Seu Amor
-   D/F#     Em           D/F#      A G/B A/C# A
-Vestido de glória e majestade está aqui
-          D  Em D/F#    D/A            G
-Reina o Senhor,        eterno é o Seu Amor
-      Em          D/F#       A4  A 
-Sua beleza tudo recria, tudo refaz
-
-          G
-Reina o Senhor!
-          Bm
-Reina o Senhor!
-          G    D/F# A   D
-Reina o Senhor`
-            }
-        ]
+[Estrofe 2]
+C#m                        F#m             B
+2. Nós vos cantamos, mediador da nova aliança,
+A                        F#m               B
+Nós vos louvamos, sacerdote da eterna aliança.
+C#m                         F#m            B
+Nós vos bendizemos, ó luz das nossas almas,
+A                     F#m               B
+Nós vos adoramos, pão vivo descido do céu.`
     },
     {
-        moment: "Ato Penitencial",
-        icon: "fas fa-hands-praying",
-        songs: [
-            {
-                title: "Kyrie Eleison - JMJ RIO 2013",
-                key: "Bm",
-                lyrics: `[Intro] Bm7  G7M
-        Bm7  G7M
+        id: "corpus-kyrie",
+        titulo: "Senhor, Verdadeiro Corpo (Marco Frisina)",
+        tomPadrao: "Em",
+        tags: ["Ato Penitencial"],
+        linkYoutube: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        letra: `[Intro]
+Em   B7   Em   Am   Em   B7   Em
 
-[Primeira Parte]
+[Estrofe 1]
+Em          B7      Em      Am          B7
+Senhor, verdadeiro corpo nascido da Virgem Maria,
+Am          Em      C                 B7
+Tende piedade de nós, tende piedade de nós.
+Em     Am  D   G   C      Am  B7  Em
+Kyrie eleison, Kyrie eleison.
 
-    Bm7       A      G7M
+[Estrofe 2]
+Em          B7         Em       Am          B7
+Ó Cristo, verdadeiro pão que alimenta a nossa alma,
+Am          Em      C                 B7
+Tende piedade de nós, tende piedade de nós.
+Em       Am  D   G   C       Am  B7  Em
+Christe eleison, Christe eleison.
+
+[Estrofe 3]
+Em            B7      Em       Am           B7
+Senhor, fonte de amor que nos reúne no vosso altar,
+Am          Em      C                 B7
+Tende piedade de nós, tende piedade de nós.
+Em     Am  D   G   C      Am  B7  Em
+Kyrie eleison, Kyrie eleison.`
+    },
+    {
+        id: "corpus-gloria",
+        titulo: "Glória Na Dança da Vida",
+        tomPadrao: "A",
+        tags: ["Glória"],
+        linkYoutube: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        letra: `[Intro]
+A   D   E   A   D   E
+
+[Refrão]
+A               D         E
+Glória, glória a Deus nas alturas!
+A                D          E
+E paz na terra aos homens por Ele amados!
+A               D         E
+Glória, glória a Deus nas alturas!
+A                D          E
+E paz na terra aos homens por Ele amados!
+
+[Estrofe 1]
+F#m                        C#m             D
+1. Senhor Deus, Rei dos céus, Deus Pai todo-poderoso.
+                A        D              E
+Nós vos louvamos, nós vos bendizemos.
+F#m             C#m                   D
+Nós vos adoramos, nós vos glorificamos,
+                A               D        E
+Nós vos damos graças por vossa imensa glória.
+
+[Estrofe 2]
+F#m                C#m             D
+2. Senhor Jesus Cristo, Filho unigênito.
+                  A            D         E
+Senhor Deus, Cordeiro de Deus, Filho de Deus Pai.
+F#m                 C#m                          D        A
+Vós que tirais o pecado do mundo, tende piedade de nós.
+F#m                 C#m                         D        E
+Vós que tirais o pecado do mundo, acolhei a nossa súplica.`
+    },
+    {
+        id: "corpus-oferendas",
+        titulo: "A Vós Senhor Apresentamos Estes Dons",
+        tomPadrao: "G",
+        tags: ["Ofertório"],
+        linkYoutube: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        letra: `[Intro]
+G   D   C   D   G
+
+[Estrofe 1]
+G                 D            G
+A vós, Senhor, apresentamos estes dons,
+G             C          D        G
+O pão e o vinho que vão se transformar
+C             D          G   D/F#   Em
+No corpo e no sangue de Jesus,
+C             D         G
+Nosso Salvador e Redentor.
+
+[Estrofe 2]
+Em                         Bm
+1. Fruto do trabalho e do suor do homem,
+C             D          G
+Este pão da vida se tornará.
+Em                Bm
+Vinho da alegria, bebida de salvação,
+C             A7         D
+Para o vosso povo se alimentar.
+
+[Estrofe 3]
+Em                       Bm
+2. Recebei, Senhor, a nossa própria vida,
+C             D             G
+Tudo o que temos e o que somos nós.
+Em                  Bm
+Em vossa presença, oferta agradecida,
+C             A7            D
+Elevamos juntos nossa voz.`
+    },
+    {
+        id: "corpus-santo",
+        titulo: "Santo Na Dança da Vida (Shalom)",
+        tomPadrao: "Em",
+        tags: ["Santo"],
+        linkYoutube: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        letra: `[Intro]
+F#m7(b5)   Em   D   G/B   C   G/B   G   Am   Am/G   F#m7(b5)   B4   B
+
+[Estrofe 1]
+Em  D   C   G  D/F#  Em    F   C/E     D4  D#dim
+San---to, San-------to, Santo é o Senhor Deus do universo!
+Em  D   C   G  D/F#  Em    F   C/E     D4  D
+San---to, San-------to, Santo é o Senhor Deus do universo!
+
+[Refrão]
+Am7            Bm7                  C
+Céus e terra proclamam vossa glória,
+F#m7(b5)          B7
+Hosana nas alturas!
+Am7                 Bm7                 C
+Bendito o que vem em nome do Senhor,
+F#m7(b5)          B7
+Hosana nas alturas!
+
+[Estrofe 2]
+F#m  E   D   A  E/G#  F#m   G   D/F#    E4  Fdim
+San----to, San-------to, Santo é o Senhor Deus do universo!
+F#m  E   D   A  E/G#  F#m   G   D/F#    E4  E
+San----to, San-------to, Santo é o Senhor Deus do universo!`
+    },
+    {
+        id: "corpus-painosso",
+        titulo: "Pai Nosso (Tradicional)",
+        tomPadrao: "G",
+        tags: ["Pai Nosso"],
+        linkYoutube: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        letra: `G                  C         G
+Pai nosso que estais no céu,
+      C                     D
+Santificado seja o vosso nome.
+G                      Em
+Venha a nós o vosso reino,
+      C              D
+Seja feita a vossa vontade,
+          C             G
+Assim na terra como no céu.
+
+G                        C         G
+O pão nosso de cada dia nos dai hoje.
+       C               D
+Perdoai as nossas ofensas,
+           G               Em              C
+Assim como nós perdoamos a quem nos tem ofendido.
+             G                  C
+E não nos deixeis cair em tentação,
+    G      D     G
+Mas livrai-nos do mal.`
+    },
+    {
+        id: "corpus-cordeiro",
+        titulo: "Cordeiro Amor e Adoração",
+        tomPadrao: "F",
+        tags: ["Cordeiro"],
+        linkYoutube: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        letra: `[Intro]
+F   Bb   C   F
+
+[Estrofe 1]
+F           C       Dm          Am          Bb
+Cordeiro de Deus, que tirais o pecado do mundo,
+          F          Gm                 C
+Tende piedade de nós, tende piedade de nós.
+F           C       Dm          Am          Bb
+Cordeiro de Deus, que tirais o pecado do mundo,
+          F          Gm                 C
+Tende piedade de nós, tende piedade de nós.
+
+[Estrofe 2]
+F           C       Dm          Am          Bb
+Cordeiro de Deus, que tirais o pecado do mundo,
+            C    F          Dm
+Dai-nos a paz, dai-nos a paz,
+Gm          C        F
+Dai-nos a vossa paz.`
+    },
+    {
+        id: "corpus-comunhao",
+        titulo: "Verbum Panis",
+        tomPadrao: "Dm",
+        tags: ["Comunhão"],
+        linkYoutube: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        letra: `[Intro]
+Dm   Bb   Gm   A4   A
+
+[Estrofe 1]
+Dm            Bb                   Gm            A4            A
+Desde o princípio, antes mesmo que a terra começasse a existir,
+Dm            Bb               Gm      A4   A
+O verbo estava junto a Deus,
+Dm            Bb               Gm            A4            A
+E por meio d'Ele tudo foi criado, toda a vida n'Ele se fez,
+Dm                  Bb               Gm       A
+O verbo se encarnou e habitou entre nós.
+
+[Refrão]
+F        C        Bb     C        Dm     C        Bb
+Verbum panis factum est, Verbum panis laudamus te.
+F        C        Bb     C        Dm     C  frater  Bb
+Verbum panis factum est, Verbum panis   Jesu.
+
+[Estrofe 2]
+Dm            Bb             Gm             C              Dm
+1. Antes da morte e ressurreição, Tu te entregaste na comunhão,
+            Bb            Gm                   C            Dm
+Partindo o pão aos teus irmãos, alimentando o nosso coração.
+            Bb             Gm             C            Dm
+Tu te tornaste o pão da vida, corpo e sangue de amor,
+            Bb            Gm                   A4      A
+Sublime entrega e doação, presença viva do Senhor.`
+    },
+    {
+        id: "corpus-poscomunhao",
+        titulo: "Sublime Silêncio",
+        tomPadrao: "G",
+        tags: ["Pós-Comunhão"],
+        linkYoutube: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        letra: `[Intro]
+G   C   G   C   D
+
+[Estrofe 1]
+G           C         G         D
+Sublime silêncio, Deus presente aqui,
+C           G         Am          D      G
+Tua voz suave em meu peito a falar.
+G           C           G         D
+Na hóstia consagrada, mistério de amor,
+C           G         D         G
+Minha alma exulta ao te encontrar.
+
+[Estrofe 2]
+Em                 Bm                     C
+1. Silêncio que fala, que acalma a tempestade,
+G            D/F#       Em
+Que traz ao meu peito a verdade.
+           Bm                     C
+Aqui me esvazio de tudo o que sou,
+    Am                  D
+E deixo que reines, meu Deus e Senhor.`
+    },
+    {
+        id: "corpus-adoracao",
+        titulo: "Diante do Rei",
+        tomPadrao: "E",
+        tags: ["Adoração"],
+        linkYoutube: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        letra: `[Intro]
+E   A   B   E   A   B
+
+[Estrofe 1]
+E                  B/D#              C#m         G#m
+Senhor, diante de Ti, venho me prostrar,
+A             E/G#        F#m            B
+Diante do Rei dos reis e Senhor dos senhores.
+E                  B/D#              C#m         G#m
+Tua presença nos cura, nos enche de paz,
+A             E/G#         F#m       B
+E nos faz desejar estar perto de Ti.
+
+[Refrão]
+E             B/D#           C#m         G#m
+Diante do Rei dos reis, eu me prostrarei.
+A             E/G#         F#m         B
+Em adoração, meu louvor entregarei.
+E          B/D#          C#m         G#m
+Santo, Santo é o Senhor, Deus do universo,
+A          B        A         E
+Toda a terra proclama o Seu amor.`
+    },
+    {
+        id: "corpus-final",
+        titulo: "Glória a Jesus Na Hóstia Santa",
+        tomPadrao: "G",
+        tags: ["Final"],
+        linkYoutube: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        letra: `[Estrofe]
+G          D       Em       Bm
+Glória a Jesus na Hóstia santa,
+C          G         A7         D
+Que se consagra sobre o altar!
+G          D       Em       Bm
+E a nossa fé nos acompanha,
+C          D       G
+Para Jesus glorificar!
+
+[Refrão]
+G          C       D        G
+O Céu e a Terra cantam louvores,
+Em          Am           D
+Ao Deus de amor na Comunhão!
+G          C       D        G
+Glória a Jesus na Hóstia Santa,
+C          D         G
+Nossa espiritual refeição!`
+    },
+    {
+        id: "prev-festa-cordeiro",
+        titulo: "Festa do Cordeiro",
+        tomPadrao: "C",
+        tags: ["Entrada"],
+        letra: `[Intro]
+D   D/C   G/B   A   D   D/C   D/F#   G   A   G/B   A
+
+[Estrofe]
+D                  D/C
+Cantai, cantai ao Senhor Deus
+G/B                 A4           A
+Cantai, sua glória entre as nações
+G
+Entrai com alegria, dons e oferendas
+A4                  A
+Nos átrios do Senhor.
+
+[Refrão]
+D                  G            D
+Reina o Senhor, eterno é o Seu Amor
+D/F#        Em           D/F#            A
+Vestido de glória e majestade está aqui.
+D                  Em   D/F#   G   A  Bm
+Reina o Senhor, eterno é o Seu Amor
+      Em          D/F#           A4   A
+Sua beleza tudo recria, tudo refaz.`
+    },
+    {
+        id: "prev-kyrie-jmj",
+        titulo: "Kyrie Eleison - JMJ Rio 2013",
+        tomPadrao: "Bm",
+        tags: ["Ato Penitencial"],
+        letra: `[Intro]
+Bm7   G7M   Bm7   G7M
+
+[Estrofe]
+Bm7         A       G7M
 Senhor, que viestes salvar
-        Bm7         A/C#  F#4  F#
-Os corações arrependi____dos
+        Bm7         A/C#    F#4   F#
+Os corações arrependidos.
 
 [Refrão]
+D   D4  D  A/C#   F#7/A#  F#7  Bm7   E4  E  A
+Kyrie eleison, eleison, eleison.`
+    }
+];
 
-       D  D4  D  A/C#   
-Kyrie  elei____son
-  F#7/A#  F#7  Bm7   
-Elei__________son
-  E4  E  A
-Elei____son
-
- D       D4  D  A/C#   
-Kyrie  elei____son
-  F#7/A#  F#7  Bm7   
-Elei__________son,
-  E4  E  A
-Elei____son
-
-( Bm7  F#m7  G7M )
-
-[Segunda Parte]
-
-     Bm7         A9        G7M
-Ó, Cristo, que viestes chamar
-        Bm7        A/C#  F#4  F#
-Os pecadores humilhados
-
-[Refrão 2]
-
-      D    D4  D  A/C#   
-Christe  ele____ison
-  F#7/A#  F#7  Bm7   
-Elei__________son
-  E4  E  A  G/A  A  G/A
-Ele____ison
-
- D         D4  D  A/C#  A/B
-Christe  elei____son
-  F#7/A#  F#/C#  Bm7  Bm7/A     
-Ele____________ison
-  E/G#  E  A
-Ele______ison
-
-( G#m7(5-)  C#7  F#m7  A/B )
-( D7M(6/9)  E7(4) )
-
-[Terceira Parte]
-
-    F#m7            E6   D7M
-Senhor, que intercedeis por nós
-              F#m7           E/G#  C#4
-Junto a Deus Pai que nos perdo_____a
-
-( E/F#  F#  E/F# )
-
-[Refrão]
-
-    B  B/D#  E  B/D#  C#m7  C#m7/B  
-Kyrie      ele______ison
-  A#m11  D#7  G#m7  
-Ele_________ison
-  C#4  C#7  F#  E/F#  F#  E/F#
-Ele_______ison
-
-    B  B/D#  E  B/D#  C#m7  C#m7/B  
-Kyrie      ele______ison
-  A#m11  D#7  G#m7   
-Ele_________ison
-  C#4  C#7  F# 
-Ele_______ison
-
-[Final] E/F#  F#  A7M`
-            }
-        ]
-    },
+// Missas com ROTEIROS e LEITURAS completas
+const DEFAULT_MASSES = [
     {
-        moment: "Glória",
-        icon: "fas fa-hands-praying",
-        songs: [
-            {
-                title: "Glória a Deus Nas Alturas - Eliana Ribeiro",
-                key: "G",
-                lyrics: `[Intro] D9  C9  D9
-        C9  D9  C9
-
-[Primeira Parte] 
-  D9                 C9
-Glória a Deus nas alturas
-   G
-E paz na Terra
-                     D9   ( D4  D )
-Aos homens por Ele amados
-    D9        C9
-Senhor Deus, rei dos céus
- G                D9
-Deus Pai Todo Poderoso
-
-[Ponte 1]
-            Am  D9
-Nós vos louva__mos
-              Am  D9
-Nós vos bendize__mos
-            Am  D9
-Nós vos adora__mos
-                Am  D9
-Nós vos glorifica__mos
-                C9
-Nós vos damos graças
-     G             D9
-Por vossa imensa glória
-
-[Segunda Parte] 
-               C9
-Senhor Jesus Cristo
- G        D9    ( D4  D )
-Filho Unigênito
-    D9           C9
-Senhor Deus, Cordeiro de Deus
- G             D9
-Filho de Deus Pai
-
-[Ponte 2]
- Am                  G
-Vós, que tirais o pecado do mundo
- C9               D9
-Tende piedade de nós
- Am                  G
-Vós, que tirais o pecado do mundo
-C9               D9
-Acolhei a nossa súplica
- Am                  G
-Vós, que estais à direita do Pai
- C9               D9
-Tende piedade de nós
-
-[Refrão]
-               Am  D9
-Só vós sois o Sa_nto
-              Am  D9
-Só vós, o Senhor
-             C9              D9
-Só vós, o Altíssimo, Jesus Cristo
- E              A
-Com o Espírito Santo
-
-[Final]
-                  G       D9
-Na glória de Deus   Pai amém!
-                  G       D9
-Na glória de Deus   Pai amém!
-                  G       D9
-Na glória de Deus   Pai amém!
-                  G       D9
-Na glória de Deus   Pai amém!`
-            }
-        ]
-    },
-    {
-        moment: "Salmo",
-        icon: "fas fa-book-bible",
-        songs: [
-            {
-                title: "SALMO 48 (48) - FELIZES OS HUMILDES DE ESPÍRITO",
-                key: "F",
-                lyrics: `              
-  F          Gm          F 
-FELIZES OS HUMILDES DE ESPÍRITO, 
-F/A    Bb        C7        F
-PORQUE DELES É O REINO DOS CÉUS. (BIS)
-
-   F                                C  F
-1. POR QUE TEMER OS DIAS MAUS E INFELI-ZES,
-Dm                             Bb    C   F
-QUANDO A MALÍCIA DOS PERVERSOS ME CIRCUN-DA?
-F                                  C  F
-POR QUE TEMER OS QUE CONFIAM NAS RIQUEZAS 
-Dm                            Bb   C  F
-E SE GLORIAM NA ABUNDÂNCIA DE SEUS BE-ENS?
-
-  F          Gm          F 
-FELIZES OS HUMILDES DE ESPÍRITO, 
-F/A    Bb        C7        F
-PORQUE DELES É O REINO DOS CÉUS.`
-            }
-        ]
-    },
-    {
-        moment: "Aclamação",
-        icon: "fas fa-music",
-        songs: [
-            {
-                title: "ACLAMAÇÃO EVANGELHO (TRADICIONAL)",
-                key: "E",
-                lyrics: `   
-E B4 E
-Aleluia, Aleluia, Aleluia,
-A B4 E
-Alelu____ia,
-E
-Meus discípulos, se alegrem
-                    B4
-Saltem mesmo de alegria
-Pois bem grande é a recompensa
-                        E E4
-Que de Deus vão ter um dia!`
-            }
-        ]
-    },
-    {
-        moment: "Ofertório",
-        icon: "fas fa-gift",
-        songs: [
-            {
-                title: "Venho a Ti - Eliana Ribeiro",
-                key: "G",
-                lyrics: `
-E7+/9   E                                    F#m/Eb 
-Venho a Ti e    sei que não estou mais sozinho
-G#5+/7  Cº
-
-               C#m7+  A7+               F#m  D9  A/B
-Muitas vozes se elevam para o céu
-               E7+/9         E                           
-Venho a Ti como aqueles irmãos verdadeiros
-F#m/Eb G#5+/7  Cº
-
-            C#m7+      A7+           F#m   A/B
-Que comigo dão a ti seus corações
-
-   F#m   A/B     E7+ C#m      F#m        A/B       G#m   
-E tu que és o amor,             escuta cada prece de dor 
- C#m
-de amor
-   A9       B/A  G#m  Gdim F#m            A/B           
-E tu que és a paz                 dá-nos a esperança em 
-             G#m        C#m
-cada momento, Senhor
-    F#m         A/B    E7+ C#m F#m     A/B     E9
-E abre o paraíso a nós,       e abre o paraíso a nós.`
-            }
-        ]
-    },
-    {
-        moment: "Santo",
-        icon: "fas fa-church",
-        songs: [
-            {
-                title: "Santo é o Senhor (Na dança da vida) - Comunidade Shalom",
-                key: "Em",
-                lyrics: `[Intro] F#m7(b5)  Em  D  G/B  C  G/B  G  Am  
-        Am/G  F#m7(b5)  B4  B9  F#  A  C  E  B  
-
-Em  D  C   G  D/F#  Em    F   C/E     D4  D#º
-San___to, San_______to, Santo é o Senhor
-Em  D  C   G  D/F#  Em    F   C/E     D4  D7M 
-San___to, San_______to, Santo é o Senhor
-
-Am7          Bm7                 C9  ( Am )
-Céus e terra proclamam vossa glória
-F#m7(b5)      B7 ( F#  A  C  E  B  )
-Hosana nas alturas
-
-( D  D  D  C  A  F )
-
-Em  D  C   G  D/F#  Em    F   C/E     D4  D#º
-San___to, San_______to, Santo é o Senhor
-Em  D  C   G  D/F#  Em    F   C/E     D4  D7M 
-San___to, San_______to, Santo é o Senhor
-
-Am7               Bm7            C9  ( Am ) 
-Bendito o que vem em nome do Senhor
-F#m7(b5)      B7  Cº  C#7 ( F#  A  C  E  B  )
-Hosana nas alturas
-
-F#m  E  D  A  E/G#  F#m   G    D/F#    E4  Fº
-San____to, San_______to, Santo é o Senhor
-F#m  E  D  A  E/G#  F#m   G    D/F#    E4  E 
-San____to, San_______to, Santo é o Senhor
-
-             A9  G9/A          A9  G9/A
-Santo é o Senhor  Santo é o Senhor
-                  F7M   G9     A  
-Santo é o Senhor  Santo é o Senhor`
-            }
-        ]
-    },
-    {
-        moment: "Comunhão",
-        icon: "fas fa-wine-glass-alt",
-        songs: [
-            {
-                title: "Entre Nós - Ministério Amor e Adoração",
-                key: "F",
-                lyrics: `
-[Intro] C  C#º  Bb/D  C/E  F  Bb/F  F
-
-  F      C/E   Dm7    A/C#    Bb9
-O Pão do céu, está aqui entre nós
-      F/A  Bb    C9
-É o Cordeiro de Deus
-  F    C/E      Dm7   A/C#     Bb
-Amor maior, não há em nenhum lugar
-        F/A       Bb9    C9
-Que o sacrifício deste altar
-
-F                    Bb/F
-Anjos cantando entre nós
-   F                   C/E Am7  Dm7
-O céu e a terra são um só  coração
-      Bb   Bb/D     C C7
-Nesta santa Comunhão
-   F                      Bb/F
-Jesus visitando a imperfeição
-  F                       C/E  Am7    Dm7
-O homem que encontra redenção, tudo aqui
-      Bb    Dm7    C  C#º  Bb/D  C/E  Bb/F  F
-Nesta santa Comunhão
-
-   F     C/E   Dm7   A/C#     Bb
-O dom do Pai, está aqui entre nós
-     F/A       Bb9   C9
-Neste vinho e neste pão
-   F     C/E      Dm11     A/C#       Bb
-Oh luz maior, se acende em nós, comunhão
-      F/A    Bb   C7(4) C7
-É pra nós a salvação`
-            }
-        ]
-    },
-    {
-        moment: "Pós-Comunhão",
-        icon: "fas fa-praying-hands",
-        songs: [
-            {
-                title: "Deus É Bom e Fiel - Walmir Alencar",
-                key: "G",
-                lyrics: `[Primeira Parte]
-        G
-Caminharei (caminharei)
-             C
-Não me cansarei (não me cansarei)
-        G  F         G
-E seguirei  (e seguirei)
-                 C
-Rumo ao rei dos reis
-
-[Refrão]
-                G
-Ele é minha força!
-               Em7
-Deus é bom e fiel
-                 C7(9)
-Ele está sempre perto
-Deus é bom e fiel
-                   G
-Vou seguro em sua mão
-               Em7
-Deus é bom e fiel
-                 C7(9)
-Ele está sempre perto
-Deus é bom e fiel
-                      G7
-Rendo a ele o meu louvor e gratidão`
-            }
-        ]
-    },
-    {
-        moment: "Final",
-        icon: "fas fa-flag",
-        songs: [
-            {
-                title: "VIGIA ESPERANDO A AURORA",
-                key: "D",
-                lyrics: `[Intro] D  G  F#m7 Em7  
-        D  G  F#m7 Em7  
-        D  A4  A 
-
-[Refrão] 
-   D     G           D        
-Vigia esperando a aurora  
-              G          D  D7 
-Qual noiva esperando o amor 
-     G         F#m7    Bm7     
-É assim que o servo espera  
-   Em7   A         D  Em7  D/F# 
-A vinda do seu Senhor 
-     G         F#m7    Bm7     
-É assim que o servo espera  
-   Em7   A         D 
-A vinda do seu Senhor`
-            }
-        ]
+        id: "mass-corpus-christi",
+        data: "2026-06-04",
+        titulo: "Solenidade de Corpus Christi",
+        local: "Paróquia Chave de Davi",
+        linkPlaylist: "https://www.youtube.com/playlist?list=PL35747585",
+        leituras: {
+            primeira: "Primeira Leitura (Dt 8,2-3.14b-16a)\n\nLeitura do Livro do Deuteronômio.\n\nMoisés falou ao povo, dizendo: 2 Lembra-te de todo o caminho por onde o Senhor teu Deus te conduziu, esses quarenta anos, no deserto, para te humilhar e te pôr à prova, para saber o que tinhas no teu coração, e para ver se observarias ou não seus mandamentos.\n3 Ele te humilhou, fazendo-te passar fome e alimentando-te com o maná que nem tu nem teus pais conhecíeis, para te mostrar que nem só de pão vive o homem, mas de toda a palavra que sai da boca do Senhor.\n14b Não te esqueças do Senhor teu Deus que te fez sair do Egito, da casa da escravidão, 15 e que foi teu guia no vasto e terrível deserto, onde havia serpentes abrasadoras, escorpiões, e uma terra árida e sem água nenhuma.\nFoi ele que fez jorrar água para ti da pedra duríssima, 16a e te alimentou no deserto com maná, que teus pais não conheciam.\n\n- Palavra do Senhor.\n- Graças a Deus.",
+            salmo: "Responsório Sl 147(147B),12-13.14-15.19-20 (R. 12)\n\nR. Glorifica o Senhor, Jerusalém; celebra teu Deus, ó Sião!\n\n- Glorifica o Senhor, Jerusalém! Ó Sião, canta louvores ao teu Deus! Pois reforçou com segurança as tuas portas, e os teus filhos em teu seio abençoou.\n\n- A paz em teus limites garantiu e te dá como alimento a flor do trigo. Ele envia suas ordens para a terra, e a palavra que ele diz corre veloz.\n\n- Anuncia a Jacó sua palavra, seus preceitos e suas leis a Israel. Nenhum povo recebeu tanto carinho, a nenhum outro revelou os seus preceitos.",
+            segunda: "Segunda Leitura (1Cor 10,16-17)\n\nLeitura da Primeira Carta de São Paulo aos Coríntios.\n\nIrmãos: 16 O cálice da bênção, o cálice que abençoamos, não é comunhão com o sangue de Cristo? E o pão que partimos, não é comunhão com o corpo de Cristo?\n17 Porque há um só pão, nós todos somos um só corpo, pois todos participamos desse único pão.\n\n- Palavra do Senhor.\n- Graças a Deus.",
+            evangelho: "Evangelho (Jo 6,51-58)\n\n- Aleluia, Aleluia, Aleluia.\n- Eu sou o pão vivo descido do céu; quem deste pão come, sempre há de viver!\n\nProclamação do Evangelho de Jesus Cristo segundo João.\n- Glória a vós, Senhor.\n\nNaquele tempo: disse Jesus às multidões dos judeus: 51 'Eu sou o pão vivo descido do céu. Quem comer deste pão viverá eternamente. E o pão que eu darei é a minha carne dada para a vida do mundo'.\n52 Os judeus discutiam entre si, dizendo: 'Como é que ele pode dar a sua carne a comer?'\n53 Então Jesus disse: 'Em verdade, em verdade vos digo: se não comerdes a carne do Filho do Homem e não beberdes o seu sangue, não tereis a vida em vós.\n54 Quem come a minha carne e bebe o meu sangue tem a vida eterna, e eu o ressuscitarei no último dia.\n55 Porque a minha carne é verdadeira comida, e o meu sangue, verdadeira bebida.\n56 Quem come a minha carne e bebe o meu sangue permanece em mim e eu nele.\n57 Como o Pai, que vive, me enviou, e eu vivo por causa do Pai, assim aquele que me recebe como alimento viverá por causa de mim.\n58 Este é o pão que desceu do céu. Não é como aquele que os vossos pais comeram. Eles morreram. Aquele que come este pão viverá para sempre'.\n\n— Palavra da Salvação.\n— Glória a vós, Senhor."
+        },
+        musicas: [
+            { momento: "Entrada", musicaId: "corpus-entrada", tomMissa: "E", cantor: "Marina (Solo)" },
+            { momento: "Ato Penitencial", musicaId: "corpus-kyrie", tomMissa: "Em", cantor: "Lucas (Solo)" },
+            { momento: "Glória", musicaId: "corpus-gloria", tomMissa: "A", cantor: "Todos" },
+            { momento: "Salmo", musicaId: "corpus-painosso", tomMissa: "G", cantor: "Ana (Salmista)", observacoes: "Cantar o Salmo 115 adaptado" },
+            { momento: "Aclamação", musicaId: "corpus-entrada", tomMissa: "E", cantor: "Lucas" },
+            { momento: "Ofertório", musicaId: "corpus-oferendas", tomMissa: "G", cantor: "Cadu (Solo)" },
+            { momento: "Santo", musicaId: "corpus-santo", tomMissa: "Em", cantor: "Todos" },
+            { momento: "Pai Nosso", musicaId: "corpus-painosso", tomMissa: "G", cantor: "Todos" },
+            { momento: "Cordeiro", musicaId: "corpus-cordeiro", tomMissa: "F", cantor: "Davi e Coro" },
+            { momento: "Comunhão", musicaId: "corpus-comunhao", tomMissa: "Dm", cantor: "Marina e Lucas" },
+            { momento: "Pós-Comunhão", musicaId: "corpus-poscomunhao", tomMissa: "G", cantor: "Todos" },
+            { momento: "Adoração", musicaId: "corpus-adoracao", tomMissa: "E", cantor: "Marina (Solo)" },
+            { momento: "Final", musicaId: "corpus-final", tomMissa: "G", cantor: "Todos (Final Festivo)" }
+        ],
+        observacoes: "Procissão solene com o Santíssimo Sacramento pelas ruas logo após a Comunhão. Conduzir os cantos de adoração com muito recolhimento e alternar com orações espontâneas.",
+        bannerUrl: "img/banner.jpg"
     }
 ];
 
 // ============================================================================
-// FUNÇÕES PARA LITURGIA
+// SISTEMA DE GERENCIAMENTO DE ESTADO E INICIALIZAÇÃO
 // ============================================================================
 
-function toggleLiturgia() {
-    const content = document.getElementById('liturgyContent');
-    const arrow = document.getElementById('liturgyArrow');
-    
-    if (content && arrow) {
-        content.classList.toggle('expanded');
-        arrow.textContent = content.classList.contains('expanded') ? '▲' : '▼';
+const DB_VERSION = '1.4';
+
+let db = {
+    version: DB_VERSION,
+    musicas: [],
+    missas: []
+};
+
+// Carrega o banco de dados do localStorage ou inicia com os dados padrão
+async function initDatabase() {
+    const raw = localStorage.getItem('ministerio_db');
+    if (raw) {
+        try {
+            db = JSON.parse(raw);
+            if (db.version !== DB_VERSION) {
+                console.log("Banco de dados desatualizado localmente. Carregando padrões...");
+                restoreDefaults();
+            }
+        } catch (e) {
+            console.error("Erro ao carregar o banco local. Restaurando padrão.", e);
+            restoreDefaults();
+        }
+    } else {
+        restoreDefaults();
+    }
+
+    // Tenta buscar atualizações centralizadas do arquivo database.json no Git (GitHub Pages)
+    try {
+        const response = await fetch('./database.json');
+        if (response.ok) {
+            const gitDb = await response.json();
+            // Se a versão do arquivo no Git for maior que a do banco de dados local atual, atualiza
+            if (gitDb && gitDb.version && (!db || !db.version || parseFloat(gitDb.version) > parseFloat(db.version))) {
+                console.log(`Atualizando banco de dados local para a versão do Git: ${gitDb.version}`);
+                db = gitDb;
+                saveDatabase();
+                // Força re-renderização da tela com o banco atualizado
+                renderContent();
+            }
+        }
+    } catch (err) {
+        console.warn("Não foi possível buscar atualizações do database.json (modo offline ou arquivo ausente). Usando local storage.", err);
     }
 }
 
-function buscarLiturgia() {
-    const dataInput = document.getElementById('dataLiturgia');
-    const data = dataInput.value;
-    
-    // Simulação de busca - aqui você implementaria uma API real
-    alert(`Buscar liturgia para: ${formatarData(data)}\n\nEm uma versão real, esta funcionalidade buscará a liturgia do dia em uma API.`);
-    
-    // Atualizar os dados da liturgia
-    dadosLiturgia.data = data;
-    renderizarLiturgia();
+// Restaura os dados padrão
+function restoreDefaults() {
+    db.musicas = JSON.parse(JSON.stringify(DEFAULT_SONGS));
+    db.missas = JSON.parse(JSON.stringify(DEFAULT_MASSES));
+    db.version = DB_VERSION;
+    saveDatabase();
 }
 
-function renderizarLiturgia() {
-    const container = document.getElementById('liturgyContent');
+// Salva o banco de dados no localStorage
+function saveDatabase() {
+    localStorage.setItem('ministerio_db', JSON.stringify(db));
+}
+
+// ============================================================================
+// ENGINE DE TRANSPOSIÇÃO DE ACORDES
+// ============================================================================
+
+function transposeNote(note, steps) {
+    let normalized = flatsMap[note] || note;
+    let idx = notasSharp.indexOf(normalized);
+    if (idx === -1) return note;
+    let newIdx = (idx + steps) % 12;
+    if (newIdx < 0) newIdx += 12;
+    return notasSharp[newIdx];
+}
+
+function transposeChord(chord, steps) {
+    const parts = chord.split('/');
+    const baseTransposed = parts[0].replace(/^([A-G][#b]?)/, (match, note) => {
+        return transposeNote(note, steps);
+    });
+    if (parts.length > 1) {
+        const bassTransposed = parts[1].replace(/^([A-G][#b]?)/, (match, note) => {
+            return transposeNote(note, steps);
+        });
+        return baseTransposed + '/' + bassTransposed;
+    }
+    return baseTransposed;
+}
+
+// Verifica se uma linha é composta essencialmente por acordes
+function isChordLine(line) {
+    let trimmed = line.trim();
+    if (trimmed === '') return false;
     
-    if (!container) {
-        console.error('Container da liturgia não encontrado!');
+    // Indicações de Seção (Intro, Refrão) não são linhas de acorde
+    if (trimmed.startsWith('[') && trimmed.endsWith(']')) return false;
+    
+    let tokens = trimmed.split(/\s+/);
+    let chordCount = 0;
+    
+    for (let token of tokens) {
+        let clean = token.replace(/[\(\)\[\]]/g, '');
+        if (chordTokenRegex.test(clean)) {
+            chordCount++;
+        }
+    }
+    
+    return (chordCount / tokens.length) >= 0.6;
+}
+
+// Transpõe os acordes contidos no texto (tanto na linha acima quanto inline entre brackets)
+function transposeLyrics(lyrics, steps) {
+    if (steps === 0 || !lyrics) return lyrics;
+    const lines = lyrics.split('\n');
+    const transposedLines = lines.map(line => {
+        // Linhas de acordes livres (acima da letra)
+        if (isChordLine(line)) {
+            const regex = /\b[A-G][#b]?(?:m|maj|min|sus|dim|aug|add|alt|\+)?\d*(?:b\d|#\d)?(?:\/[A-G][#b]?)?\b/g;
+            return line.replace(regex, match => transposeChord(match, steps));
+        }
+        
+        // Acordes inline em brackets
+        if (line.includes('[') && line.includes(']')) {
+            return line.replace(/\[([^\]]+)\]/g, (match, content) => {
+                if (/^(Intro|Refra|Ponte|Solo|Primeira|Segunda|Terceira|Final|Part|Chorus|Verse|Bridge|Estrofe|Instrumental)/i.test(content)) {
+                    return match;
+                }
+                const tokens = content.split(/(\s+)/);
+                const transposed = tokens.map(t => {
+                    if (t.trim() === '') return t;
+                    if (/^[A-G]/.test(t)) return transposeChord(t, steps);
+                    return t;
+                });
+                return '[' + transposed.join('') + ']';
+            });
+        }
+        return line;
+    });
+    return transposedLines.join('\n');
+}
+
+// Converte letras com cifras em tags HTML
+function formatLyricsHTML(lyrics, hideChords = false) {
+    if (!lyrics) return '';
+    const lines = lyrics.split('\n');
+    const formattedLines = lines.map(line => {
+        let trimmed = line.trim();
+        
+        if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
+            let label = trimmed.slice(1, -1);
+            return `<div class="section-label">[${label}]</div>`;
+        }
+        
+        if (isChordLine(line)) {
+            if (hideChords) return ''; // Oculta a linha inteira de acordes
+            const regex = /\b[A-G][#b]?(?:m|maj|min|sus|dim|aug|add|alt|\+)?\d*(?:b\d|#\d)?(?:\/[A-G][#b]?)?\b/g;
+            let formattedLine = line.replace(regex, match => {
+                return `<span class="chord">${match}</span>`;
+            });
+            return `<div class="chord-line">${formattedLine}</div>`;
+        }
+        
+        if (line.includes('[') && line.includes(']')) {
+            return `<div class="lyric-line">${line.replace(/\[([^\]]+)\]/g, (match, content) => {
+                if (/^(Intro|Refra|Ponte|Solo|Primeira|Segunda|Terceira|Final|Part|Chorus|Verse|Bridge|Estrofe|Instrumental)/i.test(content)) {
+                    return `<span class="section-label">[${content}]</span>`;
+                }
+                if (hideChords) return '';
+                return `<span class="chord">${content}</span>`;
+            })}</div>`;
+        }
+        
+        return `<div class="lyric-line">${line}</div>`;
+    });
+    
+    return formattedLines.filter(l => l !== '').join('');
+}
+
+// Calcula a distância de tons na escala cromática
+function getSemitoneDistance(origem, destino) {
+    const cleanOrigem = (origem || 'C').replace('m', '');
+    const cleanDestino = (destino || 'C').replace('m', '');
+    const oNorm = flatsMap[cleanOrigem] || cleanOrigem;
+    const dNorm = flatsMap[cleanDestino] || cleanDestino;
+    const idxOrigem = notasSharp.indexOf(oNorm);
+    const idxDestino = notasSharp.indexOf(dNorm);
+    
+    if (idxOrigem === -1 || idxDestino === -1) return 0;
+    
+    let diff = idxDestino - idxOrigem;
+    if (diff > 5) diff -= 12;
+    if (diff < -6) diff += 12;
+    return diff;
+}
+
+// ============================================================================
+// CONFIGURAÇÕES DE ESTADO GLOBAL DO APLICATIVO
+// ============================================================================
+
+let currentTab = 'missas';
+let currentFilterTag = 'Todos';
+let searchQuery = '';
+let activeMassId = null;            // Missa selecionada no menu
+let activeMassViewMode = 'roteiro'; // 'roteiro' (folheto) ou 'musicas' (apenas lista de repertório)
+
+// Estado do Visualizador de Cifras
+let currentSongId = null;
+let currentSongMassContextId = null;
+let currentSongTranspositionOffset = 0;
+let hideChords = false;
+let autoScrollInterval = null;
+let autoScrollSpeed = 2;
+let isStageMode = false;
+let fontSizeMultiplier = 1.0;
+let wakeLock = null;
+
+// ============================================================================
+// CONTROLE DE NAVEGAÇÃO E INICIALIZAÇÃO
+// ============================================================================
+
+function setupGlobalEvents() {
+    // Configura botões das abas principais
+    document.getElementById('tab-btn-missas').addEventListener('click', () => switchTab('missas'));
+    document.getElementById('tab-btn-musicas').addEventListener('click', () => switchTab('musicas'));
+    document.getElementById('tab-btn-admin').addEventListener('click', () => switchTab('admin'));
+
+    // Configura evento de busca global
+    const searchInput = document.getElementById('global-search');
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value.toLowerCase();
+            renderContent();
+        });
+    }
+
+    // Configura botões de criar
+    document.getElementById('btn-add-missa-topo').addEventListener('click', () => openMassForm());
+    document.getElementById('btn-add-musica-topo').addEventListener('click', () => openSongForm());
+
+    // Configura botões do visualizador de cifras (Leitor)
+    document.getElementById('reader-close').addEventListener('click', closeSongReader);
+    document.getElementById('btn-transp-down').addEventListener('click', () => adjustTransposition(-1));
+    document.getElementById('btn-transp-up').addEventListener('click', () => adjustTransposition(1));
+    document.getElementById('btn-transp-reset').addEventListener('click', () => resetTransposition());
+    document.getElementById('btn-hide-chords').addEventListener('click', toggleChordsVisibility);
+    document.getElementById('btn-font-down').addEventListener('click', () => adjustFontSize(-0.1));
+    document.getElementById('btn-font-up').addEventListener('click', () => adjustFontSize(0.1));
+    document.getElementById('btn-stage-toggle').addEventListener('click', toggleStageMode);
+    
+    // Auto-scroll
+    document.getElementById('btn-scroll-toggle').addEventListener('click', toggleAutoScroll);
+    document.getElementById('scroll-speed').addEventListener('input', (e) => {
+        autoScrollSpeed = parseFloat(e.target.value);
+        if (autoScrollInterval) {
+            stopAutoScroll();
+            startAutoScroll();
+        }
+    });
+
+    // Modais e Fechamentos
+    document.querySelectorAll('.close-modal-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.modal-overlay').forEach(modal => modal.classList.add('hidden'));
+        });
+    });
+
+    // Submissão de Formulários
+    document.getElementById('form-song').addEventListener('submit', handleSongSubmit);
+    document.getElementById('form-mass').addEventListener('submit', handleMassSubmit);
+
+    // Backup e Configurações
+    document.getElementById('btn-export-db').addEventListener('click', exportDatabase);
+    document.getElementById('btn-import-db').addEventListener('click', importDatabase);
+    document.getElementById('btn-download-db').addEventListener('click', downloadDatabase);
+    document.getElementById('btn-restore-defaults').addEventListener('click', () => {
+        if (confirm("Deseja realmente apagar todas as alterações e restaurar os dados originais?")) {
+            restoreDefaults();
+            // Reseta a missa selecionada para Corpus Christi
+            activeMassId = "mass-corpus-christi";
+            alert("Dados originais restaurados com sucesso!");
+            renderContent();
+        }
+    });
+
+    // Configura o seletor de missas
+    document.getElementById('select-active-mass').addEventListener('change', (e) => {
+        activeMassId = e.target.value;
+        renderMissasTab();
+    });
+
+    // Botões de alternância de modo (Folheto vs Apenas Músicas)
+    document.getElementById('btn-mode-roteiro').addEventListener('click', () => switchMassViewMode('roteiro'));
+    document.getElementById('btn-mode-musicas').addEventListener('click', () => switchMassViewMode('musicas'));
+}
+
+function switchTab(tabName) {
+    currentTab = tabName;
+    renderTabs();
+    renderContent();
+    
+    // Mostrar ou ocultar elementos conforme a aba ativa
+    document.getElementById('btn-add-missa-topo').style.display = tabName === 'missas' ? 'block' : 'none';
+    document.getElementById('btn-add-musica-topo').style.display = tabName === 'musicas' ? 'block' : 'none';
+    document.getElementById('mass-selector-container').style.display = tabName === 'missas' ? 'flex' : 'none';
+}
+
+function switchMassViewMode(mode) {
+    activeMassViewMode = mode;
+    document.getElementById('btn-mode-roteiro').classList.toggle('active', mode === 'roteiro');
+    document.getElementById('btn-mode-musicas').classList.toggle('active', mode === 'musicas');
+    renderMissasTab();
+}
+
+function renderTabs() {
+    const tabs = ['missas', 'musicas', 'admin'];
+    tabs.forEach(tab => {
+        const btn = document.getElementById(`tab-btn-${tab}`);
+        if (btn) {
+            btn.classList.toggle('active', tab === currentTab);
+        }
+    });
+}
+
+function populateMassDropdown() {
+    const select = document.getElementById('select-active-mass');
+    select.innerHTML = '';
+    
+    if (db.missas.length === 0) {
+        select.innerHTML = `<option value="">Nenhuma missa cadastrada</option>`;
         return;
     }
-    
-    let html = `
-        <div class="liturgia-data">
-            <h3><i class="fas fa-calendar-alt"></i> ${formatarData(dadosLiturgia.data)}</h3>
-        </div>
-    `;
-    
-    dadosLiturgia.leituras.forEach(leitura => {
-        html += `<div class="leitura-item">`;
-        
-        if (leitura.tipo === 'primeira') {
-            html += `
-                <div class="leitura-titulo">
-                    <i class="fas fa-scroll"></i>
-                    ${leitura.titulo}
-                </div>
-                <div class="leitura-texto">${formatarTexto(leitura.texto)}</div>
-                <div class="referencia">
-                    <span class="role">${leitura.referencia}</span>
-                    <span class="resposta"> ${leitura.resposta}</span>
-                </div>
-            `;
-        }
-        
-        else if (leitura.tipo === 'salmo') {
-            html += `
-                <div class="leitura-titulo">
-                    <i class="fas fa-music"></i>
-                    ${leitura.titulo}
-                </div>
-                <div class="salmo-refrao">
-                    <span class="role">R.</span>
-                    <span class="resposta"> ${leitura.refrao}</span>
-                </div>
-                <div class="versiculos-container">
-                    ${leitura.versiculos.map((versiculo, index) => `
-                        <div class="versiculo">
-                            <span class="numero-versiculo">${index + 1}.</span>
-                            ${versiculo}
-                        </div>
-                    `).join('')}
-                </div>
-                <div class="referencia">
-                    <span class="role">${leitura.referencia}</span>
-                    <span class="resposta"> ${leitura.resposta}</span>
-                </div>
-            `;
-        }
-        
-        else if (leitura.tipo === 'evangelho') {
-            html += `
-                <div class="leitura-titulo">
-                    <i class="fas fa-cross"></i>
-                    ${leitura.titulo}
-                </div>
-                <div class="aclamacao">
-                    <div class="aclamacao-texto">${leitura.aclamacao}</div>
-                    <div class="versiculo-evangelho">${leitura.versiculo}</div>
-                </div>
-                <div class="leitura-texto">${formatarTexto(leitura.texto)}</div>
-                <div class="referencia">
-                    <span class="role">${leitura.referencia}</span>
-                    <span class="resposta"> ${leitura.resposta}</span>
-                </div>
-            `;
-        }
-        
-        html += `</div>`;
+
+    // Ordenar missas por data
+    const sorted = [...db.missas].sort((a, b) => new Date(a.data) - new Date(b.data));
+    sorted.forEach(m => {
+        const dateObj = new Date(m.data + 'T00:00:00');
+        const formattedDate = dateObj.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+        const opt = document.createElement('option');
+        opt.value = m.id;
+        opt.textContent = `${formattedDate} - ${m.titulo}`;
+        select.appendChild(opt);
     });
+
+    // Auto-seleciona a missa ativa definida ou a missa de hoje
+    if (!activeMassId) {
+        const hojeISO = new Date().toISOString().split('T')[0];
+        const missaHoje = db.missas.find(m => m.data === hojeISO);
+        if (missaHoje) {
+            activeMassId = missaHoje.id;
+        } else if (db.missas.length > 0) {
+            activeMassId = sorted[0].id;
+        }
+    }
     
-    container.innerHTML = html;
-    
-    // Expande a liturgia automaticamente ao carregar
-    container.classList.add('expanded');
-    const arrow = document.getElementById('liturgyArrow');
-    if (arrow) {
-        arrow.textContent = '▲';
+    select.value = activeMassId;
+}
+
+function renderContent() {
+    document.getElementById('pane-missas').classList.add('hidden');
+    document.getElementById('pane-musicas').classList.add('hidden');
+    document.getElementById('pane-admin').classList.add('hidden');
+
+    if (currentTab === 'missas') {
+        document.getElementById('pane-missas').classList.remove('hidden');
+        populateMassDropdown();
+        renderMissasTab();
+    } else if (currentTab === 'musicas') {
+        document.getElementById('pane-musicas').classList.remove('hidden');
+        renderMusicasTab();
+    } else if (currentTab === 'admin') {
+        document.getElementById('pane-admin').classList.remove('hidden');
     }
 }
 
-function formatarData(dataString) {
-    const data = new Date(dataString);
-    const opcoes = { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-    };
-    return data.toLocaleDateString('pt-BR', opcoes);
-}
-
-function formatarTexto(texto) {
-    return texto.replace(/\.\s/g, '.<br><br>')
-               .replace(/\n/g, '<br>')
-               .replace(/\s\s+/g, ' ');
-}
-
 // ============================================================================
-// FUNÇÕES PARA MÚSICAS
+// ABA: MISSAS (FOLHETO INTEGRADO / APENAS MÚSICAS)
 // ============================================================================
 
-function createLiturgyLinks() {
-    const liturgyContainer = document.getElementById('liturgy-links');
-    if (!liturgyContainer) return;
-    
-    liturgyContainer.innerHTML = '';
-    
-    // Adicionar link para a liturgia
-    const liturgyLink = document.createElement('a');
-    liturgyLink.className = 'liturgy-link';
-    liturgyLink.innerHTML = `
-        <i class="fas fa-book-bible"></i>
-        <span>Liturgia do Dia</span>
-    `;
-    
-    liturgyLink.addEventListener('click', function(e) {
-        e.preventDefault();
-        const liturgySection = document.querySelector('.liturgy-section');
-        if (liturgySection) {
-            liturgySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            // Expande a liturgia
-            const content = document.querySelector('.liturgy-content');
-            content.classList.add('expanded');
-            const arrow = document.querySelector('.liturgy-arrow');
-            arrow.textContent = '▲';
-        }
-    });
-    
-    liturgyContainer.appendChild(liturgyLink);
-    
-    // Adicionar links para os momentos musicais
-    musicData.forEach((moment, index) => {
-        const link = document.createElement('a');
-        link.className = 'liturgy-link';
-        link.innerHTML = `
-            <i class="${moment.icon}"></i>
-            <span>${moment.moment}</span>
+function renderMissasTab() {
+    const container = document.getElementById('missas-list');
+    container.innerHTML = '';
+
+    if (!activeMassId) {
+        container.innerHTML = `
+            <div class="empty-state text-center padding-20">
+                <i class="fas fa-calendar-alt size-40 gray margin-bottom-10"></i>
+                <p>Selecione uma missa no menu superior ou cadastre uma nova para começar.</p>
+            </div>
         `;
+        return;
+    }
 
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetSection = document.getElementById(`moment-${index}`);
-            if (targetSection) {
-                // Expande a seção
-                const content = targetSection.querySelector('.moment-content');
-                content.classList.add('expanded');
-                const arrow = targetSection.querySelector('.moment-arrow');
-                arrow.textContent = '▲';
+    const mass = db.missas.find(m => m.id === activeMassId);
+    if (!mass) {
+        container.innerHTML = `<p class="text-center pad-20">Missa não encontrada.</p>`;
+        return;
+    }
 
-                // Rola suavemente até a seção
-                targetSection.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
+    // Exibe os controles de visualização (Roteiro vs Repertório)
+    document.getElementById('mass-view-mode-selector').classList.remove('hidden');
+
+    const dateObj = new Date(mass.data + 'T00:00:00');
+    const formattedDate = dateObj.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    let playlistHTML = mass.linkPlaylist ? 
+        `<a href="${mass.linkPlaylist}" target="_blank" class="btn btn-small btn-secondary youtube-link border-radius-20"><i class="fab fa-youtube text-red"></i> Playlist do Ensaio</a>` : '';
+
+    let bannerHTML = mass.bannerUrl ? 
+        `<div class="mass-banner-container" style="width: 100%; overflow: hidden; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border-bottom: 3px solid var(--accent);">
+            <img src="${mass.bannerUrl}" alt="${mass.titulo}" style="width: 100%; height: auto; display: block;">
+         </div>` : '';
+
+    let observacoesHTML = mass.observacoes ? 
+        `<div class="pamphlet-liturgy-prayer padding-10 bg-light-trans border-radius-8 margin-bottom-15 size-13 text-secondary italic font-500" style="border-left: 3px solid var(--accent); background: rgba(212, 175, 55, 0.05);"><i class="fas fa-info-circle"></i> <strong>Observações da Missa:</strong> ${mass.observacoes}</div>` : '';
+
+    if (activeMassViewMode === 'musicas') {
+        // --- MODO: APENAS MÚSICAS (REPERTÓRIO SIMPLES) ---
+        let musicasListHTML = '';
+        if (mass.musicas && mass.musicas.length > 0) {
+            mass.musicas.forEach((mom, index) => {
+                const song = db.musicas.find(s => s.id === mom.musicaId);
+                const originalKey = song ? song.tomPadrao : '*';
+                const massKey = mom.tomMissa || originalKey;
+                const singer = mom.cantor ? `<span class="singer-tag"><i class="fas fa-microphone"></i> ${mom.cantor}</span>` : '';
+                const songTitle = song ? song.titulo : 'Música não encontrada';
+                const hasYoutube = song && song.linkYoutube ? 
+                    `<i class="fab fa-youtube text-red pointer" onclick="event.stopPropagation(); openYoutubePlayer('${song.linkYoutube}')" title="Assistir vídeo de referência" style="margin-left: 5px; cursor: pointer;"></i>` : '';
+
+                musicasListHTML += `
+                    <div class="mass-song-item flex flex-between align-center border-bottom-dash padding-10">
+                        <div class="song-details flex flex-column">
+                            <span class="moment-label uppercase">${mom.momento}</span>
+                            <span class="song-link-open text-primary pointer bold flex align-center gap-5" onclick="openSongReader('${mom.musicaId}', '${mass.id}')">
+                                ${songTitle} ${hasYoutube}
+                            </span>
+                            ${singer}
+                            ${mom.observacoes ? `<span class="song-obs"><i class="fas fa-info-circle"></i> ${mom.observacoes}</span>` : ''}
+                        </div>
+                        <div class="song-key-role flex gap-5 align-center">
+                            <span class="song-key-badge cursor-help" title="Tom para esta missa (Original: ${originalKey})">${massKey}</span>
+                            <button class="btn btn-small btn-secondary" onclick="openEditSongInMassModal('${mass.id}', ${index})" title="Editar escala/cantor" style="padding: 4px 8px; font-size: 0.75rem; border-radius: 6px;"><i class="fas fa-edit"></i> Alterar</button>
+                            <button class="btn btn-small btn-danger" onclick="removeSongFromMass('${mass.id}', ${index})" title="Remover música" style="padding: 4px 8px; font-size: 0.75rem; border-radius: 6px; background: #ffebee; color: #c62828;"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+        } else {
+            musicasListHTML = '<p class="gray text-center padding-10">Nenhuma música escalada para esta celebração.</p>';
+        }
+
+        container.innerHTML = `
+            <div class="mass-card glass-panel">
+                <div class="mass-card-header flex flex-between align-center padding-15 border-bottom">
+                    <div class="flex flex-column">
+                        <h3 class="mass-title text-gold font-700">${mass.titulo}</h3>
+                        <span class="mass-date uppercase size-12"><i class="fas fa-calendar-alt"></i> ${formattedDate}</span>
+                        <span class="mass-local size-13 text-secondary"><i class="fas fa-map-marker-alt"></i> ${mass.local}</span>
+                    </div>
+                    <div class="flex gap-5">
+                        <button class="btn btn-small" onclick="openMassForm('${mass.id}')"><i class="fas fa-edit"></i> Editar</button>
+                        <button class="btn btn-small btn-danger" onclick="deleteMass('${mass.id}')"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+                <div class="mass-card-body padding-15">
+                    ${bannerHTML}
+                    ${observacoesHTML}
+                    <div class="flex flex-between align-center margin-bottom-15 border-bottom padding-bottom-5">
+                        <h4 class="text-secondary font-600 uppercase size-13"><i class="fas fa-music"></i> Músicas do Repertório</h4>
+                        ${playlistHTML}
+                    </div>
+                    <div class="mass-songs-container margin-bottom-15">
+                        ${musicasListHTML}
+                    </div>
+                    <div class="flex flex-center">
+                        <button class="btn btn-small btn-secondary border-radius-20" onclick="openAddSongToMassModal('${mass.id}')">
+                            <i class="fas fa-plus"></i> Vincular Louvor
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    } else {
+        // --- MODO: ROTEIRO INTEGRADO (FOLHETO COMPLETO DA MISSA) ---
+        const roteiro = [
+            { tipo: "titulo-secao", texto: "Ritos Iniciais" },
+            { tipo: "liturgia", rascunho: "Sacerdote: Em nome do Pai, do Filho e do Espírito Santo. Povo: Amém." },
+            { tipo: "momento-musica", momento: "Entrada", icone: "fa-door-open" },
+            { tipo: "liturgia", rascunho: "Ato Penitencial: Confesso a Deus todo-poderoso... Senhor, tende piedade de nós." },
+            { tipo: "momento-musica", momento: "Ato Penitencial", icone: "fa-hands-praying" },
+            { tipo: "momento-musica", momento: "Glória", icone: "fa-hands" },
+            { tipo: "titulo-secao", texto: "Liturgia da Palavra" },
+            { tipo: "link-cancaonova" },
+            { tipo: "leitura-texto", leituraLabel: "1ª Leitura", textoLeitura: mass.leituras?.primeira },
+            { tipo: "momento-musica", momento: "Salmo", icone: "fa-book-open" },
+            { tipo: "leitura-texto", leituraLabel: "2ª Leitura", textoLeitura: mass.leituras?.segunda },
+            { tipo: "momento-musica", momento: "Aclamação", icone: "fa-music" },
+            { tipo: "leitura-texto", leituraLabel: "Evangelho", textoLeitura: mass.leituras?.evangelho },
+            { tipo: "liturgia", rascunho: "Homilia e Oração dos Fiéis (Povo: Senhor, escutai a nossa prece)." },
+            { tipo: "titulo-secao", texto: "Liturgia Eucarística" },
+            { tipo: "momento-musica", momento: "Ofertório", icone: "fa-gift" },
+            { tipo: "liturgia", rascunho: "Oração sobre as Oferendas. Prefácio Eucarístico." },
+            { tipo: "momento-musica", momento: "Santo", icone: "fa-church" },
+            { tipo: "liturgia", rascunho: "Consagração do Pão e do Vinho. Eis o mistério da fé!" },
+            { tipo: "titulo-secao", texto: "Rito da Comunhão" },
+            { tipo: "momento-musica", momento: "Pai Nosso", icone: "fa-pray" },
+            { tipo: "momento-musica", momento: "Cordeiro", icone: "fa-dove" },
+            { tipo: "momento-musica", momento: "Comunhão", icone: "fa-wine-glass" },
+            { tipo: "momento-musica", momento: "Pós-Comunhão", icone: "fa-heart" },
+            { tipo: "momento-musica", momento: "Adoração", icone: "fa-sun" },
+            { tipo: "titulo-secao", texto: "Ritos Finais" },
+            { tipo: "liturgia", rascunho: "Oração pós-comunhão e bênção solene de envio." },
+            { tipo: "momento-musica", momento: "Final", icone: "fa-flag" }
+        ];
+
+        let roteiroHTML = '';
+        roteiro.forEach(step => {
+            if (step.tipo === "titulo-secao") {
+                roteiroHTML += `<div class="pamphlet-section-title uppercase bold font-700 text-gold margin-top-20 margin-bottom-10 border-bottom padding-bottom-5 size-14"><i class="fas fa-bookmark"></i> ${step.texto}</div>`;
+            } 
+            else if (step.tipo === "liturgia") {
+                roteiroHTML += `<div class="pamphlet-liturgy-prayer padding-10 bg-light-trans border-radius-8 margin-bottom-10 size-13 text-secondary italic font-500">${step.rascunho}</div>`;
+            } 
+            else if (step.tipo === "link-cancaonova") {
+                roteiroHTML += `
+                    <div class="pamphlet-reading-box glass-panel padding-15 margin-bottom-10 flex flex-between align-center flex-wrap gap-10" style="border-left: 4px solid #10b981; background: rgba(16, 185, 129, 0.03);">
+                        <div class="flex flex-column gap-5 flex-grow" style="min-width: 200px;">
+                            <span class="bold text-primary size-13 uppercase"><i class="fas fa-book-bible text-secondary"></i> Liturgia Diária</span>
+                            <span class="size-12 text-muted">Acompanhe as leituras completas e orações de hoje diretamente no portal Canção Nova.</span>
+                        </div>
+                        <a href="https://liturgia.cancaonova.com/pb/" target="_blank" class="btn btn-small btn-secondary border-radius-20 text-secondary" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); text-decoration: none;">
+                            <i class="fas fa-external-link-alt"></i> Canção Nova
+                        </a>
+                    </div>
+                `;
+            }
+            else if (step.tipo === "leitura-texto") {
+                if (step.textoLeitura) {
+                    roteiroHTML += `
+                        <div class="pamphlet-reading-box glass-panel padding-15 margin-bottom-10">
+                            <span class="bold text-primary size-14 block margin-bottom-5 uppercase"><i class="fas fa-scroll"></i> ${step.leituraLabel}</span>
+                            <p class="size-13 text-justify line-height-1-6 whitespace-pre-wrap">${step.textoLeitura}</p>
+                        </div>
+                    `;
+                }
+            } 
+            else if (step.tipo === "momento-musica") {
+                const vMusicas = mass.musicas ? mass.musicas.filter(m => m.momento === step.momento) : [];
+                
+                if (vMusicas.length > 0) {
+                    vMusicas.forEach(vMus => {
+                        const song = db.musicas.find(s => s.id === vMus.musicaId);
+                        const songTitle = song ? song.titulo : 'Sem título';
+                        const originalKey = song ? song.tomPadrao : '*';
+                        const massKey = vMus.tomMissa || originalKey;
+                        const hasYoutube = song && song.linkYoutube ? 
+                            `<i class="fab fa-youtube text-red pointer" onclick="event.stopPropagation(); openYoutubePlayer('${song.linkYoutube}')" title="Assistir vídeo de referência" style="margin-left: 5px; cursor: pointer;"></i>` : '';
+                        const indexInMass = mass.musicas.indexOf(vMus);
+                        const singer = vMus.cantor ? `<span class="singer-tag"><i class="fas fa-microphone"></i> ${vMus.cantor}</span>` : '';
+
+                        roteiroHTML += `
+                            <div class="pamphlet-song-card flex flex-between align-center margin-bottom-10 padding-15 pointer-hover" style="border-left: 4px solid var(--accent); background: rgba(212, 175, 55, 0.05); border-radius: 8px;">
+                                <div class="flex flex-column gap-5 flex-grow" onclick="openSongReader('${vMus.musicaId}', '${mass.id}')">
+                                    <span class="moment-label uppercase text-gold bold"><i class="fas ${step.icone || 'fa-music'}"></i> Canto de ${step.momento}</span>
+                                    <span class="song-title text-primary bold size-16">${songTitle} ${hasYoutube}</span>
+                                    ${singer}
+                                    ${vMus.observacoes ? `<span class="song-obs"><i class="fas fa-info-circle"></i> ${vMus.observacoes}</span>` : ''}
+                                </div>
+                                <div class="flex align-center gap-10">
+                                    <span class="song-key-badge">${massKey}</span>
+                                    <div class="flex gap-5">
+                                        <button class="btn btn-small btn-secondary" onclick="openEditSongInMassModal('${mass.id}', ${indexInMass})" title="Editar escala" style="padding: 4px 8px; font-size: 0.75rem; border-radius: 6px;"><i class="fas fa-edit"></i> Alterar</button>
+                                        <button class="btn btn-small btn-danger" onclick="removeSongFromMass('${mass.id}', ${indexInMass})" title="Remover" style="padding: 4px 8px; font-size: 0.75rem; border-radius: 6px; background: #ffebee; color: #c62828;"><i class="fas fa-trash-alt"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    roteiroHTML += `
+                        <div class="pamphlet-song-empty flex flex-between align-center margin-bottom-10 padding-10 border-radius-8" style="border: 1px dashed rgba(107, 35, 130, 0.2); background: rgba(255,255,255,0.3);">
+                            <span class="size-12 uppercase text-muted font-600"><i class="fas fa-minus-circle"></i> Canto de ${step.momento} (Não Escaldo)</span>
+                            <button class="btn btn-small btn-secondary border-radius-20" onclick="openAddSongToMassModal('${mass.id}'); document.getElementById('vinc-momento').value = '${step.momento}';">
+                                <i class="fas fa-plus"></i> Escalar
+                            </button>
+                        </div>
+                    `;
+                }
             }
         });
 
-        liturgyContainer.appendChild(link);
-    });
-}
-
-function renderMusicList() {
-    const musicListContainer = document.getElementById('music-list');
-    if (!musicListContainer) return;
-    
-    musicListContainer.innerHTML = '';
-
-    musicData.forEach((moment, momentIndex) => {
-        const momentSection = document.createElement('div');
-        momentSection.className = 'moment-section';
-        momentSection.id = `moment-${momentIndex}`;
-
-        const momentHeader = document.createElement('div');
-        momentHeader.className = 'moment-header';
-        momentHeader.innerHTML = `
-                <h2><i class="${moment.icon} moment-icon"></i> ${moment.moment}</h2>
-                <span class="moment-arrow">▼</span>
-            `;
-
-        const momentContent = document.createElement('div');
-        momentContent.className = 'moment-content';
-
-        moment.songs.forEach((song, songIndex) => {
-            const songItem = document.createElement('div');
-            songItem.className = 'song-item';
-            songItem.innerHTML = `
-                    <div class="song-title">
-                        <span>${song.title}</span>
-                        <span class="song-key">${song.key}</span>
+        container.innerHTML = `
+            <div class="mass-card glass-panel">
+                <div class="mass-card-header flex flex-between align-center padding-15 border-bottom">
+                    <div class="flex flex-column">
+                        <h3 class="mass-title text-gold font-700">${mass.titulo}</h3>
+                        <span class="mass-date uppercase size-12"><i class="fas fa-calendar-alt"></i> ${formattedDate}</span>
+                        <span class="mass-local size-13 text-secondary"><i class="fas fa-map-marker-alt"></i> ${mass.local}</span>
                     </div>
-                    <div class="song-lyrics">${formatLyrics(song.lyrics)}</div>
-                    <button class="back-to-liturgy">
-                        <i class="fas fa-arrow-left"></i> Voltar para a Liturgia
-                    </button>
-                `;
+                    <div class="flex gap-5">
+                        <button class="btn btn-small" onclick="openMassForm('${mass.id}')"><i class="fas fa-edit"></i> Editar</button>
+                        <button class="btn btn-small btn-danger" onclick="deleteMass('${mass.id}')"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+                <div class="mass-card-body padding-20">
+                    ${bannerHTML}
+                    ${observacoesHTML}
+                    <div class="flex flex-between align-center border-bottom padding-bottom-5 margin-bottom-10">
+                        <h4 class="text-primary font-600 uppercase size-13"><i class="fas fa-book-open"></i> Folheto da Celebração</h4>
+                        ${playlistHTML}
+                    </div>
+                    
+                    <div class="pamphlet-container">
+                        ${roteiroHTML}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+}
 
-            // Adicionar evento ao botão "Voltar para a Liturgia"
-            const backButton = songItem.querySelector('.back-to-liturgy');
-            backButton.addEventListener('click', scrollToLiturgy);
+// ============================================================================
+// ABA: PASTA MUSICAL (BIBLIOTECA DE MÚSICAS)
+// ============================================================================
 
-            momentContent.appendChild(songItem);
-        });
+function renderMusicasTab() {
+    const listContainer = document.getElementById('musicas-list');
+    listContainer.innerHTML = '';
+    
+    renderTagFilters();
 
-        // Adicionar evento de clique para expandir/contrair o momento
-        momentHeader.addEventListener('click', function() {
-            momentContent.classList.toggle('expanded');
-            const arrow = this.querySelector('.moment-arrow');
-            arrow.textContent = momentContent.classList.contains('expanded') ? '▲' : '▼';
-        });
+    const filteredSongs = db.musicas.filter(song => {
+        const matchesQuery = song.titulo.toLowerCase().includes(searchQuery) || 
+                             song.letra.toLowerCase().includes(searchQuery);
+        const matchesTag = currentFilterTag === 'Todos' || song.tags.includes(currentFilterTag);
+        return matchesQuery && matchesTag;
+    }).sort((a, b) => a.titulo.localeCompare(b.titulo));
 
-        momentSection.appendChild(momentHeader);
-        momentSection.appendChild(momentContent);
-        musicListContainer.appendChild(momentSection);
+    if (filteredSongs.length === 0) {
+        listContainer.innerHTML = `
+            <div class="empty-state text-center padding-20">
+                <i class="fas fa-music size-40 gray margin-bottom-10"></i>
+                <p>Nenhuma música cadastrada ou encontrada com esses filtros.</p>
+            </div>
+        `;
+        return;
+    }
+
+    filteredSongs.forEach(song => {
+        const songCard = document.createElement('div');
+        songCard.className = 'song-card glass-panel flex flex-between align-center padding-15 margin-bottom-10 pointer-hover';
+        
+        const tagsBadge = song.tags.map(t => `<span class="tag-badge uppercase size-10">${t}</span>`).join(' ');
+        const hasYoutube = song.linkYoutube ? `<i class="fab fa-youtube text-red" title="Vídeo de referência"></i>` : '';
+
+        songCard.innerHTML = `
+            <div class="song-card-info flex flex-column gap-5 flex-grow" onclick="openSongReader('${song.id}')">
+                <span class="song-card-title text-primary bold size-16 flex align-center gap-10">${song.titulo} ${hasYoutube}</span>
+                <div class="flex align-center gap-10 flex-wrap">
+                    <span class="song-card-key uppercase size-12 font-700 text-gold bg-dark-trans padding-horizontal-8 border-radius-20">${song.tomPadrao}</span>
+                    <div class="song-card-tags flex gap-5">${tagsBadge}</div>
+                </div>
+            </div>
+            <div class="song-card-actions flex gap-5">
+                <button class="btn-icon" onclick="openSongForm('${song.id}')" title="Editar música"><i class="fas fa-edit"></i></button>
+                <button class="btn-icon text-red" onclick="deleteSong('${song.id}')" title="Excluir música"><i class="fas fa-trash-alt"></i></button>
+            </div>
+        `;
+        
+        listContainer.appendChild(songCard);
     });
 }
 
-function scrollToLiturgy() {
-    const liturgySection = document.querySelector('.liturgy-section');
-    if (liturgySection) {
-        liturgySection.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-        });
+function renderTagFilters() {
+    const tags = ['Todos', 'Entrada', 'Ato Penitencial', 'Glória', 'Salmo', 'Aclamação', 'Ofertório', 'Santo', 'Pai Nosso', 'Cordeiro', 'Comunhão', 'Pós-Comunhão', 'Adoração', 'Final'];
+    const container = document.getElementById('musicas-tag-filters');
+    container.innerHTML = '';
+    
+    tags.forEach(tag => {
+        const btn = document.createElement('button');
+        btn.className = `btn btn-small filter-btn border-radius-20 ${currentFilterTag === tag ? 'active' : 'btn-secondary'}`;
+        btn.textContent = tag;
+        btn.onclick = () => {
+            currentFilterTag = tag;
+            renderMusicasTab();
+        };
+        container.appendChild(btn);
+    });
+}
 
-        // Expande a liturgia
-        const liturgyContent = document.querySelector('.liturgy-content');
-        if (liturgyContent) {
-            liturgyContent.classList.add('expanded');
+// ============================================================================
+// VISUALIZADOR DE CIFRAS INTERATIVO (LEITOR DE CIFRAS)
+// ============================================================================
+
+function openSongReader(songId, massContextId = null) {
+    currentSongId = songId;
+    currentSongMassContextId = massContextId;
+    currentSongTranspositionOffset = 0;
+    hideChords = false;
+    fontSizeMultiplier = 1.0;
+    
+    const song = db.musicas.find(s => s.id === songId);
+    if (!song) {
+        alert("Música não encontrada!");
+        return;
+    }
+
+    let currentKey = song.tomPadrao;
+    if (massContextId) {
+        const mass = db.missas.find(m => m.id === massContextId);
+        if (mass) {
+            const mom = mass.musicas.find(m => m.musicaId === songId);
+            if (mom && mom.tomMissa && mom.tomMissa !== song.tomPadrao) {
+                currentSongTranspositionOffset = getSemitoneDistance(song.tomPadrao, mom.tomMissa);
+                currentKey = mom.tomMissa;
+            }
         }
-        const liturgyArrow = document.querySelector('.liturgy-arrow');
-        if (liturgyArrow) {
-            liturgyArrow.textContent = '▲';
+    }
+
+    document.getElementById('reader-song-title').textContent = song.titulo;
+    document.getElementById('reader-song-orig-key').textContent = song.tomPadrao;
+    document.getElementById('reader-song-key-current').textContent = currentKey;
+    
+    const ytContainer = document.getElementById('reader-youtube-container');
+    if (song.linkYoutube) {
+        ytContainer.innerHTML = `<button onclick="openYoutubePlayer('${song.linkYoutube}')" class="btn btn-small btn-secondary border-radius-20" style="cursor: pointer;"><i class="fab fa-youtube text-red"></i> Assistir no YouTube</button>`;
+        ytContainer.classList.remove('hidden');
+    } else {
+        ytContainer.classList.add('hidden');
+    }
+
+    renderReaderLyrics();
+    document.getElementById('song-reader-overlay').classList.remove('hidden');
+    requestWakeLock();
+}
+
+function renderReaderLyrics() {
+    const song = db.musicas.find(s => s.id === currentSongId);
+    if (!song) return;
+
+    const transposed = transposeLyrics(song.letra, currentSongTranspositionOffset);
+    const formattedHTML = formatLyricsHTML(transposed, hideChords);
+    
+    const lyricsBox = document.getElementById('reader-lyrics-box');
+    lyricsBox.innerHTML = formattedHTML;
+    lyricsBox.style.fontSize = `calc(var(--font-size) * ${fontSizeMultiplier})`;
+    
+    const currentKeyDisplay = document.getElementById('reader-song-key-current');
+    currentKeyDisplay.textContent = transposeChord(song.tomPadrao, currentSongTranspositionOffset);
+}
+
+function adjustTransposition(steps) {
+    currentSongTranspositionOffset += steps;
+    renderReaderLyrics();
+}
+
+function resetTransposition() {
+    currentSongTranspositionOffset = 0;
+    renderReaderLyrics();
+}
+
+function toggleChordsVisibility() {
+    hideChords = !hideChords;
+    const btn = document.getElementById('btn-hide-chords');
+    if (hideChords) {
+        btn.classList.add('active');
+        btn.innerHTML = `<i class="fas fa-eye-slash"></i> Ocultando Cifras`;
+    } else {
+        btn.classList.remove('active');
+        btn.innerHTML = `<i class="fas fa-eye"></i> Exibindo Cifras`;
+    }
+    renderReaderLyrics();
+}
+
+function adjustFontSize(delta) {
+    fontSizeMultiplier = Math.max(0.6, Math.min(2.5, fontSizeMultiplier + delta));
+    renderReaderLyrics();
+}
+
+function toggleStageMode() {
+    isStageMode = !isStageMode;
+    const overlay = document.getElementById('song-reader-overlay');
+    const btn = document.getElementById('btn-stage-toggle');
+    
+    if (isStageMode) {
+        overlay.classList.add('stage-mode');
+        btn.classList.add('active');
+        btn.innerHTML = `<i class="fas fa-moon"></i> Modo Palco: Ativo`;
+    } else {
+        overlay.classList.remove('stage-mode');
+        btn.classList.remove('active');
+        btn.innerHTML = `<i class="fas fa-mobile-alt"></i> Modo Palco`;
+    }
+}
+
+function closeSongReader() {
+    document.getElementById('song-reader-overlay').classList.add('hidden');
+    stopAutoScroll();
+    releaseWakeLock();
+    
+    if (isStageMode) {
+        toggleStageMode();
+    }
+}
+
+// ============================================================================
+// LOGICA DE ROLAGEM AUTOMÁTICA
+// ============================================================================
+
+function toggleAutoScroll() {
+    const btn = document.getElementById('btn-scroll-toggle');
+    if (autoScrollInterval) {
+        stopAutoScroll();
+        btn.classList.remove('active');
+        btn.innerHTML = `<i class="fas fa-play"></i> Rolar Cifra`;
+    } else {
+        startAutoScroll();
+        btn.classList.add('active');
+        btn.innerHTML = `<i class="fas fa-pause"></i> Pausar Rolagem`;
+    }
+}
+
+function startAutoScroll() {
+    const scrollable = document.getElementById('reader-lyrics-scrollable');
+    if (!scrollable) return;
+    
+    autoScrollInterval = setInterval(() => {
+        scrollable.scrollTop += autoScrollSpeed;
+    }, 50);
+}
+
+function stopAutoScroll() {
+    if (autoScrollInterval) {
+        clearInterval(autoScrollInterval);
+        autoScrollInterval = null;
+    }
+}
+
+// ============================================================================
+// CONTROLE DE TELA ATIVA (WAKE LOCK API)
+// ============================================================================
+
+async function requestWakeLock() {
+    if ('wakeLock' in navigator) {
+        try {
+            wakeLock = await navigator.wakeLock.request('screen');
+            console.log("Wake Lock ativado!");
+        } catch (err) {
+            console.warn("Erro ao solicitar bloqueio de tela ativa:", err);
         }
     }
 }
 
-function formatLyrics(lyrics) {
-    // Destacar acordes entre colchetes
-    return lyrics.replace(/\[(.*?)\]/g, '<span class="chord">[$1]</span>');
-}
-
-// ============================================================================
-// FUNÇÕES DE CONTROLE
-// ============================================================================
-
-function increaseFontSize() {
-    const root = document.documentElement;
-    let currentSize = parseFloat(getComputedStyle(root).getPropertyValue('--font-size'));
-    if (currentSize < 22) {
-        root.style.setProperty('--font-size', (currentSize + 1) + 'px');
-    }
-}
-
-function decreaseFontSize() {
-    const root = document.documentElement;
-    let currentSize = parseFloat(getComputedStyle(root).getPropertyValue('--font-size'));
-    if (currentSize > 12) {
-        root.style.setProperty('--font-size', (currentSize - 1) + 'px');
-    }
-}
-
-function resetFontSize() {
-    document.documentElement.style.setProperty('--font-size', '16px');
-}
-
-function expandAll() {
-    document.querySelectorAll('.moment-content').forEach(content => {
-        content.classList.add('expanded');
-    });
-    document.querySelectorAll('.moment-arrow').forEach(arrow => {
-        arrow.textContent = '▲';
-    });
-    const liturgyContent = document.querySelector('.liturgy-content');
-    if (liturgyContent) {
-        liturgyContent.classList.add('expanded');
-    }
-    const liturgyArrow = document.querySelector('.liturgy-arrow');
-    if (liturgyArrow) {
-        liturgyArrow.textContent = '▲';
-    }
-}
-
-function collapseAll() {
-    document.querySelectorAll('.moment-content').forEach(content => {
-        content.classList.remove('expanded');
-    });
-    document.querySelectorAll('.moment-arrow').forEach(arrow => {
-        arrow.textContent = '▼';
-    });
-    const liturgyContent = document.querySelector('.liturgy-content');
-    if (liturgyContent) {
-        liturgyContent.classList.remove('expanded');
-    }
-    const liturgyArrow = document.querySelector('.liturgy-arrow');
-    if (liturgyArrow) {
-        liturgyArrow.textContent = '▼';
-    }
-}
-
-function setupSearch() {
-    const searchInput = document.getElementById('search-input');
-    if (!searchInput) return;
-    
-    searchInput.addEventListener('input', function() {
-        const searchTerm = this.value.toLowerCase();
-
-        document.querySelectorAll('.moment-section').forEach(section => {
-            const momentHeader = section.querySelector('.moment-header h2').textContent.toLowerCase();
-            const songs = section.querySelectorAll('.song-item');
-            let hasMatch = false;
-
-            songs.forEach(song => {
-                const title = song.querySelector('.song-title span').textContent.toLowerCase();
-                const lyrics = song.querySelector('.song-lyrics').textContent.toLowerCase();
-
-                if (title.includes(searchTerm) || lyrics.includes(searchTerm)) {
-                    song.style.display = 'block';
-                    hasMatch = true;
-                } else {
-                    song.style.display = 'none';
-                }
-            });
-
-            // Mostrar/ocultar seção baseado nos resultados
-            section.style.display = hasMatch || momentHeader.includes(searchTerm) ? 'block' : 'none';
+function releaseWakeLock() {
+    if (wakeLock !== null) {
+        wakeLock.release().then(() => {
+            wakeLock = null;
+            console.log("Wake Lock desativado!");
         });
-    });
+    }
 }
 
 // ============================================================================
-// INICIALIZAÇÃO
+// CADASTRO/EDIÇÃO DE MÚSICA (MODAL)
 // ============================================================================
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Configurar data atual
-    const hoje = new Date().toISOString().split('T')[0];
-    const dataInput = document.getElementById('dataLiturgia');
-    if (dataInput) {
-        dataInput.value = hoje;
-        dadosLiturgia.data = hoje;
+function openSongForm(songId = null) {
+    const modal = document.getElementById('modal-song-editor');
+    const formTitle = document.getElementById('song-form-title');
+    
+    document.getElementById('form-song-id').value = '';
+    document.getElementById('song-title').value = '';
+    document.getElementById('song-key').value = 'C';
+    document.getElementById('song-tags').value = '';
+    document.getElementById('song-youtube').value = '';
+    document.getElementById('song-lyrics').value = '';
+
+    if (songId) {
+        const song = db.musicas.find(s => s.id === songId);
+        if (!song) return;
+        
+        formTitle.textContent = "Editar Música";
+        document.getElementById('form-song-id').value = song.id;
+        document.getElementById('song-title').value = song.titulo;
+        document.getElementById('song-key').value = song.tomPadrao;
+        document.getElementById('song-tags').value = song.tags.join(', ');
+        document.getElementById('song-youtube').value = song.linkYoutube || '';
+        document.getElementById('song-lyrics').value = song.letra;
+    } else {
+        formTitle.textContent = "Nova Música";
+    }
+
+    modal.classList.remove('hidden');
+}
+
+function handleSongSubmit(e) {
+    e.preventDefault();
+    
+    const id = document.getElementById('form-song-id').value;
+    const titulo = document.getElementById('song-title').value.trim();
+    const tomPadrao = document.getElementById('song-key').value;
+    const rawTags = document.getElementById('song-tags').value;
+    const linkYoutube = document.getElementById('song-youtube').value.trim();
+    const letra = document.getElementById('song-lyrics').value;
+
+    if (!titulo || !letra) {
+        alert("Preencha o Título e a Letra/Acordes.");
+        return;
+    }
+
+    const tags = rawTags.split(',')
+        .map(t => t.trim())
+        .filter(t => t.length > 0);
+
+    if (id) {
+        const songIndex = db.musicas.findIndex(s => s.id === id);
+        if (songIndex !== -1) {
+            db.musicas[songIndex] = { id, titulo, tomPadrao, tags, linkYoutube, letra };
+        }
+    } else {
+        const newId = 'song-' + Date.now();
+        db.musicas.push({ id: newId, titulo, tomPadrao, tags, linkYoutube, letra });
+    }
+
+    saveDatabase();
+    document.getElementById('modal-song-editor').classList.add('hidden');
+    renderContent();
+    alert("Música salva com sucesso!");
+}
+
+function deleteSong(songId) {
+    if (confirm("Deseja realmente excluir esta música? Ela será desvinculada de qualquer missa que a utilize.")) {
+        db.musicas = db.musicas.filter(s => s.id !== songId);
+        db.missas.forEach(mass => {
+            if (mass.musicas) {
+                mass.musicas = mass.musicas.filter(m => m.musicaId !== songId);
+            }
+        });
+        saveDatabase();
+        renderContent();
+        alert("Música excluída com sucesso.");
+    }
+}
+
+// ============================================================================
+// CADASTRO/EDIÇÃO DE MISSA (MODAL)
+// ============================================================================
+
+function openMassForm(massId = null) {
+    const modal = document.getElementById('modal-mass-editor');
+    const formTitle = document.getElementById('mass-form-title');
+    
+    document.getElementById('form-mass-id').value = '';
+    document.getElementById('mass-title').value = '';
+    document.getElementById('mass-date').value = new Date().toISOString().split('T')[0];
+    document.getElementById('mass-location').value = '';
+    document.getElementById('mass-playlist').value = '';
+    document.getElementById('mass-banner').value = '';
+    document.getElementById('mass-notes').value = '';
+
+    if (massId) {
+        const mass = db.missas.find(m => m.id === massId);
+        if (!mass) return;
+
+        formTitle.textContent = "Editar Celebração";
+        document.getElementById('form-mass-id').value = mass.id;
+        document.getElementById('mass-title').value = mass.titulo;
+        document.getElementById('mass-date').value = mass.data;
+        document.getElementById('mass-location').value = mass.local;
+        document.getElementById('mass-playlist').value = mass.linkPlaylist || '';
+        document.getElementById('mass-banner').value = mass.bannerUrl || '';
+        document.getElementById('mass-notes').value = mass.observacoes || '';
+    } else {
+        formTitle.textContent = "Nova Celebração";
+    }
+
+    modal.classList.remove('hidden');
+}
+
+function handleMassSubmit(e) {
+    e.preventDefault();
+    
+    const id = document.getElementById('form-mass-id').value;
+    const titulo = document.getElementById('mass-title').value.trim();
+    const data = document.getElementById('mass-date').value;
+    const local = document.getElementById('mass-location').value.trim();
+    const linkPlaylist = document.getElementById('mass-playlist').value.trim();
+    const bannerUrl = document.getElementById('mass-banner').value.trim();
+    const observacoes = document.getElementById('mass-notes').value.trim();
+
+    if (!titulo || !local || !data) {
+        alert("Preencha o Título, Local e Data da celebração.");
+        return;
+    }
+
+    if (id) {
+        const massIndex = db.missas.findIndex(m => m.id === id);
+        if (massIndex !== -1) {
+            const oldMusicas = db.missas[massIndex].musicas || [];
+            const oldLeituras = db.missas[massIndex].leituras || null;
+            db.missas[massIndex] = { id, data, titulo, local, linkPlaylist, leituras: oldLeituras, musicas: oldMusicas, observacoes, bannerUrl };
+        }
+    } else {
+        const newId = 'mass-' + Date.now();
+        db.missas.push({ id: newId, data, titulo, local, linkPlaylist, leituras: null, musicas: [], observacoes, bannerUrl });
+        activeMassId = newId; // Auto-seleciona a nova missa
+    }
+
+    saveDatabase();
+    document.getElementById('modal-mass-editor').classList.add('hidden');
+    renderContent();
+    alert("Celebração salva com sucesso!");
+}
+
+function deleteMass(massId) {
+    if (confirm("Deseja realmente excluir esta celebração?")) {
+        db.missas = db.missas.filter(m => m.id !== massId);
+        if (activeMassId === massId) {
+            activeMassId = db.missas.length > 0 ? db.missas[0].id : null;
+        }
+        saveDatabase();
+        renderContent();
+        alert("Celebração excluída com sucesso.");
+    }
+}
+
+// ============================================================================
+// VINCULAR MÚSICA À MISSA (MODAL)
+// ============================================================================
+
+let currentLinkingMassId = null;
+let editingLinkedSongIndex = null;
+
+function openAddSongToMassModal(massId) {
+    currentLinkingMassId = massId;
+    editingLinkedSongIndex = null;
+    const modal = document.getElementById('modal-add-song-to-mass');
+    
+    document.getElementById('vinc-cantor').value = '';
+    document.getElementById('vinc-obs').value = '';
+    document.getElementById('vinc-tom').value = '';
+    
+    const selectSong = document.getElementById('vinc-musica-id');
+    selectSong.innerHTML = '';
+    
+    const sortedSongs = [...db.musicas].sort((a, b) => a.titulo.localeCompare(b.titulo));
+    sortedSongs.forEach(song => {
+        const opt = document.createElement('option');
+        opt.value = song.id;
+        opt.textContent = `${song.titulo} (Original: ${song.tomPadrao})`;
+        selectSong.appendChild(opt);
+    });
+
+    selectSong.onchange = () => {
+        const selectedId = selectSong.value;
+        const song = db.musicas.find(s => s.id === selectedId);
+        if (song) {
+            document.getElementById('vinc-tom').value = song.tomPadrao;
+        }
+    };
+    
+    if (selectSong.onchange) selectSong.onchange();
+
+    modal.querySelector('h3').textContent = "Vincular Música à Celebração";
+    modal.classList.remove('hidden');
+}
+
+function openEditSongInMassModal(massId, index) {
+    currentLinkingMassId = massId;
+    editingLinkedSongIndex = index;
+    const modal = document.getElementById('modal-add-song-to-mass');
+    
+    const mass = db.missas.find(m => m.id === massId);
+    if (!mass || !mass.musicas || !mass.musicas[index]) return;
+    
+    const mom = mass.musicas[index];
+    
+    document.getElementById('vinc-momento').value = mom.momento;
+    document.getElementById('vinc-cantor').value = mom.cantor || '';
+    document.getElementById('vinc-obs').value = mom.observacoes || '';
+    document.getElementById('vinc-tom').value = mom.tomMissa || '';
+    
+    const selectSong = document.getElementById('vinc-musica-id');
+    selectSong.innerHTML = '';
+    
+    const sortedSongs = [...db.musicas].sort((a, b) => a.titulo.localeCompare(b.titulo));
+    sortedSongs.forEach(song => {
+        const opt = document.createElement('option');
+        opt.value = song.id;
+        opt.textContent = `${song.titulo} (Original: ${song.tomPadrao})`;
+        selectSong.appendChild(opt);
+    });
+
+    selectSong.value = mom.musicaId;
+    selectSong.onchange = null; // Do not overwrite set key on change during edit
+
+    modal.querySelector('h3').textContent = "Editar Música na Celebração";
+    modal.classList.remove('hidden');
+}
+
+function saveVincularMusica() {
+    const selectMoment = document.getElementById('vinc-momento');
+    const selectSong = document.getElementById('vinc-musica-id');
+    const keyInput = document.getElementById('vinc-tom').value.trim();
+    const singerInput = document.getElementById('vinc-cantor').value.trim();
+    const obsInput = document.getElementById('vinc-obs').value.trim();
+
+    if (!currentLinkingMassId) return;
+    
+    const mass = db.missas.find(m => m.id === currentLinkingMassId);
+    if (!mass) return;
+
+    if (!selectSong.value) {
+        alert("Selecione uma música.");
+        return;
+    }
+
+    const linkedSong = {
+        momento: selectMoment.value,
+        musicaId: selectSong.value,
+        tomMissa: keyInput || '*',
+        cantor: singerInput,
+        observacoes: obsInput
+    };
+
+    if (!mass.musicas) mass.musicas = [];
+    
+    if (editingLinkedSongIndex !== null) {
+        mass.musicas[editingLinkedSongIndex] = linkedSong;
+        alert("Escala da música atualizada!");
+    } else {
+        mass.musicas.push(linkedSong);
+        alert("Música vinculada à missa!");
     }
     
-    // Renderizar liturgia
-    renderizarLiturgia();
-    
-    // Renderizar músicas
-    renderMusicList();
-    
-    // Criar links de navegação
-    createLiturgyLinks();
-    
-    // Configurar eventos
-    const liturgyHeader = document.getElementById('liturgyHeader');
-    if (liturgyHeader) {
-        liturgyHeader.addEventListener('click', toggleLiturgia);
+    saveDatabase();
+    document.getElementById('modal-add-song-to-mass').classList.add('hidden');
+    renderMissasTab();
+}
+
+function removeSongFromMass(massId, index) {
+    if (confirm("Deseja realmente remover esta música desta celebração?")) {
+        const mass = db.missas.find(m => m.id === massId);
+        if (mass && mass.musicas) {
+            mass.musicas.splice(index, 1);
+            saveDatabase();
+            renderMissasTab();
+            alert("Música removida!");
+        }
     }
-    
-    const buscarBtn = document.getElementById('buscarLiturgia');
-    if (buscarBtn) {
-        buscarBtn.addEventListener('click', buscarLiturgia);
+}
+
+// ============================================================================
+// PANEL DE ADMINISTRAÇÃO E BACKUP JSON
+// ============================================================================
+
+function exportDatabase() {
+    const textOutput = document.getElementById('textarea-db-backup');
+    textOutput.value = JSON.stringify(db, null, 2);
+    textOutput.select();
+    alert("Código JSON gerado. Copie e cole em outro aparelho para sincronizar!");
+}
+
+function downloadDatabase() {
+    // Incrementa a versão do banco de dados em 0.1 para que outros aparelhos detectem a atualização
+    let currentVersion = parseFloat(db.version) || 1.4;
+    let nextVersion = (currentVersion + 0.1).toFixed(1);
+    db.version = nextVersion;
+
+    saveDatabase();
+
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db, null, 2));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", "database.json");
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+
+    alert(`Arquivo 'database.json' baixado com sucesso!\n\nVersão gerada: ${nextVersion}\n\nSuba este arquivo no seu GitHub para atualizar o site de todos os integrantes.`);
+}
+
+function importDatabase() {
+    const textInput = document.getElementById('textarea-db-backup').value.trim();
+    if (!textInput) {
+        alert("Cole o código JSON gerado para importar.");
+        return;
     }
-    
-    // Controles de fonte
-    const increaseBtn = document.getElementById('increase-font');
-    const decreaseBtn = document.getElementById('decrease-font');
-    const resetBtn = document.getElementById('reset-font');
-    
-    if (increaseBtn) increaseBtn.addEventListener('click', increaseFontSize);
-    if (decreaseBtn) decreaseBtn.addEventListener('click', decreaseFontSize);
-    if (resetBtn) resetBtn.addEventListener('click', resetFontSize);
-    
-    // Expandir/recolher tudo
-    const expandBtn = document.getElementById('expand-all');
-    const collapseBtn = document.getElementById('collapse-all');
-    
-    if (expandBtn) expandBtn.addEventListener('click', expandAll);
-    if (collapseBtn) collapseBtn.addEventListener('click', collapseAll);
-    
-    // Configurar busca
-    setupSearch();
+
+    try {
+        const parsed = JSON.parse(textInput);
+        if (parsed.musicas && parsed.missas) {
+            if (confirm("Deseja substituir as informações locais pelas importadas?")) {
+                db = parsed;
+                activeMassId = db.missas.length > 0 ? db.missas[0].id : null;
+                saveDatabase();
+                renderContent();
+                alert("Banco de dados importado com sucesso!");
+            }
+        } else {
+            alert("JSON inválido. Certifique-se de que copiou o código completo.");
+        }
+    } catch (e) {
+        alert("Erro ao ler JSON.");
+        console.error(e);
+    }
+}
+
+// Inicializador automático do aplicativo
+document.addEventListener('DOMContentLoaded', () => {
+    initDatabase();
+    setupGlobalEvents();
+    renderTabs();
+    renderContent();
 });
+
+// ============================================================================
+// POPUP DE REPRODUÇÃO DO YOUTUBE
+// ============================================================================
+function getYoutubeId(url) {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+}
+
+function openYoutubePlayer(url) {
+    const videoId = getYoutubeId(url);
+    if (!videoId) {
+        window.open(url, '_blank');
+        return;
+    }
+    const container = document.getElementById('youtube-player-container');
+    container.innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${videoId}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="border: none;"></iframe>`;
+    document.getElementById('modal-youtube-player').classList.remove('hidden');
+}
+
+function closeYoutubePlayer() {
+    document.getElementById('youtube-player-container').innerHTML = '';
+    document.getElementById('modal-youtube-player').classList.add('hidden');
+}
