@@ -170,68 +170,89 @@
         </div>
     </div>
 
+    <!-- ============================================================================ -->
+    <!-- VISUALIZADOR DE CIFRAS FULLSCREEN (MODO PALCO / LEITOR)                      -->
+    <!-- ============================================================================ -->
     <div id="song-reader-overlay" class="song-reader-overlay hidden">
-        <div class="reader-header flex flex-between align-center mobile-column align-stretch gap-10">
-            <div class="flex flex-column">
-                <h2 id="reader-song-title" class="text-primary font-700 size-20">Título da Música</h2>
-                <div class="size-12 gray flex align-center gap-5 flex-wrap">
-                    Tom Original: <span id="reader-song-orig-key" class="bold text-gold">C</span> |
-                    Tom Atual: <span id="reader-song-key-current" class="bold text-primary">C</span>
-                </div>
-                <div id="reader-scale-info-container"></div>
+        
+        <!-- Controles Rápidos e Flutuantes Iniciais (Sempre Visíveis na Leitura) -->
+        <div class="reader-quick-actions">
+            <button id="reader-close" class="btn-quick" title="Voltar"><i class="fas fa-arrow-left"></i></button>
+            <button id="btn-scroll-toggle" class="btn-quick" title="Rolar Cifra"><i class="fas fa-play"></i></button>
+            <div class="speed-slider-quick">
+                <i class="fas fa-tachometer-alt"></i>
+                <input type="range" id="scroll-speed" min="0.5" max="8" step="0.5" value="2" title="Velocidade de Rolagem">
             </div>
-            <div class="flex align-center gap-10 justify-between">
-                <div id="reader-youtube-container"></div>
-                <button id="reader-close" class="btn btn-secondary border-radius-20" title="Voltar para a página anterior"><i class="fas fa-arrow-left"></i> Voltar</button>
+            <!-- Botão Hambúrguer para abrir o restante das configurações -->
+            <button id="reader-menu-toggle" class="btn-quick btn-hamburger" title="Mais Opções"><i class="fas fa-bars"></i></button>
+        </div>
+
+        <!-- Painel Lateral Oculto (Menu de Configurações Expandido) -->
+        <div id="reader-sidebar-menu" class="reader-sidebar-menu sidebar-hidden">
+            <div class="sidebar-header">
+                <h3>Configurações</h3>
+                <button id="reader-sidebar-close" class="btn-icon"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="sidebar-body">
+                <div class="sidebar-info-song">
+                    <h2 id="reader-song-title">Título da Música</h2>
+                    <div class="size-12 gray margin-bottom-10">
+                        Tom Original: <span id="reader-song-orig-key" class="bold text-gold">C</span> |
+                        Tom Atual: <span id="reader-song-key-current" class="bold text-primary">C</span>
+                    </div>
+                    <div id="reader-scale-info-container"></div>
+                </div>
+
+                <hr class="sidebar-divider">
+
+                <!-- Grupo: Tom -->
+                <div class="sidebar-group">
+                    <label class="bold size-13 uppercase"><i class="fas fa-music"></i> Transpor Tom</label>
+                    <div class="flex gap-5">
+                        <button id="btn-transp-down" class="btn btn-small btn-secondary flex-grow">-1/2</button>
+                        <button id="btn-transp-reset" class="btn btn-small btn-secondary">Padrão</button>
+                        <button id="btn-transp-up" class="btn btn-small btn-secondary flex-grow">+1/2</button>
+                    </div>
+                </div>
+
+                <!-- Grupo: Exibição -->
+                <div class="sidebar-group">
+                    <button id="btn-hide-chords" class="btn btn-secondary style-toggle-btn" style="width:100%;">
+                        <i class="fas fa-eye"></i> Exibindo Cifras
+                    </button>
+                </div>
+
+                <!-- Grupo: Fonte -->
+                <div class="sidebar-group">
+                    <label class="bold size-13 uppercase"><i class="fas fa-text-height"></i> Tamanho da Letra</label>
+                    <div class="flex gap-5">
+                        <button id="btn-font-down" class="btn btn-secondary flex-grow"><i class="fas fa-minus"></i> Diminuir</button>
+                        <button id="btn-font-up" class="btn btn-secondary flex-grow"><i class="fas fa-plus"></i> Aumentar</button>
+                    </div>
+                </div>
+
+                <!-- Grupo: Modo Palco -->
+                <div class="sidebar-group">
+                    <button id="btn-stage-toggle" class="btn var-btn-stage" style="width:100%;">
+                        <i class="fas fa-mobile-alt"></i> Modo Palco (Escuro)
+                    </button>
+                </div>
+
+                <!-- Grupo: Mídias e Edição -->
+                <div class="sidebar-group flex flex-column gap-10">
+                    <div id="reader-youtube-container" style="width:100%;"></div>
+                    <button id="btn-edit-song-from-reader" class="btn btn-secondary" style="width:100%;">
+                        <i class="fas fa-edit"></i> Editar Letra/Cifra
+                    </button>
+                </div>
             </div>
         </div>
 
-        <div class="reader-toolbar flex align-center">
-            <div class="toolbar-group">
-                <span class="size-12 bold gray">Tom:</span>
-                <button id="btn-transp-down" class="btn btn-small btn-secondary" title="Diminuir Meio Tom">-1/2</button>
-                <button id="btn-transp-reset" class="btn btn-small btn-secondary" title="Restaurar Tom Padrão">A</button>
-                <button id="btn-transp-up" class="btn btn-small btn-secondary" title="Aumentar Meio Tom">+1/2</button>
-            </div>
-
-            <div class="toolbar-group">
-                <button id="btn-hide-chords" class="btn btn-small btn-secondary" title="Ocultar Acordes">
-                    <i class="fas fa-eye"></i> Exibindo Cifras
-                </button>
-            </div>
-
-            <div class="toolbar-group">
-                <span class="size-12 bold gray">Letra:</span>
-                <button id="btn-font-down" class="btn btn-small btn-secondary" title="Diminuir Letra"><i class="fas fa-minus"></i></button>
-                <button id="btn-font-up" class="btn btn-small btn-secondary" title="Aumentar Letra"><i class="fas fa-plus"></i></button>
-            </div>
-
-            <div class="toolbar-group">
-                <button id="btn-scroll-toggle" class="btn btn-small btn-secondary" title="Rolar Automaticamente">
-                    <i class="fas fa-play"></i> Rolar Cifra
-                </button>
-                <div class="speed-slider-wrapper">
-                    <label for="scroll-speed">Velocidade</label>
-                    <input type="range" id="scroll-speed" min="0.5" max="8" step="0.5" value="2" title="Velocidade de Rolagem">
-                </div>
-            </div>
-
-            <div class="toolbar-group">
-                <button id="btn-stage-toggle" class="btn btn-small btn-secondary" title="Alternar Modo Escuro para Estante">
-                    <i class="fas fa-mobile-alt"></i> Modo Palco
-                </button>
-            </div>
-
-            <div class="toolbar-group">
-                <button id="btn-edit-song-from-reader" class="btn btn-small btn-secondary" title="Editar Letra/Cifra">
-                    <i class="fas fa-edit"></i> Editar Cifra
-                </button>
-            </div>
-        </div>
-
+        <!-- Área de Cifras Rolável (Ocupa a tela inteira de ponta a ponta) -->
         <div id="reader-lyrics-scrollable" class="reader-lyrics-scrollable">
             <div id="reader-lyrics-box" class="reader-lyrics-box">
-                </div>
+                <!-- Preenchido dinamicamente pelo JS -->
+            </div>
         </div>
     </div>
 
