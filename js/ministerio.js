@@ -1856,6 +1856,7 @@ function toggleStageMode() {
 
 function closeSongReader() {
     document.getElementById('song-reader-overlay').classList.add('hidden');
+    document.getElementById('reader-sidebar-menu').classList.add('sidebar-hidden'); // <-- Adicione esta linha
     stopAutoScroll();
     releaseWakeLock();
     
