@@ -465,7 +465,9 @@ textarea.form-control {
     min-height: 120px;
 }
 
-/* INTERACTIVE SONG READER */
+/* ============================================================================
+/* NOVO INTERACTIVE SONG READER (MODO LIMPO E SEM OBSTRUÇÃO)
+/* ============================================================================ */
 .song-reader-overlay {
     position: fixed;
     top: 0;
@@ -477,6 +479,19 @@ textarea.form-control {
     display: flex;
     flex-direction: column;
     transition: var(--transition);
+}
+
+/* Barra de ações rápida flutuante e compacta no topo */
+.reader-quick-actions {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 2200;
+    pointer-events: none; /* Deixa passar cliques na cifra por baixo se necessário */
 }
 
 .reader-header {
@@ -510,10 +525,11 @@ textarea.form-control {
     padding-right: 0;
 }
 
+/* ÁREA DE CIFRAS AJUSTADA (TELA CHEIA) */
 .reader-lyrics-scrollable {
     flex-grow: 1;
     overflow-y: auto;
-    padding: 30px 20px;
+    padding: 80px 20px 150px 20px; /* Margem superior generosa para dar espaço aos botões iniciais flutuantes */
     scroll-behavior: smooth;
 }
 
@@ -993,5 +1009,174 @@ textarea.form-control {
     }
     .main-banner h2 {
         font-size: 0.95rem;
+    }
+}
+
+
+/* ============================================================================
+/* NOVO INTERACTIVE SONG READER (MODO LIMPO E SEM OBSTRUÇÃO)
+/* ============================================================================ */
+.song-reader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--light-bg);
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    transition: var(--transition);
+}
+
+/* Barra de ações rápida flutuante e compacta no topo */
+.reader-quick-actions {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 2200;
+    pointer-events: none; /* Deixa passar cliques na cifra por baixo se necessário */
+}
+
+.btn-quick {
+    pointer-events: auto;
+    background: var(--card-bg);
+    border: 1.5px solid var(--border-color);
+    backdrop-filter: blur(8px);
+    color: var(--primary);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: var(--transition);
+    font-size: 1.1rem;
+}
+
+.btn-quick:hover, .btn-quick.active {
+    background: var(--primary);
+    color: white;
+    transform: scale(1.05);
+}
+
+.btn-hamburger {
+    margin-left: auto; /* Empurra o hambúrguer para o canto direito */
+    background: var(--card-bg);
+    color: var(--secondary);
+    border-color: rgba(107, 35, 130, 0.2);
+}
+
+/* Slider de velocidade ultra compacto */
+.speed-slider-quick {
+    pointer-events: auto;
+    background: var(--card-bg);
+    border: 1.5px solid var(--border-color);
+    backdrop-filter: blur(8px);
+    padding: 0 15px;
+    height: 44px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    color: var(--text-muted);
+}
+
+.speed-slider-quick input[type="range"] {
+    width: 70px;
+    accent-color: var(--primary);
+    cursor: pointer;
+}
+
+/* MENU LATERAL EXPANDÍVEL (SIDEBAR HAMBÚRGUER) */
+.reader-sidebar-menu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 320px;
+    height: 100vh;
+    background: white;
+    box-shadow: -5px 0 30px rgba(0,0,0,0.15);
+    z-index: 2500;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.reader-sidebar-menu.sidebar-hidden {
+    transform: translateX(100%);
+}
+
+.sidebar-header {
+    padding: 20px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sidebar-header h3 { font-size: 1.2rem; font-weight: 700; }
+.sidebar-header .btn-icon { color: white; }
+
+.sidebar-body {
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+
+
+
+
+.sidebar-info-song h2 { font-size: 1.3rem; margin-bottom: 5px; color: var(--primary); font-weight: 700;}
+.sidebar-divider { border: 0; border-top: 1px dashed var(--border-color); }
+.sidebar-group { display: flex; flex-direction: column; gap: 8px; }
+.var-btn-stage { background: rgba(74, 21, 75, 0.06); color: var(--primary); }
+
+/* AJUSTES NO MODO PALCO (STAGE MODE ESCURO) */
+.song-reader-overlay.stage-mode {
+    background: #06010A;
+}
+.song-reader-overlay.stage-mode .btn-quick,
+.song-reader-overlay.stage-mode .speed-slider-quick {
+    background: rgba(30, 15, 40, 0.85);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #DFCCF2;
+}
+.song-reader-overlay.stage-mode .btn-quick:hover,
+.song-reader-overlay.stage-mode .btn-quick.active {
+    background: #81c784;
+    color: #06010A;
+}
+.song-reader-overlay.stage-mode .reader-sidebar-menu {
+    background: #14071C;
+    color: white;
+}
+.song-reader-overlay.stage-mode .reader-sidebar-menu #reader-song-title { color: #EFE4F5; }
+.song-reader-overlay.stage-mode .btn-secondary { background: rgba(255,255,255,0.08); color: #EFE4F5; }
+.song-reader-overlay.stage-mode .chord-line,
+.song-reader-overlay.stage-mode .chord-line .chord { color: #81c784 !important; }
+.song-reader-overlay.stage-mode .reader-lyrics-box { color: #EFE4F5; }
+.song-reader-overlay.stage-mode .section-label { color: #B388FF; }
+
+@media (max-width: 480px) {
+    .reader-sidebar-menu {
+        width: 100vw; /* Ocupa tela inteira se expandido no mobile muito pequeno */
+    }
+    .speed-slider-quick {
+        padding: 0 8px;
+    }
+    .speed-slider-quick input[type="range"] {
+        width: 50px; /* Encurta um pouco para caber tudo em telas pequenas */
     }
 }
