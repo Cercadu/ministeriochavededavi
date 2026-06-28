@@ -1048,7 +1048,7 @@ function setupGlobalEvents() {
     document.getElementById('btn-add-missa-topo').addEventListener('click', () => openMassForm());
     document.getElementById('btn-add-musica-topo').addEventListener('click', () => openSongForm());
 
-    // Configura botões do visualizador de cifras (Leitor)
+// Configura botões do visualizador de cifras (Leitor Atualizado)
     document.getElementById('reader-close').addEventListener('click', closeSongReader);
     document.getElementById('btn-transp-down').addEventListener('click', () => adjustTransposition(-1));
     document.getElementById('btn-transp-up').addEventListener('click', () => adjustTransposition(1));
@@ -1058,7 +1058,20 @@ function setupGlobalEvents() {
     document.getElementById('btn-font-up').addEventListener('click', () => adjustFontSize(0.1));
     document.getElementById('btn-stage-toggle').addEventListener('click', toggleStageMode);
     document.getElementById('btn-edit-song-from-reader').addEventListener('click', () => {
-        if (currentSongId) openSongForm(currentSongId);
+        if (currentSongId) {
+            // Fecha a barra lateral antes de abrir o modal de edição
+            document.getElementById('reader-sidebar-menu').classList.add('sidebar-hidden');
+            openSongForm(currentSongId);
+        }
+    });
+    
+    // Controles do Menu Lateral Hambúrguer
+    const sidebarMenu = document.getElementById('reader-sidebar-menu');
+    document.getElementById('reader-menu-toggle').addEventListener('click', () => {
+        sidebarMenu.classList.remove('sidebar-hidden');
+    });
+    document.getElementById('reader-sidebar-close').addEventListener('click', () => {
+        sidebarMenu.classList.add('sidebar-hidden');
     });
     
     // Auto-scroll
@@ -1070,7 +1083,6 @@ function setupGlobalEvents() {
             startAutoScroll();
         }
     });
-
     // Modais e Fechamentos
     document.querySelectorAll('.close-modal-btn').forEach(btn => {
         btn.addEventListener('click', () => {
