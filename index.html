@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ministério de Música Chave de Davi</title>
+    <!-- FontAwesome para ícones premium -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Estilos do aplicativo -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Banner Principal -->
+        <div class="main-banner">
+            <h1>🎵 MINISTÉRIO CHAVE DE DAVI</h1>
+            <h2>Portal de Cifras, Repertórios & Escalas</h2>
+        </div>
+
+        <!-- Data do Dia Atual (Estática acima do menu) -->
+        <div class="today-date-top" id="today-date-top"></div>
+
+        <!-- Abas de Navegação -->
+        <div class="tabs-navigation">
+            <button class="tab-btn active" id="tab-btn-missas">
+                <i class="fas fa-calendar-alt"></i> Missas & Roteiros
+            </button>
+            <button class="tab-btn" id="tab-btn-musicas">
+                <i class="fas fa-music"></i> Pasta Musical
+            </button>
+            <button class="tab-btn" id="tab-btn-admin">
+                <i class="fas fa-sliders-h"></i> Painel Geral
+            </button>
+        </div>
+
+
+
+        <!-- Barra de Busca Global e Botões de Adicionar Música -->
+        <div class="search-filter-container flex flex-between align-center">
+            <div class="search-input-wrapper flex-grow">
+                <i class="fas fa-search"></i>
+                <input type="text" id="global-search" placeholder="Pesquisar louvor, cifra, tom, letra...">
+            </div>
+            <!-- Botão de criação rápida de música (só aparece na aba de músicas) -->
+            <button class="btn btn-primary" id="btn-add-musica-topo" style="display: none;">
+                <i class="fas fa-plus"></i> Nova Música
+            </button>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- ABA: MISSAS E ESCALAS                      -->
+        <!-- ========================================== -->
+        <div id="pane-missas" class="tab-pane">
+            <!-- Painel de Agenda e Calendário -->
+            <div class="calendar-agenda-header glass-panel margin-bottom-20">
+                <!-- Seletor de Data Direto (Calendário) -->
+                <div class="agenda-inline-item">
+                    <label for="agenda-date-picker" class="text-primary uppercase">
+                        <i class="fas fa-calendar-alt text-gold"></i> Data
+                    </label>
+                    <input type="date" id="agenda-date-picker" class="form-control" style="width: 140px;">
+                </div>
+                
+                <div class="agenda-divider"></div>
+                
+                <!-- Filtrar Mês -->
+                <div class="agenda-inline-item">
+                    <label for="agenda-month-select" class="text-primary uppercase">
+                        <i class="fas fa-calendar-check text-gold"></i> Mês
+                    </label>
+                    <select id="agenda-month-select" class="form-control" style="width: 130px;">
+                        <option value="all">Todos</option>
+                        <option value="0">Janeiro</option>
+                        <option value="1">Fevereiro</option>
+                        <option value="2">Março</option>
+                        <option value="3">Abril</option>
+                        <option value="4">Maio</option>
+                        <option value="5">Junho</option>
+                        <option value="6">Julho</option>
+                        <option value="7">Agosto</option>
+                        <option value="8">Setembro</option>
+                        <option value="9">Outubro</option>
+                        <option value="10">Novembro</option>
+                        <option value="11">Dezembro</option>
+                    </select>
+                </div>
+                
+                <div class="agenda-divider"></div>
+                
+                <!-- Eventos Cadastrados -->
+                <div class="agenda-inline-item" style="flex-grow: 1;">
+                    <label for="agenda-event-select" class="text-primary uppercase">
+                        <i class="fas fa-church text-gold"></i> Evento
+                    </label>
+                    <select id="agenda-event-select" class="form-control" style="width: 100%;">
+                        <option value="">Selecione um evento...</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Alternador de visualização da missa (Folheto, Repertório, Liturgia API) -->
+            <div id="mass-view-mode-selector" class="flex gap-10 margin-bottom-15 hidden">
+                <button id="btn-mode-roteiro" class="btn btn-small btn-secondary active flex-grow" style="border-radius: 20px;">
+                    <i class="fas fa-book-open"></i> Folheto / Roteiro da Missa
+                </button>
+                <button id="btn-mode-musicas" class="btn btn-small btn-secondary flex-grow" style="border-radius: 20px;">
+                    <i class="fas fa-list-ul"></i> Apenas Músicas (Repertório)
+                </button>
+                <button id="btn-mode-liturgia" class="btn btn-small btn-secondary flex-grow" style="border-radius: 20px;">
+                    <i class="fas fa-bible"></i> Liturgia Diária (API)
+                </button>
+            </div>
+
+            <div id="missas-list">
+                <!-- Inserido dinamicamente pelo JS -->
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- ABA: BIBLIOTECA DE MÚSICAS                 -->
+        <!-- ========================================== -->
+        <div id="pane-musicas" class="tab-pane hidden">
+            <!-- Filtro de Categorias rápidas (Tags) -->
+            <div class="tag-filters" id="musicas-tag-filters">
+                <!-- Inserido dinamicamente pelo JS -->
+            </div>
+            <div id="musicas-list" class="flex flex-column gap-10">
+                <!-- Inserido dinamicamente pelo JS -->
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- ABA: CONFIGURAÇÕES E BACKUP                -->
+        <!-- ========================================== -->
+        <div id="pane-admin" class="tab-pane hidden">
+            <!-- Gerenciar Celebrações (Seletor de Missa Ativa Movido) -->
+            <div class="glass-panel padding-20 margin-bottom-20" id="mass-selector-container">
+                <h3 class="text-primary font-700 margin-bottom-10"><i class="fas fa-calendar-alt text-gold"></i> Gerenciar Celebrações</h3>
+                <p class="size-14 gray margin-bottom-15">
+                    Selecione qual celebração está ativa para visualização na página inicial, ou crie uma nova celebração, missa ou grupo de oração.
+                </p>
+                <div class="flex align-center gap-10 flex-wrap margin-bottom-15" style="width: 100%;">
+                    <label for="select-active-mass" class="bold text-secondary size-14 uppercase" style="white-space: nowrap;"><i class="fas fa-church text-gold"></i> Escolha a Celebração:</label>
+                    <select id="select-active-mass" class="form-control" style="max-width: 300px; flex-grow: 1; min-width: 180px;">
+                        <!-- Populada dinamicamente pelo JS -->
+                    </select>
+                </div>
+                <button class="btn btn-primary flex-grow" id="btn-add-missa-topo" style="width: 100%;">
+                    <i class="fas fa-calendar-plus"></i> Criar Celebração
+                </button>
+            </div>
+
+            <div class="glass-panel padding-20 margin-bottom-20">
+                <h3 class="text-primary font-700 margin-bottom-15"><i class="fas fa-sync-alt text-gold"></i> Sincronização & Backup</h3>
+                <p class="size-14 gray margin-bottom-15">
+                    Como o aplicativo roda localmente no navegador (GitHub Pages), você pode exportar a base de dados em formato de texto para compartilhar o repertório e as escalas com outros integrantes do ministério por WhatsApp.
+                </p>
+                <div class="form-group margin-bottom-15">
+                    <label for="textarea-db-backup" class="bold size-13">Dados do Banco (JSON):</label>
+                    <textarea id="textarea-db-backup" class="form-control" style="font-family: monospace; font-size: 11px;" placeholder="Cole o código JSON aqui para importar, ou clique em Exportar para copiar..."></textarea>
+                </div>
+                <div class="flex gap-10">
+                    <button class="btn btn-primary flex-grow" id="btn-export-db">
+                        <i class="fas fa-copy"></i> Exportar Dados
+                    </button>
+                    <button class="btn btn-secondary flex-grow" id="btn-import-db">
+                        <i class="fas fa-file-import"></i> Importar Dados
+                    </button>
+                </div>
+                <div class="flex margin-top-10" style="margin-top: 10px; width: 100%;">
+                    <button class="btn flex-grow" id="btn-download-db" style="background: #1b8029; color: white; border: 1px solid #1b8029; width: 100%;">
+                        <i class="fas fa-download"></i> Baixar database.json (Atualizar GitHub)
+                    </button>
+                </div>
+            </div>
+
+            <div class="glass-panel padding-20 margin-bottom-20">
+                <h3 class="text-primary font-700 margin-bottom-10"><i class="fas fa-cloud text-gold"></i> Fase 2: Banco de Dados em Tempo Real</h3>
+                <p class="size-14 gray margin-bottom-10">
+                    Para que todos os integrantes acessem e editem o repertório simultaneamente em tempo real na nuvem, recomendamos integrar a API do <strong>Supabase</strong> (gratuita).
+                </p>
+                <div class="supabase-guide">
+                    <h4>Roteiro de Implementação Supabase:</h4>
+                    <ul>
+                        <li>Crie um projeto gratuito em <a href="https://supabase.com" target="_blank" style="color: #10b981; font-weight: bold;">supabase.com</a>.</li>
+                        <li>Crie as tabelas <code>musicas</code> e <code>missas</code> com a estrutura JSON gerada no exportador.</li>
+                        <li>Importe o SDK oficial no HTML: <code>&lt;script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"&gt;&lt;/script&gt;</code>.</li>
+                        <li>Substitua os comandos do local storage do <code>ministerio.js</code> por chamadas de API do Supabase (ex: <code>supabase.from('musicas').select()</code>).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="glass-panel padding-20 text-center">
+                <p class="size-13 gray margin-bottom-10">Deseja limpar as alterações locais e voltar para a Missa de Corpus Christi de hoje?</p>
+                <button class="btn btn-danger btn-small" id="btn-restore-defaults">
+                    <i class="fas fa-trash-restore"></i> Restaurar Banco Original
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================================ -->
+    <!-- VISUALIZADOR DE CIFRAS FULLSCREEN (MODO PALCO / LEITOR)                      -->
+    <!-- ============================================================================ -->
+    <div id="song-reader-overlay" class="song-reader-overlay hidden">
+        <div class="reader-header flex flex-between align-center">
+            <div class="flex flex-column">
+                <h2 id="reader-song-title" class="text-primary font-700 size-20">Título da Música</h2>
+                <div class="size-12 gray flex align-center gap-5">
+                    Tom Original: <span id="reader-song-orig-key" class="bold text-gold">C</span> |
+                    Tom Atual: <span id="reader-song-key-current" class="bold text-primary">C</span>
+                </div>
+                <div id="reader-scale-info-container"></div>
+            </div>
+            <div class="flex align-center gap-10">
+                <div id="reader-youtube-container"></div>
+                <button id="reader-close" class="btn btn-secondary border-radius-20" title="Voltar para a página anterior"><i class="fas fa-arrow-left"></i> Voltar</button>
+            </div>
+        </div>
+
+        <!-- Barra de Ferramentas de Cifras -->
+        <div class="reader-toolbar flex align-center">
+            <!-- Grupo: Tom -->
+            <div class="toolbar-group">
+                <span class="size-12 bold gray">Tom:</span>
+                <button id="btn-transp-down" class="btn btn-small btn-secondary" title="Diminuir Meio Tom">-1/2</button>
+                <button id="btn-transp-reset" class="btn btn-small btn-secondary" title="Restaurar Tom Padrão">A</button>
+                <button id="btn-transp-up" class="btn btn-small btn-secondary" title="Aumentar Meio Tom">+1/2</button>
+            </div>
+
+            <!-- Grupo: Exibição -->
+            <div class="toolbar-group">
+                <button id="btn-hide-chords" class="btn btn-small btn-secondary" title="Ocultar Acordes">
+                    <i class="fas fa-eye"></i> Exibindo Cifras
+                </button>
+            </div>
+
+            <!-- Grupo: Fonte -->
+            <div class="toolbar-group">
+                <span class="size-12 bold gray">Letra:</span>
+                <button id="btn-font-down" class="btn btn-small btn-secondary" title="Diminuir Letra"><i class="fas fa-minus"></i></button>
+                <button id="btn-font-up" class="btn btn-small btn-secondary" title="Aumentar Letra"><i class="fas fa-plus"></i></button>
+            </div>
+
+            <!-- Grupo: Rolagem Automática -->
+            <div class="toolbar-group">
+                <button id="btn-scroll-toggle" class="btn btn-small btn-secondary" title="Rolar Automaticamente">
+                    <i class="fas fa-play"></i> Rolar Cifra
+                </button>
+                <div class="speed-slider-wrapper">
+                    <label for="scroll-speed">Velocidade</label>
+                    <input type="range" id="scroll-speed" min="0.5" max="8" step="0.5" value="2" title="Velocidade de Rolagem">
+                </div>
+            </div>
+
+            <!-- Grupo: Modo Palco -->
+            <div class="toolbar-group">
+                <button id="btn-stage-toggle" class="btn btn-small btn-secondary" title="Alternar Modo Escuro para Estante">
+                    <i class="fas fa-mobile-alt"></i> Modo Palco
+                </button>
+            </div>
+
+            <!-- Grupo: Editar Cifra -->
+            <div class="toolbar-group">
+                <button id="btn-edit-song-from-reader" class="btn btn-small btn-secondary" title="Editar Letra/Cifra">
+                    <i class="fas fa-edit"></i> Editar Cifra
+                </button>
+            </div>
+        </div>
+
+        <!-- Área de Cifras Rolável -->
+        <div id="reader-lyrics-scrollable" class="reader-lyrics-scrollable">
+            <div id="reader-lyrics-box" class="reader-lyrics-box">
+                <!-- Preenchido dinamicamente pelo JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================================ -->
+    <!-- MODAL: EDITOR DE MÚSICA                                                      -->
+    <!-- ============================================================================ -->
+    <div id="modal-song-editor" class="modal-overlay hidden">
+        <div class="modal-container glass-panel">
+            <div class="modal-header">
+                <h3 id="song-form-title">Nova Música</h3>
+                <button class="btn-icon close-modal-btn text-white" style="color: white;"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="form-song">
+                <div class="modal-body">
+                    <input type="hidden" id="form-song-id">
+                    
+                    <div class="form-group">
+                        <label for="song-title">Título da Música/Louvor</label>
+                        <input type="text" id="song-title" class="form-control" placeholder="Ex: Verbum Panis" required>
+                    </div>
+                    
+                    <div class="form-row flex gap-10">
+                        <div class="form-group flex-grow">
+                            <label for="song-key">Tom de Acordo (Original)</label>
+                            <select id="song-key" class="form-control">
+                                <option value="C">C (Dó)</option>
+                                <option value="C#">C# (Dó sustenido)</option>
+                                <option value="D">D (Ré)</option>
+                                <option value="D#">D# (Ré sustenido)</option>
+                                <option value="E">E (Mi)</option>
+                                <option value="F">F (Fá)</option>
+                                <option value="F#">F# (Fá sustenido)</option>
+                                <option value="G">G (Sol)</option>
+                                <option value="G#">G# (Sol sustenido)</option>
+                                <option value="A">A (Lá)</option>
+                                <option value="A#">A# (Lá sustenido)</option>
+                                <option value="B">B (Si)</option>
+                                <option value="Cm">Cm (Dó menor)</option>
+                                <option value="C#m">C#m (Dó sustenido menor)</option>
+                                <option value="Dm">Dm (Ré menor)</option>
+                                <option value="D#m">D#m (Ré sustenido menor)</option>
+                                <option value="Em">Em (Mi menor)</option>
+                                <option value="Fm">Fm (Fá menor)</option>
+                                <option value="F#m">F#m (Fá sustenido menor)</option>
+                                <option value="Gm">Gm (Sol menor)</option>
+                                <option value="G#m">G#m (Sol sustenido menor)</option>
+                                <option value="Am">Am (Lá menor)</option>
+                                <option value="A#m">A#m (Lá sustenido menor)</option>
+                                <option value="Bm">Bm (Si menor)</option>
+                            </select>
+                        </div>
+                        <div class="form-group flex-grow">
+                            <label>Categorias / Tags</label>
+                            <div id="song-tags-checkboxes" class="tags-checkbox-grid">
+                                <label class="tag-checkbox-label"><input type="checkbox" value="Entrada"> Entrada</label>
+                                <label class="tag-checkbox-label"><input type="checkbox" value="Ato Penitencial"> Ato Penitencial</label>
+                                <label class="tag-checkbox-label"><input type="checkbox" value="Glória"> Glória</label>
+                                <label class="tag-checkbox-label"><input type="checkbox" value="Salmo"> Salmo</label>
+                                <label class="tag-checkbox-label"><input type="checkbox" value="Aclamação"> Aclamação</label>
+                                <label class="tag-checkbox-label"><input type="checkbox" value="Ofertório"> Ofertório</label>
+                                <label class="tag-checkbox-label"><input type="checkbox" value="Santo"> Santo</label>
+                                <label class="tag-checkbox-label"><input type="checkbox" value="Pai Nosso"> Pai Nosso</label>
+                                <label class="tag-checkbox-label"><input type="checkbox" value="Cordeiro"> Cordeiro</label>
+                                <label class="tag-checkbox-label"><input type="checkbox" value="Comunhão"> Comunhão</label>
+                                <label class="tag-checkbox-label"><input type="checkbox" value="Pós-Comunhão"> Pós-Comunhão</label>
+                                <label class="tag-checkbox-label"><input type="checkbox" value="Adoração"> Adoração</label>
+                                <label class="tag-checkbox-label"><input type="checkbox" value="Final"> Final</label>
+                                <label class="tag-checkbox-label"><input type="checkbox" value="Louvor"> Louvor</label>
+                                <label class="tag-checkbox-label"><input type="checkbox" value="Meditação"> Meditação</label>
+                                <label class="tag-checkbox-label"><input type="checkbox" value="Mariana"> Mariana</label>
+                            </div>
+                            <input type="hidden" id="song-tags">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="song-youtube">Link do Vídeo no YouTube</label>
+                        <input type="url" id="song-youtube" class="form-control" placeholder="Ex: https://www.youtube.com/watch?v=...">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="song-lyrics">Cifra / Letra da Música</label>
+                        <p class="size-11 gray">Escreva os acordes na linha superior à letra. Alinhe usando espaços simples. Exemplo:</p>
+                        <p class="size-11 bold gray bg-light-trans padding-5" style="font-family: monospace;">E          A<br>Povo de Reis, assembleia santa</p>
+                        <textarea id="song-lyrics" class="form-control" style="font-family: monospace; font-size: 13px;" placeholder="E          A&#10;Povo de Reis, assembleia santa..." required></textarea>
+                    </div>
+                </div>
+                <div class="padding-15 border-top flex gap-10 flex-end bg-light-trans text-right" style="justify-content: flex-end;">
+                    <button type="button" class="btn btn-secondary close-modal-btn">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar Música</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============================================================================ -->
+    <!-- MODAL: EDITOR DE MISSA                                                       -->
+    <!-- ============================================================================ -->
+    <div id="modal-mass-editor" class="modal-overlay hidden">
+        <div class="modal-container glass-panel">
+            <div class="modal-header">
+                <h3 id="mass-form-title">Nova Celebração</h3>
+                <button class="btn-icon close-modal-btn text-white" style="color: white;"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="form-mass">
+                <div class="modal-body">
+                    <input type="hidden" id="form-mass-id">
+                    
+                    <div class="form-group">
+                        <label for="mass-title">Nome da Celebração/Missa</label>
+                        <input type="text" id="mass-title" class="form-control" placeholder="Ex: Celebração de Corpus Christi" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mass-type">Tipo de Celebração</label>
+                        <select id="mass-type" class="form-control">
+                            <option value="missa">Santa Missa</option>
+                            <option value="grupo">Grupo de Oração</option>
+                            <option value="evento">Evento / Encontro</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-row flex gap-10">
+                        <div class="form-group flex-grow">
+                            <label for="mass-date">Data da Missa</label>
+                            <input type="date" id="mass-date" class="form-control" required>
+                        </div>
+                        <div class="form-group flex-grow">
+                            <label for="mass-location">Local/Paróquia</label>
+                            <input type="text" id="mass-location" class="form-control" placeholder="Ex: Matriz Chave de Davi" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mass-playlist">Link da Playlist do Ensaio (YouTube)</label>
+                        <input type="url" id="mass-playlist" class="form-control" placeholder="Ex: https://www.youtube.com/playlist?list=...">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mass-banner">Caminho/URL da Imagem de Banner da Missa</label>
+                        <input type="text" id="mass-banner" class="form-control" placeholder="Ex: img/banner.jpg, img/bannerMissaPadreCelso.jpg, etc.">
+                    </div>
+
+                    <div class="form-group margin-top-20">
+                        <label for="mass-notes">Observações da Missa / Rito Específico</label>
+                        <textarea id="mass-notes" class="form-control" placeholder="Ex: Procissão de entrada solene, rito de coroação, avisos especiais da equipe..."></textarea>
+                    </div>
+                </div>
+                <div class="padding-15 border-top flex gap-10 flex-end bg-light-trans text-right" style="justify-content: flex-end;">
+                    <button type="button" class="btn btn-secondary close-modal-btn">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============================================================================ -->
+    <!-- MODAL: VINCULAR MÚSICA À MISSA                                              -->
+    <!-- ============================================================================ -->
+    <div id="modal-add-song-to-mass" class="modal-overlay hidden">
+        <div class="modal-container glass-panel">
+            <div class="modal-header">
+                <h3>Vincular Música à Celebração</h3>
+                <button class="btn-icon close-modal-btn text-white" style="color: white;"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="vinc-momento">Momento Litúrgico da Missa</label>
+                    <select id="vinc-momento" class="form-control">
+                        <option value="Entrada">Entrada</option>
+                        <option value="Ato Penitencial">Ato Penitencial (Kyrie)</option>
+                        <option value="Glória">Glória</option>
+                        <option value="Salmo">Salmo</option>
+                        <option value="Aclamação">Aclamação</option>
+                        <option value="Ofertório">Ofertório (Dons)</option>
+                        <option value="Santo">Santo</option>
+                        <option value="Pai Nosso">Pai Nosso</option>
+                        <option value="Cordeiro">Cordeiro</option>
+                        <option value="Comunhão">Comunhão</option>
+                        <option value="Pós-Comunhão">Pós-Comunhão</option>
+                        <option value="Adoração">Adoração</option>
+                        <option value="Final">Final</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <div class="flex flex-between align-center margin-bottom-5">
+                        <label class="bold">Escolha a Música</label>
+                        <button type="button" class="btn btn-small btn-secondary border-radius-20" onclick="openSongFormFromVinc()" style="font-size: 11px; padding: 4px 10px;">
+                            <i class="fas fa-plus"></i> Nova Música
+                        </button>
+                    </div>
+                    <div class="search-input-wrapper" style="margin-bottom: 10px;">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="vinc-musica-busca" class="form-control" placeholder="Buscar por título, letra ou acorde...">
+                    </div>
+                    <div class="flex gap-5 flex-wrap margin-bottom-10" id="vinc-musica-filtros" style="max-height: 80px; overflow-y: auto; padding: 2px;">
+                        <!-- Inserido dinamicamente -->
+                    </div>
+                    <input type="hidden" id="vinc-musica-id">
+                    <div id="vinc-musica-lista" class="vinc-musica-lista">
+                        <!-- Lista de músicas filtradas populada dinamicamente -->
+                    </div>
+                </div>
+
+                <div class="form-row flex gap-10">
+                    <div class="form-group flex-grow">
+                        <label for="vinc-tom">Tom Específico para esta Celebração</label>
+                        <input type="text" id="vinc-tom" class="form-control" placeholder="Ex: E, Em, G, Dm">
+                    </div>
+                    <div class="form-group flex-grow">
+                        <label for="vinc-cantor">Responsável / Solista (Escala)</label>
+                        <input type="text" id="vinc-cantor" class="form-control" placeholder="Ex: Marina, Lucas, Todos">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="vinc-obs">Observações Específicas do Louvor</label>
+                    <input type="text" id="vinc-obs" class="form-control" placeholder="Ex: Iniciar com dedilhado suave...">
+                </div>
+            </div>
+            <div class="padding-15 border-top flex gap-10 flex-end bg-light-trans text-right" style="justify-content: flex-end;">
+                <button type="button" class="btn btn-secondary close-modal-btn">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="saveVincularMusica()">Confirmar Vínculo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================================ -->
+    <!-- MODAL: YOUTUBE PLAYER POPUP                                                  -->
+    <!-- ============================================================================ -->
+    <div id="modal-youtube-player" class="modal-overlay hidden" style="z-index: 3000;">
+        <div class="modal-container glass-panel" style="max-width: 640px; margin: 15px;">
+            <div class="modal-header" style="padding: 12px 15px; background: linear-gradient(135deg, #e50914 0%, #b81d24 100%); border-bottom: none;">
+                <h3 id="youtube-player-title" style="font-size: 1.1rem; font-weight: 700; color: white;">Vídeo de Referência</h3>
+                <button class="btn-icon text-white" onclick="closeYoutubePlayer()" style="color: white; padding: 5px; background: transparent; border: none; cursor: pointer; font-size: 1.2rem;"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" style="padding: 0; background: black; display: flex; justify-content: center; align-items: center; aspect-ratio: 16/9; position: relative;">
+                <div id="youtube-player-container" style="width: 100%; height: 100%;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Controlador principal -->
+    <script src="js/ministerio.js"></script>
+</body>
+</html>

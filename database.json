@@ -1,0 +1,140 @@
+{
+  "version": "1.4",
+  "musicas": [
+    {
+      "id": "corpus-entrada",
+      "titulo": "Povo de Reis Assembleia Santa",
+      "tomPadrao": "E",
+      "tags": ["Entrada"],
+      "linkYoutube": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "letra": "[Intro]\nE   A   B   E   A   B\n\n[Refrão]\nE                 A        B\nAssembleia santa, povo de reis,\nE                 B      A        E\nImpério dos sacerdotes, povo de Deus,\nE             B        A         B       E\nCantai ao vosso Senhor! Cantai ao vosso Senhor!\n\n[Estrofe 1]\nC#m                         F#m           B\n1. Nós vos louvamos, ó Cristo, Estrela da Manhã,\nA                     F#m             B\nNós vos bendizemos, caminho da salvação.\nC#m                         F#m            B\nNós vos glorificamos, ó pão da nossa vida,\nA                     F#m              B\nNós vos adoramos, defensor dos pecadores.\n\n[Estrofe 2]\nC#m                        F#m             B\n2. Nós vos cantamos, mediador da nova aliança,\nA                        F#m               B\nNós vos louvamos, sacerdote da eterna aliança.\nC#m                         F#m            B\nNós vos bendizemos, ó luz das nossas almas,\nA                     F#m               B\nNós vos adoramos, pão vivo descido do céu."
+    },
+    {
+      "id": "corpus-kyrie",
+      "titulo": "Senhor, Verdadeiro Corpo (Marco Frisina)",
+      "tomPadrao": "Em",
+      "tags": ["Ato Penitencial"],
+      "linkYoutube": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "letra": "[Intro]\nEm   B7   Em   Am   Em   B7   Em\n\n[Estrofe 1]\nEm          B7      Em      Am          B7\nSenhor, verdadeiro corpo nascido da Virgem Maria,\nAm          Em      C                 B7\nTende piedade de nós, tende piedade de nós.\nEm     Am  D   G   C      Am  B7  Em\nKyrie eleison, Kyrie eleison.\n\n[Estrofe 2]\nEm          B7         Em       Am          B7\nÓ Cristo, verdadeiro pão que alimenta a nossa alma,\nAm          Em      C                 B7\nTende piedade de nós, tende piedade de nós.\nEm       Am  D   G   C       Am  B7  Em\nChriste eleison, Christe eleison.\n\n[Estrofe 3]\nEm            B7      Em       Am           B7\nSenhor, fonte de amor que nos reúne no vosso altar,\nAm          Em      C                 B7\nTende piedade de nós, tende piedade de nós.\nEm     Am  D   G   C      Am  B7  Em\nKyrie eleison, Kyrie eleison."
+    },
+    {
+      "id": "corpus-gloria",
+      "titulo": "Glória Na Dança da Vida",
+      "tomPadrao": "A",
+      "tags": ["Glória"],
+      "linkYoutube": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "letra": "[Intro]\nA   D   E   A   D   E\n\n[Refrão]\nA               D         E\nGlória, glória a Deus nas alturas!\nA                D          E\nE paz na terra aos homens por Ele amados!\nA               D         E\nGlória, glória a Deus nas alturas!\nA                D          E\nE paz na terra aos homens por Ele amados!\n\n[Estrofe 1]\nF#m                        C#m             D\n1. Senhor Deus, Rei dos céus, Deus Pai todo-poderoso.\n                A        D              E\nNós vos louvamos, nós vos bendizemos.\nF#m             C#m                   D\nNós vos adoramos, nós vos glorificamos,\n                A               D        E\nNós vos damos graças por vossa imensa glória.\n\n[Estrofe 2]\nF#m                C#m             D\n2. Senhor Jesus Cristo, Filho unigênito.\n                  A            D         E\nSenhor Deus, Cordeiro de Deus, Filho de Deus Pai.\nF#m                 C#m                          D        A\nVós que tirais o pecado do mundo, tende piedade de nós.\nF#m                 C#m                         D        E\nVós que tirais o pecado do mundo, acolhei a nossa súplica."
+    },
+    {
+      "id": "corpus-oferendas",
+      "titulo": "A Vós Senhor Apresentamos Estes Dons",
+      "tomPadrao": "G",
+      "tags": ["Ofertório"],
+      "linkYoutube": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "letra": "[Intro]\nG   D   C   D   G\n\n[Estrofe 1]\nG                 D            G\nA vós, Senhor, apresentamos estes dons,\nG             C          D        G\nO pão e o vinho que vão se transformar\nC             D          G   D/F#   Em\nNo corpo e no sangue de Jesus,\nC             D         G\nNosso Salvador e Redentor.\n\n[Estrofe 2]\nEm                         Bm\n1. Fruto do trabalho e do suor do homem,\nC             D          G\nEste pão da vida se tornará.\nEm                Bm\nVinho da alegria, bebida de salvação,\nC             A7         D\nPara o vosso povo se alimentar.\n\n[Estrofe 3]\nEm                       Bm\n2. Recebei, Senhor, a nossa própria vida,\nC             D             G\nTudo o que temos e o que somos nós.\nEm                  Bm\nEm vossa presença, oferta agradecida,\nC             A7            D\nElevamos juntos nossa voz."
+    },
+    {
+      "id": "corpus-santo",
+      "titulo": "Santo Na Dança da Vida (Shalom)",
+      "tomPadrao": "Em",
+      "tags": ["Santo"],
+      "linkYoutube": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "letra": "[Intro]\nF#m7(b5)   Em   D   G/B   C   G/B   G   Am   Am/G   F#m7(b5)   B4   B\n\n[Estrofe 1]\nEm  D   C   G  D/F#  Em    F   C/E     D4  D#dim\nSan---to, San-------to, Santo é o Senhor Deus do universo!\nEm  D   C   G  D/F#  Em    F   C/E     D4  D\nSan---to, San-------to, Santo é o Senhor Deus do universo!\n\n[Refrão]\nAm7            Bm7                  C\nCéus e terra proclamam vossa glória,\nF#m7(b5)          B7\nHosana nas alturas!\nAm7                 Bm7                 C\nBendito o que vem em nome do Senhor,\nF#m7(b5)          B7\nHosana nas alturas!\n\n[Estrofe 2]\nF#m  E   D   A  E/G#  F#m   G   D/F#    E4  Fdim\nSan----to, San-------to, Santo é o Senhor Deus do universo!\nF#m  E   D   A  E/G#  F#m   G   D/F#    E4  E\nSan----to, San-------to, Santo é o Senhor Deus do universo!"
+    },
+    {
+      "id": "corpus-painosso",
+      "titulo": "Pai Nosso (Tradicional)",
+      "tomPadrao": "G",
+      "tags": ["Pai Nosso"],
+      "linkYoutube": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "letra": "G                  C         G\nPai nosso que estais no céu,\n      C                     D\nSantificado seja o vosso nome.\nG                      Em\nVenha a nós o vosso reino,\n      C              D\nSeja feita a vossa vontade,\n          C             G\nAssim na terra como no céu.\n\nG                        C         G\nO pão nosso de cada dia nos dai hoje.\n       C               D\nPerdoai as nossas ofensas,\n            G               Em              C\nAssim como nós perdoamos a quem nos tem ofendido.\n             G                  C\nE não nos deixeis cair em tentação,\n    G      D     G\nMas livrai-nos do mal."
+    },
+    {
+      "id": "corpus-cordeiro",
+      "titulo": "Cordeiro Amor e Adoração",
+      "tomPadrao": "F",
+      "tags": ["Cordeiro"],
+      "linkYoutube": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "letra": "[Intro]\nF   Bb   C   F\n\n[Estrofe 1]\nF           C       Dm          Am          Bb\nCordeiro de Deus, que tirais o pecado do mundo,\n          F          Gm                 C\nTende piedade de nós, tende piedade de nós.\nF           C       Dm          Am          Bb\nCordeiro de Deus, que tirais o pecado do mundo,\n          F          Gm                 C\nTende piedade de nós, tende piedade de nós.\n\n[Estrofe 2]\nF           C       Dm          Am          Bb\nCordeiro de Deus, que tirais o pecado do mundo,\n            C    F          Dm\nDai-nos a paz, dai-nos a paz,\nGm          C        F\nDai-nos a vossa paz."
+    },
+    {
+      "id": "corpus-comunhao",
+      "titulo": "Verbum Panis",
+      "tomPadrao": "Dm",
+      "tags": ["Comunhão"],
+      "linkYoutube": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "letra": "[Intro]\nDm   Bb   Gm   A4   A\n\n[Estrofe 1]\nDm            Bb                   Gm            A4            A\nDesde o princípio, antes mesmo que a terra começasse a existir,\nDm            Bb               Gm      A4   A\nO verbo estava junto a Deus,\nDm            Bb               Gm            A4            A\nE por meio d'Ele tudo foi criado, toda a vida n'Ele se fez,\nDm                  Bb               Gm       A\nO verbo se encarnou e habitou entre nós.\n\n[Refrão]\nF        C        Bb     C        Dm     C        Bb\nVerbum panis factum est, Verbum panis laudamus te.\nF        C        Bb     C        Dm     C  frater  Bb\nVerbum panis factum est, Verbum panis   Jesu.\n\n[Estrofe 2]\nDm            Bb             Gm             C              Dm\n1. Antes da morte e ressurreição, Tu te entregaste na comunhão,\n            Bb            Gm                   C            Dm\nPartindo o pão aos teus irmãos, alimentando o nosso coração.\n            Bb             Gm             C            Dm\nTu te tornaste o pão da vida, corpo e sangue de amor,\n            Bb            Gm                   A4      A\nSublime entrega e doação, presença viva do Senhor."
+    },
+    {
+      "id": "corpus-poscomunhao",
+      "titulo": "Sublime Silêncio",
+      "tomPadrao": "G",
+      "tags": ["Pós-Comunhão"],
+      "linkYoutube": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "letra": "[Intro]\nG   C   G   C   D\n\n[Estrofe 1]\nG           C         G         D\nSublime silêncio, Deus presente aqui,\nC           G         Am          D      G\nTua vai suave em meu peito a falar.\nG           C           G         D\nNa hóstia consagrada, mistério de amor,\nC           G         D         G\nMinha alma exulta ao te encontrar.\n\n[Estrofe 2]\nEm                 Bm                     C\n1. Silêncio que fala, que acalma a tempestade,\nG            D/F#       Em\nQue traz ao meu peito a verdade.\n           Bm                     C\nAqui me esvazio de tudo o que sou,\n    Am                  D\nE deixo que reines, meu Deus e Senhor."
+    },
+    {
+      "id": "corpus-adoracao",
+      "titulo": "Diante do Rei",
+      "tomPadrao": "E",
+      "tags": ["Adoração"],
+      "linkYoutube": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "letra": "[Intro]\nE   A   B   E   A   B\n\n[Estrofe 1]\nE                  B/D#              C#m         G#m\nSenhor, diante de Ti, venho me prostrar,\nA             E/G#        F#m            B\nDiante do Rei dos reis e Senhor dos senhores.\nE                  B/D#              C#m         G#m\nTua presença nos cura, nos enche de paz,\nA             E/G#         F#m       B\nE nos faz desejar estar perto de Ti.\n\n[Refrão]\nE             B/D#           C#m         G#m\nDiante do Rei dos reis, eu me prostrarei.\nA             E/G#         F#m         B\nEm adoração, meu louvor entregarei.\nE          B/D#          C#m         G#m\nSanto, Santo é o Senhor, Deus do universo,\nA          B        A         E\nToda a terra proclama o Seu amor."
+    },
+    {
+      "id": "corpus-final",
+      "titulo": "Glória a Jesus Na Hóstia Santa",
+      "tomPadrao": "G",
+      "tags": ["Final"],
+      "linkYoutube": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "letra": "[Estrofe]\nG          D       Em       Bm\nGlória a Jesus na Hóstia santa,\nC          G         A7         D\nQue se consagra sobre o altar!\nG          D       Em       Bm\nE a nossa fé nos acompanha,\nC          D       G\nPara Jesus glorificar!\n\n[Refrão]\nG          C       D        G\nO Céu e a Terra cantam louvores,\nEm          Am           D\nAo Deus de amor na Comunhão!\nG          C       D        G\nGlória a Jesus na Hóstia Santa,\nC          D         G\nNossa espiritual refeição!"
+    },
+    {
+      "id": "prev-festa-cordeiro",
+      "titulo": "Festa do Cordeiro",
+      "tomPadrao": "C",
+      "tags": ["Entrada"],
+      "letra": "[Intro]\nD   D/C   G/B   A   D   D/C   D/F#   G   A   G/B   A\n\n[Estrofe]\nD                  D/C\nCantai, cantai ao Senhor Deus\nG/B                 A4           A\nCantai, sua glória entre as nações\nG\nEntrai com alegria, dons e oferendas\nA4                  A\nNos átrios do Senhor.\n\n[Refrão]\nD                  G            D\nReina o Senhor, eterno é o Seu Amor\nD/F#        Em           D/F#            A\nVestido de glória e majestade está aqui.\nD                  Em   D/F#   G   A  Bm\nReina o Senhor, eterno é o Seu Amor\n      Em          D/F#           A4   A\nSua beleza tudo recria, tudo refaz."
+    },
+    {
+      "id": "prev-kyrie-jmj",
+      "titulo": "Kyrie Eleison - JMJ Rio 2013",
+      "tomPadrao": "Bm",
+      "tags": ["Ato Penitencial"],
+      "letra": "[Intro]\nBm7   G7M   Bm7   G7M\n\n[Estrofe]\nBm7         A       G7M\nSenhor, que viestes salvar\n        Bm7         A/C#    F#4   F#\nOs corações arrependidos.\n\n[Refrão]\nD   D4  D  A/C#   F#7/A#  F#7  Bm7   E4  E  A\nKyrie eleison, eleison, eleison."
+    }
+  ],
+  "missas": [
+    {
+      "id": "mass-corpus-christi",
+      "data": "2026-06-04",
+      "tipo": "missa",
+      "titulo": "Solenidade de Corpus Christi",
+      "local": "Paróquia Chave de Davi",
+      "linkPlaylist": "https://www.youtube.com/playlist?list=PL35747585",
+      "leituras": {
+        "primeira": "Primeira Leitura (Dt 8,2-3.14b-16a)\n\nLeitura do Livro do Deuteronômio.\n\nMoisés falou ao povo, dizendo: 2 Lembra-te de todo o caminho por onde o Senhor teu Deus te conduziu, esses quarenta anos, no deserto, para te humilhar e te pôr à prova, para saber o que tinhas no teu coração, e para ver se observarias ou não seus mandamentos.\n3 Ele te humilhou, fazendo-te passar fome e alimentando-te com o maná que nem tu nem teus pais conhecíeis, para te mostrar que nem só de pão vive o homem, mas de toda a palavra que sai da boca do Senhor.\n14b Não te esqueças do Senhor teu Deus que te fez sair do Egito, da casa da escravidão, 15 e que foi teu guia no vasto e terrível deserto, onde havia serpentes abrasadoras, escorpiões, e uma terra árida e sem água nenhuma.\nFoi ele que fez jorrar água para ti da pedra duríssima, 16a e te alimentou no deserto com maná, que teus pais não conheciam.\n\n- Palavra do Senhor.\n- Graças a Deus.",
+        "salmo": "Responsório Sl 147(147B),12-13.14-15.19-20 (R. 12)\n\nR. Glorifica o Senhor, Jerusalém; celebra teu Deus, ó Sião!\n\n- Glorifica o Senhor, Jerusalém! Ó Sião, canta louvores ao teu Deus! Pois reforçou com segurança as tuas portas, e os teus filhos em teu seio abençoou.\n\n- A paz em teus limites garantiu e te dá como alimento a flor do trigo. Ele envia suas ordens para a terra, e a palavra que ele diz corre veloz.\n\n- Anuncia a Jacó sua palavra, seus preceitos e suas leis a Israel. Nenhum povo recebeu tanto carinho, a nenhum outro revelou os seus preceitos.",
+        "segunda": "Segunda Leitura (1Cor 10,16-17)\n\nLeitura da Primeira Carta de São Paulo aos Coríntios.\n\nIrmãos: 16 O cálice da bênção, o cálice que abençoamos, não é comunhão com o sangue de Cristo? E o pão que partimos, não é comunhão com o corpo de Cristo?\n17 Porque há um só pão, nós todos somos um só corpo, pois todos participamos desse único pão.\n\n- Palavra do Senhor.\n- Graças a Deus.",
+        "evangelho": "Evangelho (Jo 6,51-58)\n\n- Aleluia, Aleluia, Aleluia.\n- Eu sou o pão vivo descido do céu; quem deste pão come, sempre há de viver!\n\nProclamação do Evangelho de Jesus Cristo segundo João.\n- Glória a vós, Senhor.\n\nNaquele tempo: disse Jesus às multidões dos judeus: 51 'Eu sou o pão vivo descido do céu. Quem comer deste pão viverá eternamente. E o pão que eu darei é a minha carne dada para a vida do mundo'.\n52 Os judeus discutiam entre si, dizendo: 'Como é que ele pode dar a sua carne a comer?'\n53 Então Jesus disse: 'Em verdade, em verdade vos digo: se não comerdes a carne do Filho do Homem e não beberdes o seu sangue, não tereis a vida em vós.\n54 Quem come a minha carne e bebe o meu sangue tem a vida eterna, e eu o ressucitarei no último dia.\n55 Porque a minha carne é verdadeira comida, e o meu sangue, verdadeira bebida.\n56 Quem come a minha carne e bebe o meu sangue permanece em mim e eu nele.\n57 Como o Pai, que vive, me enviou, e eu vivo por causa do Pai, assim aquele que me recebe como alimento viverá por causa de mim.\n58 Este é o pão que desceu do céu. Não é como aquele que os vossos pais comeram. Eles morreram. Aquele que come este pão viverá para sempre'.\n\n— Palavra da Salvação.\n— Glória a vós, Senhor."
+      },
+      "musicas": [
+        { "momento": "Entrada", "musicaId": "corpus-entrada", "tomMissa": "E", "cantor": "Marina (Solo)" },
+        { "momento": "Ato Penitencial", "musicaId": "corpus-kyrie", "tomMissa": "Em", "cantor": "Lucas (Solo)" },
+        { "momento": "Glória", "musicaId": "corpus-gloria", "tomMissa": "A", "cantor": "Todos" },
+        { "momento": "Salmo", "musicaId": "corpus-painosso", "tomMissa": "G", "cantor": "Ana (Salmista)", "observacoes": "Cantar o Salmo 115 adaptado" },
+        { "momento": "Aclamação", "musicaId": "corpus-entrada", "tomMissa": "E", "cantor": "Lucas" },
+        { "momento": "Ofertório", "musicaId": "corpus-oferendas", "tomMissa": "G", "cantor": "Cadu (Solo)" },
+        { "momento": "Santo", "musicaId": "corpus-santo", "tomMissa": "Em", "cantor": "Todos" },
+        { "momento": "Pai Nosso", "musicaId": "corpus-painosso", "tomMissa": "G", "cantor": "Todos" },
+        { "momento": "Cordeiro", "musicaId": "corpus-cordeiro", "tomMissa": "F", "cantor": "Davi e Coro" },
+        { "momento": "Comunhão", "musicaId": "corpus-comunhao", "tomMissa": "Dm", "cantor": "Marina e Lucas" },
+        { "momento": "Pós-Comunhão", "musicaId": "corpus-poscomunhao", "tomMissa": "G", "cantor": "Todos" },
+        { "momento": "Adoração", "musicaId": "corpus-adoracao", "tomMissa": "E", "cantor": "Marina (Solo)" },
+        { "momento": "Final", "musicaId": "corpus-final", "tomMissa": "G", "cantor": "Todos (Final Festivo)" }
+      ],
+      "observacoes": "Procissão solene com o Santíssimo Sacramento pelas ruas logo após a Comunhão. Conduzir os cantos de adoração com muito recolhimento e alternar com orações espontâneas.",
+      "bannerUrl": "img/banner.jpg"
+    }
+  ]
+}
