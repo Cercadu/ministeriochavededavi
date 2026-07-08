@@ -3,9 +3,17 @@ import { getStore } from "@netlify/blobs";
 const JSON_HEADERS = { "content-type": "application/json" };
 const BLOB_KEY = "database.json";
 
+function getValidPasswords() {
+  return (process.env.ADMIN_PASSWORDS || "")
+    .split(",")
+    .map((p) => p.trim())
+    .filter(Boolean);
+}
+
 function isAuthorized(req) {
   const password = req.headers.get("x-admin-password");
-  return Boolean(process.env.ADMIN_PASSWORD) && password === process.env.ADMIN_PASSWORD;
+  if (!password) return false;
+  return getValidPasswords().includes(password);
 }
 
 export default async (req) => {
