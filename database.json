@@ -1,5 +1,5 @@
 {
-  "version": "1.5",
+  "version": "1.6",
   "musicas": [
     {
       "id": "corpus-entrada",
@@ -228,6 +228,77 @@
       ],
       "linkYoutube": "https://www.youtube.com/watch?v=IDuN4x7gwqM&list=PLpv9bdJ53eoj6b6QviNtZ-IwHJ2Ewf_aI&index=9",
       "letra": "    G\nA edificar a igreja, a edificar a igreja, a edificar a igreja do\n\n  D7\nSenhor\n\n  Am         D7        Am        D7          Am          D7\n Irmão, vem, ajuda-me! Irmã, vem, ajuda-me! A edificar a igreja do\n\n  G\nSenhor\n\n G                                                D7\nEu sou a igreja,você é igreja somos, igreja do Senhor\n     G                                                     D7\nSão Pedro é igreja, são Paulo é igreja, somos igreja do Senhor\n    G                                                         D7\nOs leigos são igreja, os padres são igreja, somos igreja do Senhor\n"
+    },
+    {
+      "id": "jerico-vamos-celebrar",
+      "titulo": "Vamos Celebrar, Deus Está Aqui",
+      "tomPadrao": "C",
+      "tags": [
+        "Entrada"
+      ],
+      "linkYoutube": "",
+      "letra": "[Cifra pendente de cadastro — peça para o ministro responsável adicionar a letra e os acordes corretos aqui antes do evento]"
+    },
+    {
+      "id": "jerico-senhor-caminho",
+      "titulo": "Senhor, Que Sois o Caminho Que Conduz ao Pai",
+      "tomPadrao": "C",
+      "tags": [
+        "Ato Penitencial"
+      ],
+      "linkYoutube": "",
+      "letra": "[Cifra pendente de cadastro — peça para o ministro responsável adicionar a letra e os acordes corretos aqui antes do evento]"
+    },
+    {
+      "id": "jerico-quando-estamos-unidos",
+      "titulo": "Quando Estamos Unidos",
+      "tomPadrao": "C",
+      "tags": [
+        "Aclamação"
+      ],
+      "linkYoutube": "",
+      "letra": "[Cifra pendente de cadastro — peça para o ministro responsável adicionar a letra e os acordes corretos aqui antes do evento]"
+    },
+    {
+      "id": "jerico-pao-e-vinho",
+      "titulo": "Pão e Vinho Te Apresentamos",
+      "tomPadrao": "C",
+      "tags": [
+        "Ofertório"
+      ],
+      "linkYoutube": "",
+      "letra": "[Cifra pendente de cadastro — peça para o ministro responsável adicionar a letra e os acordes corretos aqui antes do evento]"
+    },
+    {
+      "id": "jerico-corpo-santo",
+      "titulo": "Corpo Santo",
+      "tomPadrao": "C",
+      "tags": [
+        "Comunhão"
+      ],
+      "linkYoutube": "",
+      "letra": "[Cifra pendente de cadastro — peça para o ministro responsável adicionar a letra e os acordes corretos aqui antes do evento]"
+    },
+    {
+      "id": "jerico-neste-nome-ha-poder",
+      "titulo": "Jesus, Neste Nome Há Poder",
+      "tomPadrao": "C",
+      "tags": [
+        "Adoração",
+        "Tema Cerco de Jericó"
+      ],
+      "linkYoutube": "",
+      "letra": "[Cifra pendente de cadastro — peça para o ministro responsável adicionar a letra e os acordes corretos aqui antes do evento]"
+    },
+    {
+      "id": "jerico-augusta-rainha",
+      "titulo": "Augusta Rainha do Céu",
+      "tomPadrao": "C",
+      "tags": [
+        "Final"
+      ],
+      "linkYoutube": "",
+      "letra": "[Cifra pendente de cadastro — peça para o ministro responsável adicionar a letra e os acordes corretos aqui antes do evento]"
     }
   ],
   "missas": [
@@ -724,6 +795,422 @@
       ],
       "observacoes": "",
       "bannerUrl": ""
+    },
+    {
+      "id": "mass-jerico-20260713",
+      "data": "2026-07-13",
+      "tipo": "missa",
+      "titulo": "Cerco de Jericó",
+      "local": "Paróquia Chave de Davi",
+      "linkPlaylist": "",
+      "leituras": {},
+      "observacoes": "Campanha de oração \"Cerco de Jericó\" 2026 — música tema: \"Jesus, Neste Nome Há Poder\". Cifras de várias músicas ainda pendentes de cadastro completo (letra e acordes) — apenas a primeira opção de cada momento foi registrada; as demais opções sugeridas podem ser adicionadas depois em \"Vincular Louvor\".",
+      "roteiro": [
+        {
+          "id": "step-1783533347686-1",
+          "tipo": "momento-musica",
+          "momento": "Entrada",
+          "icone": "fa-door-open"
+        },
+        {
+          "id": "step-1783533347686-2",
+          "tipo": "momento-musica",
+          "momento": "Ato Penitencial",
+          "icone": "fa-hands-praying"
+        },
+        {
+          "id": "step-1783533347686-3",
+          "tipo": "momento-musica",
+          "momento": "Hino de Louvor",
+          "icone": "fa-hands"
+        },
+        {
+          "id": "step-1783533347686-4",
+          "tipo": "momento-musica",
+          "momento": "Aclamação",
+          "icone": "fa-music"
+        },
+        {
+          "id": "step-1783533347686-5",
+          "tipo": "momento-musica",
+          "momento": "Ofertório",
+          "icone": "fa-gift"
+        },
+        {
+          "id": "step-1783533347686-6",
+          "tipo": "momento-musica",
+          "momento": "Santo",
+          "icone": "fa-church"
+        },
+        {
+          "id": "step-1783533347686-7",
+          "tipo": "momento-musica",
+          "momento": "Comunhão",
+          "icone": "fa-wine-glass"
+        },
+        {
+          "id": "step-1783533347686-8",
+          "tipo": "momento-musica",
+          "momento": "Adoração",
+          "icone": "fa-sun"
+        },
+        {
+          "id": "step-1783533347686-9",
+          "tipo": "momento-musica",
+          "momento": "Final",
+          "icone": "fa-flag"
+        }
+      ],
+      "musicas": [
+        {
+          "momento": "Entrada",
+          "musicaId": "jerico-vamos-celebrar"
+        },
+        {
+          "momento": "Ato Penitencial",
+          "musicaId": "jerico-senhor-caminho"
+        },
+        {
+          "momento": "Hino de Louvor",
+          "musicaId": "song-1782601385167"
+        },
+        {
+          "momento": "Aclamação",
+          "musicaId": "jerico-quando-estamos-unidos"
+        },
+        {
+          "momento": "Ofertório",
+          "musicaId": "jerico-pao-e-vinho"
+        },
+        {
+          "momento": "Santo",
+          "musicaId": "corpus-santo"
+        },
+        {
+          "momento": "Comunhão",
+          "musicaId": "jerico-corpo-santo"
+        },
+        {
+          "momento": "Adoração",
+          "musicaId": "jerico-neste-nome-ha-poder"
+        },
+        {
+          "momento": "Final",
+          "musicaId": "jerico-augusta-rainha"
+        }
+      ]
+    },
+    {
+      "id": "mass-jerico-20260717",
+      "data": "2026-07-17",
+      "tipo": "missa",
+      "titulo": "Cerco de Jericó",
+      "local": "Paróquia Chave de Davi",
+      "linkPlaylist": "",
+      "leituras": {},
+      "observacoes": "Campanha de oração \"Cerco de Jericó\" 2026 — música tema: \"Jesus, Neste Nome Há Poder\". Cifras de várias músicas ainda pendentes de cadastro completo (letra e acordes) — apenas a primeira opção de cada momento foi registrada; as demais opções sugeridas podem ser adicionadas depois em \"Vincular Louvor\".",
+      "roteiro": [
+        {
+          "id": "step-1783533347686-1",
+          "tipo": "momento-musica",
+          "momento": "Entrada",
+          "icone": "fa-door-open"
+        },
+        {
+          "id": "step-1783533347686-2",
+          "tipo": "momento-musica",
+          "momento": "Ato Penitencial",
+          "icone": "fa-hands-praying"
+        },
+        {
+          "id": "step-1783533347686-3",
+          "tipo": "momento-musica",
+          "momento": "Hino de Louvor",
+          "icone": "fa-hands"
+        },
+        {
+          "id": "step-1783533347686-4",
+          "tipo": "momento-musica",
+          "momento": "Aclamação",
+          "icone": "fa-music"
+        },
+        {
+          "id": "step-1783533347686-5",
+          "tipo": "momento-musica",
+          "momento": "Ofertório",
+          "icone": "fa-gift"
+        },
+        {
+          "id": "step-1783533347686-6",
+          "tipo": "momento-musica",
+          "momento": "Santo",
+          "icone": "fa-church"
+        },
+        {
+          "id": "step-1783533347686-7",
+          "tipo": "momento-musica",
+          "momento": "Comunhão",
+          "icone": "fa-wine-glass"
+        },
+        {
+          "id": "step-1783533347686-8",
+          "tipo": "momento-musica",
+          "momento": "Adoração",
+          "icone": "fa-sun"
+        },
+        {
+          "id": "step-1783533347686-9",
+          "tipo": "momento-musica",
+          "momento": "Final",
+          "icone": "fa-flag"
+        }
+      ],
+      "musicas": [
+        {
+          "momento": "Entrada",
+          "musicaId": "jerico-vamos-celebrar"
+        },
+        {
+          "momento": "Ato Penitencial",
+          "musicaId": "jerico-senhor-caminho"
+        },
+        {
+          "momento": "Hino de Louvor",
+          "musicaId": "song-1782601385167"
+        },
+        {
+          "momento": "Aclamação",
+          "musicaId": "jerico-quando-estamos-unidos"
+        },
+        {
+          "momento": "Ofertório",
+          "musicaId": "jerico-pao-e-vinho"
+        },
+        {
+          "momento": "Santo",
+          "musicaId": "corpus-santo"
+        },
+        {
+          "momento": "Comunhão",
+          "musicaId": "jerico-corpo-santo"
+        },
+        {
+          "momento": "Adoração",
+          "musicaId": "jerico-neste-nome-ha-poder"
+        },
+        {
+          "momento": "Final",
+          "musicaId": "jerico-augusta-rainha"
+        }
+      ]
+    },
+    {
+      "id": "mass-jerico-20260718",
+      "data": "2026-07-18",
+      "tipo": "missa",
+      "titulo": "Cerco de Jericó",
+      "local": "Paróquia Chave de Davi",
+      "linkPlaylist": "",
+      "leituras": {},
+      "observacoes": "Campanha de oração \"Cerco de Jericó\" 2026 — música tema: \"Jesus, Neste Nome Há Poder\". Cifras de várias músicas ainda pendentes de cadastro completo (letra e acordes) — apenas a primeira opção de cada momento foi registrada; as demais opções sugeridas podem ser adicionadas depois em \"Vincular Louvor\".",
+      "roteiro": [
+        {
+          "id": "step-1783533347686-1",
+          "tipo": "momento-musica",
+          "momento": "Entrada",
+          "icone": "fa-door-open"
+        },
+        {
+          "id": "step-1783533347686-2",
+          "tipo": "momento-musica",
+          "momento": "Ato Penitencial",
+          "icone": "fa-hands-praying"
+        },
+        {
+          "id": "step-1783533347686-3",
+          "tipo": "momento-musica",
+          "momento": "Hino de Louvor",
+          "icone": "fa-hands"
+        },
+        {
+          "id": "step-1783533347686-4",
+          "tipo": "momento-musica",
+          "momento": "Aclamação",
+          "icone": "fa-music"
+        },
+        {
+          "id": "step-1783533347686-5",
+          "tipo": "momento-musica",
+          "momento": "Ofertório",
+          "icone": "fa-gift"
+        },
+        {
+          "id": "step-1783533347686-6",
+          "tipo": "momento-musica",
+          "momento": "Santo",
+          "icone": "fa-church"
+        },
+        {
+          "id": "step-1783533347686-7",
+          "tipo": "momento-musica",
+          "momento": "Comunhão",
+          "icone": "fa-wine-glass"
+        },
+        {
+          "id": "step-1783533347686-8",
+          "tipo": "momento-musica",
+          "momento": "Adoração",
+          "icone": "fa-sun"
+        },
+        {
+          "id": "step-1783533347686-9",
+          "tipo": "momento-musica",
+          "momento": "Final",
+          "icone": "fa-flag"
+        }
+      ],
+      "musicas": [
+        {
+          "momento": "Entrada",
+          "musicaId": "jerico-vamos-celebrar"
+        },
+        {
+          "momento": "Ato Penitencial",
+          "musicaId": "jerico-senhor-caminho"
+        },
+        {
+          "momento": "Hino de Louvor",
+          "musicaId": "song-1782601385167"
+        },
+        {
+          "momento": "Aclamação",
+          "musicaId": "jerico-quando-estamos-unidos"
+        },
+        {
+          "momento": "Ofertório",
+          "musicaId": "jerico-pao-e-vinho"
+        },
+        {
+          "momento": "Santo",
+          "musicaId": "corpus-santo"
+        },
+        {
+          "momento": "Comunhão",
+          "musicaId": "jerico-corpo-santo"
+        },
+        {
+          "momento": "Adoração",
+          "musicaId": "jerico-neste-nome-ha-poder"
+        },
+        {
+          "momento": "Final",
+          "musicaId": "jerico-augusta-rainha"
+        }
+      ]
+    },
+    {
+      "id": "mass-jerico-20260719",
+      "data": "2026-07-19",
+      "tipo": "missa",
+      "titulo": "Cerco de Jericó",
+      "local": "Paróquia Chave de Davi",
+      "linkPlaylist": "",
+      "leituras": {},
+      "observacoes": "Campanha de oração \"Cerco de Jericó\" 2026 — música tema: \"Jesus, Neste Nome Há Poder\". Cifras de várias músicas ainda pendentes de cadastro completo (letra e acordes) — apenas a primeira opção de cada momento foi registrada; as demais opções sugeridas podem ser adicionadas depois em \"Vincular Louvor\".",
+      "roteiro": [
+        {
+          "id": "step-1783533347686-1",
+          "tipo": "momento-musica",
+          "momento": "Entrada",
+          "icone": "fa-door-open"
+        },
+        {
+          "id": "step-1783533347686-2",
+          "tipo": "momento-musica",
+          "momento": "Ato Penitencial",
+          "icone": "fa-hands-praying"
+        },
+        {
+          "id": "step-1783533347686-3",
+          "tipo": "momento-musica",
+          "momento": "Hino de Louvor",
+          "icone": "fa-hands"
+        },
+        {
+          "id": "step-1783533347686-4",
+          "tipo": "momento-musica",
+          "momento": "Aclamação",
+          "icone": "fa-music"
+        },
+        {
+          "id": "step-1783533347686-5",
+          "tipo": "momento-musica",
+          "momento": "Ofertório",
+          "icone": "fa-gift"
+        },
+        {
+          "id": "step-1783533347686-6",
+          "tipo": "momento-musica",
+          "momento": "Santo",
+          "icone": "fa-church"
+        },
+        {
+          "id": "step-1783533347686-7",
+          "tipo": "momento-musica",
+          "momento": "Comunhão",
+          "icone": "fa-wine-glass"
+        },
+        {
+          "id": "step-1783533347686-8",
+          "tipo": "momento-musica",
+          "momento": "Adoração",
+          "icone": "fa-sun"
+        },
+        {
+          "id": "step-1783533347686-9",
+          "tipo": "momento-musica",
+          "momento": "Final",
+          "icone": "fa-flag"
+        }
+      ],
+      "musicas": [
+        {
+          "momento": "Entrada",
+          "musicaId": "jerico-vamos-celebrar"
+        },
+        {
+          "momento": "Ato Penitencial",
+          "musicaId": "jerico-senhor-caminho"
+        },
+        {
+          "momento": "Hino de Louvor",
+          "musicaId": "song-1782601385167"
+        },
+        {
+          "momento": "Aclamação",
+          "musicaId": "jerico-quando-estamos-unidos"
+        },
+        {
+          "momento": "Ofertório",
+          "musicaId": "jerico-pao-e-vinho"
+        },
+        {
+          "momento": "Santo",
+          "musicaId": "corpus-santo"
+        },
+        {
+          "momento": "Comunhão",
+          "musicaId": "jerico-corpo-santo"
+        },
+        {
+          "momento": "Adoração",
+          "musicaId": "jerico-neste-nome-ha-poder"
+        },
+        {
+          "momento": "Final",
+          "musicaId": "jerico-augusta-rainha"
+        }
+      ]
     }
   ]
 }
