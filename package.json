@@ -1,0 +1,9 @@
+{
+  "name": "ministerio-chave-de-davi",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Portal do Ministério de Música Chave de Davi",
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  }
+}

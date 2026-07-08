@@ -569,17 +569,17 @@ async function initDatabase() {
         console.error("Erro ao carregar liturgia diária de hoje da API:", err);
     }
 
-    // Tenta buscar atualizações centralizadas do arquivo database.json no Git (GitHub Pages)
+    // Busca o banco de dados centralizado no servidor (Netlify Function + Blobs).
+    // O servidor é a fonte da verdade: se estiver acessível, substitui os dados locais.
     try {
-        const response = await fetch('./database.json');
+        const response = await fetch('/api/database');
         if (response.ok) {
-            const gitDb = await response.json();
-            if (gitDb && gitDb.version && (!db || !db.version || parseFloat(gitDb.version) > parseFloat(db.version))) {
-                console.log(`Atualizando banco de dados local para a versão do Git: ${gitDb.version}`);
-                db = gitDb;
+            const serverDb = await response.json();
+            if (serverDb && Array.isArray(serverDb.musicas) && Array.isArray(serverDb.missas)) {
+                db = serverDb;
                 upgradeSchema();
-                saveDatabase();
-                
+                localStorage.setItem('ministerio_db', JSON.stringify(db));
+
                 // Repopula e atualiza
                 populateEventDropdown(document.getElementById('agenda-month-select')?.value || 'all');
                 updateEventsForSelectedDate();
@@ -587,7 +587,7 @@ async function initDatabase() {
             }
         }
     } catch (err) {
-        console.warn("Não foi possível buscar atualizações do database.json.", err);
+        console.warn("Não foi possível sincronizar com o servidor central. Usando dados locais.", err);
     }
 }
 
@@ -600,9 +600,78 @@ function restoreDefaults() {
     saveDatabase();
 }
 
-// Salva o banco de dados no localStorage
+// Salva o banco de dados no localStorage e sincroniza com o servidor central
 function saveDatabase() {
     localStorage.setItem('ministerio_db', JSON.stringify(db));
+    syncDatabaseToServer();
+}
+
+const ADMIN_SESSION_KEY = 'ministerio_admin_pass';
+let syncDebounceTimer = null;
+
+// Garante que o usuário digitou a senha de administrador antes de abrir o Painel Geral
+async function ensureAdminAccess() {
+    if (sessionStorage.getItem(ADMIN_SESSION_KEY)) {
+        return true;
+    }
+
+    const password = prompt("Digite a senha de administrador para acessar o Painel Geral:");
+    if (!password) {
+        return false;
+    }
+
+    try {
+        const response = await fetch(`/api/database?verify=1`, {
+            headers: { 'X-Admin-Password': password }
+        });
+        if (response.ok) {
+            sessionStorage.setItem(ADMIN_SESSION_KEY, password);
+            return true;
+        }
+        alert("Senha incorreta.");
+        return false;
+    } catch (err) {
+        alert("Não foi possível verificar a senha agora (sem conexão com o servidor).");
+        return false;
+    }
+}
+
+// Encerra a sessão de administrador neste navegador
+function logoutAdmin() {
+    sessionStorage.removeItem(ADMIN_SESSION_KEY);
+    alert("Sessão de administrador encerrada.");
+    switchTab('missas');
+}
+
+// Envia o banco de dados atual para o servidor (Netlify Function + Blobs), com debounce
+function syncDatabaseToServer() {
+    const password = sessionStorage.getItem(ADMIN_SESSION_KEY);
+    if (!password) return; // só administradores autenticados gravam no servidor central
+
+    clearTimeout(syncDebounceTimer);
+    syncDebounceTimer = setTimeout(async () => {
+        try {
+            const response = await fetch('/api/database', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Admin-Password': password
+                },
+                body: JSON.stringify(db)
+            });
+
+            if (response.status === 401) {
+                sessionStorage.removeItem(ADMIN_SESSION_KEY);
+                alert("Sessão de administrador expirada ou senha incorreta. Faça login novamente para sincronizar suas alterações.");
+                return;
+            }
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+        } catch (err) {
+            console.warn("Não foi possível sincronizar as alterações com o servidor central.", err);
+        }
+    }, 600);
 }
 
 // Migra/Upgrade no schema do banco de dados para suportar roteiros dinâmicos e novos tipos
@@ -1019,7 +1088,10 @@ function setupGlobalEvents() {
     // Configura botões das abas principais
     document.getElementById('tab-btn-missas').addEventListener('click', () => switchTab('missas'));
     document.getElementById('tab-btn-musicas').addEventListener('click', () => switchTab('musicas'));
-    document.getElementById('tab-btn-admin').addEventListener('click', () => switchTab('admin'));
+    document.getElementById('tab-btn-admin').addEventListener('click', async () => {
+        const allowed = await ensureAdminAccess();
+        if (allowed) switchTab('admin');
+    });
 
     // Configura eventos da Agenda e Calendário
     const datePicker = document.getElementById('agenda-date-picker');
@@ -1097,6 +1169,7 @@ function setupGlobalEvents() {
     // Backup e Configurações
     document.getElementById('btn-export-db').addEventListener('click', exportDatabase);
     document.getElementById('btn-import-db').addEventListener('click', importDatabase);
+    document.getElementById('btn-logout-admin').addEventListener('click', logoutAdmin);
     document.getElementById('btn-download-db').addEventListener('click', downloadDatabase);
     document.getElementById('btn-restore-defaults').addEventListener('click', () => {
         if (confirm("Deseja realmente apagar todas as alterações e restaurar os dados originais?")) {

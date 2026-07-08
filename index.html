@@ -122,9 +122,9 @@
             </div>
 
             <div class="glass-panel padding-20 margin-bottom-20">
-                <h3 class="text-primary font-700 margin-bottom-15"><i class="fas fa-sync-alt text-gold"></i> Sincronização & Backup</h3>
+                <h3 class="text-primary font-700 margin-bottom-15"><i class="fas fa-sync-alt text-gold"></i> Sincronização em Tempo Real</h3>
                 <p class="size-14 gray margin-bottom-15">
-                    Como o aplicativo roda localmente no navegador (GitHub Pages), você pode exportar a base de dados em formato de texto para compartilhar o repertório e as escalas com outros integrantes do ministério por WhatsApp.
+                    Toda alteração feita aqui é gravada automaticamente no banco de dados central (Netlify) e já aparece para todos os integrantes que acessarem o portal. O backup manual abaixo continua disponível como cópia de segurança.
                 </p>
                 <div class="form-group margin-bottom-15">
                     <label for="textarea-db-backup" class="bold size-13">Dados do Banco (JSON):</label>
@@ -140,24 +140,13 @@
                 </div>
                 <div class="flex margin-top-10" style="width: 100%;">
                     <button class="btn flex-grow" id="btn-download-db" style="background: #1b8029; color: white; border: 1px solid #1b8029; width: 100%;">
-                        <i class="fas fa-download"></i> Baixar database.json (Atualizar GitHub)
+                        <i class="fas fa-download"></i> Baixar database.json (backup local)
                     </button>
                 </div>
-            </div>
-
-            <div class="glass-panel padding-20 margin-bottom-20">
-                <h3 class="text-primary font-700 margin-bottom-10"><i class="fas fa-cloud text-gold"></i> Fase 2: Banco de Dados em Tempo Real</h3>
-                <p class="size-14 gray margin-bottom-10">
-                    Para que todos os integrantes acessem e editem o repertório simultaneamente em tempo real na nuvem, recomendamos integrar a API do <strong>Supabase</strong> (gratuita).
-                </p>
-                <div class="supabase-guide">
-                    <h4>Roteiro de Implementação Supabase:</h4>
-                    <ul>
-                        <li>Crie um projeto gratuito em <a href="https://supabase.com" target="_blank" style="color: #10b981; font-weight: bold;">supabase.com</a>.</li>
-                        <li>Crie as tabelas <code>musicas</code> e <code>missas</code> com a estrutura JSON gerada no exportador.</li>
-                        <li>Importe o SDK oficial no HTML: <code>&lt;script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"&gt;&lt;/script&gt;</code>.</li>
-                        <li>Substitua os comandos do local storage do <code>ministerio.js</code> por chamadas de API do Supabase (ex: <code>supabase.from('musicas').select()</code>).</li>
-                    </ul>
+                <div class="flex margin-top-10" style="width: 100%;">
+                    <button class="btn btn-secondary flex-grow" id="btn-logout-admin">
+                        <i class="fas fa-right-from-bracket"></i> Sair do Modo Administrador
+                    </button>
                 </div>
             </div>
 
