@@ -1,0 +1,14 @@
+{
+  "name": "Ministério Chave de Davi",
+  "short_name": "Chave de Davi",
+  "description": "Portal de Cifras, Repertórios e Escalas do Ministério de Música Chave de Davi",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAF6FC",
+  "theme_color": "#4A154B",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "img/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "img/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}

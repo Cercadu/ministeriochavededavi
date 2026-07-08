@@ -1213,6 +1213,8 @@ function setupGlobalEvents() {
 
 // Configura botões do visualizador de cifras (Leitor Atualizado)
     document.getElementById('reader-close').addEventListener('click', closeSongReader);
+    document.getElementById('btn-reader-prev-song').addEventListener('click', () => navigateReaderSong(-1));
+    document.getElementById('btn-reader-next-song').addEventListener('click', () => navigateReaderSong(1));
     document.getElementById('btn-transp-down').addEventListener('click', () => adjustTransposition(-1));
     document.getElementById('btn-transp-up').addEventListener('click', () => adjustTransposition(1));
     document.getElementById('btn-transp-reset').addEventListener('click', () => resetTransposition());
@@ -2063,8 +2065,58 @@ function openSongReader(songId, massContextId = null) {
     }
 
     renderReaderLyrics();
+    updateReaderNavButtons();
     document.getElementById('song-reader-overlay').classList.remove('hidden');
     requestWakeLock();
+}
+
+// Retorna a sequência de IDs de música na ordem em que aparecem no roteiro da missa
+function getMassSongSequence(massId) {
+    const mass = db.missas.find(m => m.id === massId);
+    if (!mass || !mass.roteiro || !mass.musicas) return [];
+
+    const sequence = [];
+    mass.roteiro.forEach(step => {
+        if (step.tipo === 'momento-musica') {
+            mass.musicas
+                .filter(m => m.momento === step.momento)
+                .forEach(m => sequence.push(m.musicaId));
+        }
+    });
+    return sequence;
+}
+
+// Mostra/oculta os botões de Anterior/Próxima conforme a posição da música atual no roteiro
+function updateReaderNavButtons() {
+    const prevBtn = document.getElementById('btn-reader-prev-song');
+    const nextBtn = document.getElementById('btn-reader-next-song');
+    if (!prevBtn || !nextBtn) return;
+
+    if (!currentSongMassContextId) {
+        prevBtn.classList.add('hidden');
+        nextBtn.classList.add('hidden');
+        return;
+    }
+
+    const sequence = getMassSongSequence(currentSongMassContextId);
+    const index = sequence.indexOf(currentSongId);
+
+    prevBtn.classList.toggle('hidden', index <= 0);
+    nextBtn.classList.toggle('hidden', index === -1 || index >= sequence.length - 1);
+}
+
+// Navega para a música anterior/próxima do roteiro sem sair do leitor
+function navigateReaderSong(direction) {
+    if (!currentSongMassContextId) return;
+    const sequence = getMassSongSequence(currentSongMassContextId);
+    const index = sequence.indexOf(currentSongId);
+    if (index === -1) return;
+
+    const targetIndex = index + direction;
+    if (targetIndex < 0 || targetIndex >= sequence.length) return;
+
+    stopAutoScroll();
+    openSongReader(sequence[targetIndex], currentSongMassContextId);
 }
 
 function renderReaderLyrics() {
@@ -2141,6 +2193,10 @@ function toggleStageMode() {
 }
 
 function closeSongReader() {
+    if (autoScrollInterval && !confirm("A rolagem automática está ativa. Tem certeza que deseja fechar o leitor?")) {
+        return;
+    }
+
     document.getElementById('song-reader-overlay').classList.add('hidden');
     document.getElementById('reader-sidebar-menu').classList.add('sidebar-hidden'); // <-- Adicione esta linha
     stopAutoScroll();
@@ -2850,6 +2906,15 @@ document.addEventListener('DOMContentLoaded', () => {
     renderTabs();
     renderContent();
 });
+
+// Registra o Service Worker para permitir que o app abra offline (PWA)
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(err => {
+            console.warn('Não foi possível registrar o Service Worker.', err);
+        });
+    });
+}
 
 // ============================================================================
 // POPUP DE REPRODUÇÃO DO YOUTUBE

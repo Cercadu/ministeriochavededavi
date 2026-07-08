@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Ministério de Música Chave de Davi</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4A154B">
+    <link rel="icon" href="img/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="img/icon.svg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -173,7 +177,9 @@
         <!-- Controles Rápidos e Flutuantes Iniciais (Sempre Visíveis na Leitura) -->
         <div class="reader-quick-actions">
             <button id="reader-close" class="btn-quick" title="Voltar"><i class="fas fa-arrow-left"></i></button>
+            <button id="btn-reader-prev-song" class="btn-quick hidden" title="Música Anterior do Roteiro"><i class="fas fa-step-backward"></i></button>
             <button id="btn-scroll-toggle" class="btn-quick" title="Rolar Cifra"><i class="fas fa-play"></i></button>
+            <button id="btn-reader-next-song" class="btn-quick hidden" title="Próxima Música do Roteiro"><i class="fas fa-step-forward"></i></button>
             <div class="speed-slider-quick">
                 <i class="fas fa-tachometer-alt"></i>
                 <input type="range" id="scroll-speed" min="0.5" max="8" step="0.5" value="2" title="Velocidade de Rolagem">
