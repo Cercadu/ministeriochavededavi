@@ -1215,6 +1215,7 @@ function setupGlobalEvents() {
     // Configura botões de criar
     document.getElementById('btn-add-missa-topo').addEventListener('click', () => openMassForm());
     document.getElementById('btn-add-musica-topo').addEventListener('click', () => openSongForm());
+    document.getElementById('btn-format-cifraclub').addEventListener('click', formatCifraClubPaste);
 
 // Configura botões do visualizador de cifras (Leitor Atualizado)
     document.getElementById('reader-close').addEventListener('click', closeSongReader);
@@ -2062,7 +2063,14 @@ function openSongReader(songId, massContextId = null) {
     document.getElementById('reader-song-title').textContent = song.titulo;
     document.getElementById('reader-song-orig-key').textContent = song.tomPadrao;
     document.getElementById('reader-song-key-current').textContent = currentKey;
-    
+
+    const capoContainer = document.getElementById('reader-scale-info-container');
+    if (capoContainer) {
+        capoContainer.innerHTML = song.capotraste
+            ? `<span class="size-12 bold text-gold"><i class="fas fa-guitar"></i> Capotraste na ${song.capotraste}ª casa</span>`
+            : '';
+    }
+
     const ytContainer = document.getElementById('reader-youtube-container');
     if (song.linkYoutube) {
         ytContainer.innerHTML = `<button onclick="openYoutubePlayer('${song.linkYoutube}')" class="btn btn-small btn-secondary border-radius-20" style="cursor: pointer;"><i class="fab fa-youtube text-red"></i> Assistir no YouTube</button>`;
@@ -2335,8 +2343,10 @@ function openSongForm(songId = null, returnToVincMassId = null) {
     document.getElementById('song-title').value = '';
     document.getElementById('song-key').value = 'C';
     document.getElementById('song-key-personal').value = '';
+    document.getElementById('song-capo').value = '';
     document.getElementById('song-youtube').value = '';
     document.getElementById('song-lyrics').value = '';
+    document.getElementById('cifraclub-paste-input').value = '';
     
     // Salva contexto de retorno para quando fechar este modal re-abrir o vinc
     document.getElementById('modal-song-editor').dataset.returnToVincMassId = returnToVincMassId || '';
@@ -2353,6 +2363,7 @@ function openSongForm(songId = null, returnToVincMassId = null) {
         document.getElementById('song-title').value = song.titulo;
         document.getElementById('song-key').value = song.tomPadrao;
         document.getElementById('song-key-personal').value = song.tomPessoal || '';
+        document.getElementById('song-capo').value = song.capotraste || '';
         document.getElementById('song-youtube').value = song.linkYoutube || '';
         document.getElementById('song-lyrics').value = song.letra;
         
@@ -2372,6 +2383,140 @@ function openSongFormFromVinc(returnToVincMassId) {
     openSongForm(null, returnToVincMassId);
 }
 
+// ============================================================================
+// CONVERSOR DE CIFRA COLADA DO CIFRACLUB
+// ============================================================================
+
+// Remove ruído típico do CifraClub (tom, capotraste, tablatura, textos do site)
+// e normaliza cabeçalhos de seção sem colchetes para o padrão [Refrão] do app.
+// O formato de acorde-acima-da-letra do CifraClub já é entendido nativamente pelo app,
+// então não é necessário reescrever para colchetes inline.
+function cleanCifraClubPaste(rawText) {
+    let detectedTom = null;
+    let detectedCapo = null;
+
+    const junkPatterns = [
+        /^cifra\s*club/i,
+        /^cifraclub\.com/i,
+        /^ver\s+(esta\s+)?cifra/i,
+        /^mostrar\s+(acordes|cifra)/i,
+        /^ocultar\s+(acordes|cifra)/i,
+        /^transportar/i,
+        /^afina[çc][ãa]o/i,
+        /^coment[aá]rios/i,
+        /^enviad[ao]\s+por/i,
+        /^\d+\s+(pessoas?|visualiza)/i,
+        /^avalia[çc][ãa]o/i,
+        /^compositor/i,
+        /^int[eé]rprete/i,
+    ];
+
+    const tomRegex = /^tom\s*:?\s*([A-G][#b]?m?)\b/i;
+    const capoRegex = /^capo(traste)?\s*:?\s*(?:na\s*)?(\d+)/i;
+    const tabLineRegex = /^[eEbBgGdDaA]\|[-0-9|~hp/\\]{5,}/;
+    const dashHeavyRegex = /^[-\s]{6,}$/;
+    const sectionHeaderRegex = /^\(?\s*(Intro|Introdu[çc][ãa]o|Primeira\s+Parte|Segunda\s+Parte|Terceira\s+Parte|Refr[ãa]o|Ponte|Solo|Final|Estrofe\s*\d*|Verso\s*\d*|Interl[uú]dio|Cod[aá])\s*\)?\s*:?$/i;
+
+    const cleaned = [];
+    rawText.replace(/\r\n/g, '\n').split('\n').forEach(rawLine => {
+        const line = rawLine.replace(/\s+$/g, ''); // remove só espaços do fim, preserva alinhamento dos acordes
+        const trimmed = line.trim();
+
+        if (trimmed === '') {
+            cleaned.push('');
+            return;
+        }
+
+        const tomMatch = trimmed.match(tomRegex);
+        if (tomMatch) {
+            detectedTom = tomMatch[1];
+            return;
+        }
+
+        const capoMatch = trimmed.match(capoRegex);
+        if (capoMatch) {
+            detectedCapo = capoMatch[2];
+            return;
+        }
+
+        if (junkPatterns.some(re => re.test(trimmed))) return;
+        if (tabLineRegex.test(trimmed)) return;
+        if (dashHeavyRegex.test(trimmed)) return;
+
+        const sectionMatch = trimmed.match(sectionHeaderRegex);
+        if (sectionMatch) {
+            cleaned.push(`[${sectionMatch[1]}]`);
+            return;
+        }
+
+        cleaned.push(line);
+    });
+
+    // Colapsa 3+ linhas em branco seguidas em no máximo 1
+    const collapsed = [];
+    let blankStreak = 0;
+    cleaned.forEach(l => {
+        if (l === '') {
+            blankStreak++;
+            if (blankStreak <= 1) collapsed.push(l);
+        } else {
+            blankStreak = 0;
+            collapsed.push(l);
+        }
+    });
+
+    return { text: collapsed.join('\n').trim(), tom: detectedTom, capo: detectedCapo };
+}
+
+// Converte um tom em bemol (ex: Bb, Ebm) para o padrão em sustenido usado no seletor de Tom
+function normalizeChordToAppFormat(chord) {
+    const match = chord.match(/^([A-G])(#|b)?(m)?$/i);
+    if (!match) return null;
+    const note = match[1].toUpperCase();
+    const accidental = match[2] || '';
+    const minor = match[3] || '';
+    let full = note + accidental;
+    if (flatsMap[full]) full = flatsMap[full];
+    return full + minor;
+}
+
+function formatCifraClubPaste() {
+    const rawInput = document.getElementById('cifraclub-paste-input');
+    const raw = rawInput.value;
+    if (!raw.trim()) {
+        alert("Cole o texto copiado do CifraClub primeiro.");
+        return;
+    }
+
+    const lyricsField = document.getElementById('song-lyrics');
+    if (lyricsField.value.trim() && !confirm("Isso vai substituir o conteúdo atual do campo de Letra/Cifra. Continuar?")) {
+        return;
+    }
+
+    const { text, tom, capo } = cleanCifraClubPaste(raw);
+    lyricsField.value = text;
+
+    if (tom) {
+        const normalizedTom = normalizeChordToAppFormat(tom);
+        const keySelect = document.getElementById('song-key');
+        const optionExists = normalizedTom && Array.from(keySelect.options).some(o => o.value === normalizedTom);
+        if (optionExists) {
+            keySelect.value = normalizedTom;
+        }
+    }
+
+    if (capo) {
+        const capoSelect = document.getElementById('song-capo');
+        const capoOptionExists = Array.from(capoSelect.options).some(o => o.value === capo);
+        if (capoOptionExists) {
+            capoSelect.value = capo;
+        }
+    }
+
+    rawInput.value = '';
+    alert("Cifra formatada! Revise o resultado abaixo antes de salvar (principalmente os cabeçalhos de seção).");
+}
+
 function handleSongSubmit(e) {
     e.preventDefault();
     
@@ -2379,6 +2524,7 @@ function handleSongSubmit(e) {
     const titulo = document.getElementById('song-title').value.trim();
     const tomPadrao = document.getElementById('song-key').value;
     const tomPessoal = document.getElementById('song-key-personal').value;
+    const capotraste = document.getElementById('song-capo').value;
     const linkYoutube = document.getElementById('song-youtube').value.trim();
     const letra = document.getElementById('song-lyrics').value;
 
@@ -2396,11 +2542,11 @@ function handleSongSubmit(e) {
     if (id) {
         const songIndex = db.musicas.findIndex(s => s.id === id);
         if (songIndex !== -1) {
-            db.musicas[songIndex] = { id, titulo, tomPadrao, tomPessoal, tags, linkYoutube, letra };
+            db.musicas[songIndex] = { id, titulo, tomPadrao, tomPessoal, capotraste, tags, linkYoutube, letra };
         }
     } else {
         const newId = 'song-' + Date.now();
-        db.musicas.push({ id: newId, titulo, tomPadrao, tomPessoal, tags, linkYoutube, letra });
+        db.musicas.push({ id: newId, titulo, tomPadrao, tomPessoal, capotraste, tags, linkYoutube, letra });
         savedId = newId;
     }
 

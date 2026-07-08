@@ -343,6 +343,19 @@
                             </select>
                         </div>
                         <div class="form-group flex-grow">
+                            <label for="song-capo">Capotraste (opcional)</label>
+                            <select id="song-capo" class="form-control">
+                                <option value="">— Sem capotraste —</option>
+                                <option value="1">1ª casa</option>
+                                <option value="2">2ª casa</option>
+                                <option value="3">3ª casa</option>
+                                <option value="4">4ª casa</option>
+                                <option value="5">5ª casa</option>
+                                <option value="6">6ª casa</option>
+                                <option value="7">7ª casa</option>
+                            </select>
+                        </div>
+                        <div class="form-group flex-grow">
                             <label>Categorias / Tags</label>
                             <div id="song-tags-checkboxes" class="tags-checkbox-grid">
                                 <label class="tag-checkbox-label"><input type="checkbox" value="Entrada"> Entrada</label>
@@ -375,6 +388,16 @@
                         <label for="song-lyrics">Cifra / Letra da Música</label>
                         <p class="size-11 gray">Escreva os acordes na linha superior à letra. Alinhe usando espaços simples. Exemplo:</p>
                         <p class="size-11 bold gray bg-light-trans padding-5 text-monospace">E          A<br>Povo de Reis, assembleia santa</p>
+
+                        <div class="cifraclub-paste-box glass-panel padding-10 margin-bottom-10">
+                            <label for="cifraclub-paste-input" class="size-12 bold text-secondary uppercase"><i class="fas fa-paste"></i> Colar do CifraClub (opcional)</label>
+                            <p class="size-11 gray margin-bottom-5">Copie a cifra inteira da página do CifraClub (Ctrl+A, Ctrl+C na letra) e cole aqui. Removemos automaticamente tom, capotraste, tablatura e textos do site.</p>
+                            <textarea id="cifraclub-paste-input" class="form-control text-monospace text-sm" placeholder="Cole aqui o texto copiado da página do CifraClub..." rows="4"></textarea>
+                            <button type="button" class="btn btn-small btn-secondary margin-top-5" id="btn-format-cifraclub">
+                                <i class="fas fa-magic"></i> Formatar e Preencher
+                            </button>
+                        </div>
+
                         <textarea id="song-lyrics" class="form-control text-monospace text-sm" placeholder="E          A&#10;Povo de Reis, assembleia santa..." required></textarea>
                     </div>
                 </div>
