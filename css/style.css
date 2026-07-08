@@ -1182,6 +1182,16 @@ textarea.form-control {
 }
 
 /* ============================================================================ */
+/* TOGGLE MEU TOM / TOM DO MINISTÉRIO NO LEITOR                                */
+/* ============================================================================ */
+#my-key-toggle-group .btn.active {
+    background: var(--accent, #D4AF37);
+    color: #210826;
+    border-color: var(--accent, #D4AF37);
+    font-weight: 700;
+}
+
+/* ============================================================================ */
 /* SINCRONIZAÇÃO EM TEMPO REAL (STATUS + BADGE)                                */
 /* ============================================================================ */
 .sync-status {

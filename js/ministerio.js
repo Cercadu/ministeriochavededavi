@@ -1218,6 +1218,8 @@ function setupGlobalEvents() {
     document.getElementById('btn-transp-down').addEventListener('click', () => adjustTransposition(-1));
     document.getElementById('btn-transp-up').addEventListener('click', () => adjustTransposition(1));
     document.getElementById('btn-transp-reset').addEventListener('click', () => resetTransposition());
+    document.getElementById('btn-use-my-key').addEventListener('click', useMyKey);
+    document.getElementById('btn-use-ministry-key').addEventListener('click', useMinistryKey);
     document.getElementById('btn-hide-chords').addEventListener('click', toggleChordsVisibility);
     document.getElementById('btn-font-down').addEventListener('click', () => adjustFontSize(-0.1));
     document.getElementById('btn-font-up').addEventListener('click', () => adjustFontSize(0.1));
@@ -2066,8 +2068,51 @@ function openSongReader(songId, massContextId = null) {
 
     renderReaderLyrics();
     updateReaderNavButtons();
+    updateMyKeyToggle();
     document.getElementById('song-reader-overlay').classList.remove('hidden');
     requestWakeLock();
+}
+
+// Mostra/oculta e sincroniza o toggle "Ministério" / "Meu Tom" conforme a música atual
+function updateMyKeyToggle() {
+    const group = document.getElementById('my-key-toggle-group');
+    const ministryBtn = document.getElementById('btn-use-ministry-key');
+    const myKeyBtn = document.getElementById('btn-use-my-key');
+    if (!group || !ministryBtn || !myKeyBtn) return;
+
+    const song = db.musicas.find(s => s.id === currentSongId);
+    if (!song || !song.tomPessoal) {
+        group.classList.add('hidden');
+        return;
+    }
+
+    group.classList.remove('hidden');
+    ministryBtn.textContent = `Ministério (${song.tomPadrao})`;
+    myKeyBtn.textContent = `Meu Tom (${song.tomPessoal})`;
+
+    const currentChord = transposeChord(song.tomPadrao, currentSongTranspositionOffset);
+    const isMyKey = currentChord === song.tomPessoal;
+    myKeyBtn.classList.toggle('active', isMyKey);
+    ministryBtn.classList.toggle('active', !isMyKey);
+}
+
+// Alterna a transposição atual para o "Meu Tom" cadastrado na música
+function useMyKey() {
+    const song = db.musicas.find(s => s.id === currentSongId);
+    if (!song || !song.tomPessoal) return;
+
+    currentSongTranspositionOffset = getSemitoneDistance(song.tomPadrao, song.tomPessoal);
+    renderReaderLyrics();
+    persistCurrentTranspositionToMass();
+    updateMyKeyToggle();
+}
+
+// Alterna a transposição atual de volta para o tom oficial do ministério (Tom Padrão)
+function useMinistryKey() {
+    currentSongTranspositionOffset = 0;
+    renderReaderLyrics();
+    persistCurrentTranspositionToMass();
+    updateMyKeyToggle();
 }
 
 // Retorna a sequência de IDs de música na ordem em que aparecem no roteiro da missa
@@ -2134,28 +2179,31 @@ function renderReaderLyrics() {
     currentKeyDisplay.textContent = transposeChord(song.tomPadrao, currentSongTranspositionOffset);
 }
 
+// Salva o tom transposto atual como o tom desta música para a celebração em andamento (se houver contexto de missa)
+function persistCurrentTranspositionToMass() {
+    if (!currentSongMassContextId) return;
+    const mass = db.missas.find(m => m.id === currentSongMassContextId);
+    if (!mass || !mass.musicas) return;
+    const mom = mass.musicas.find(m => m.musicaId === currentSongId);
+    if (!mom) return;
+    const song = db.musicas.find(s => s.id === currentSongId);
+    if (!song) return;
+
+    mom.tomMissa = transposeChord(song.tomPadrao, currentSongTranspositionOffset);
+    saveDatabase();
+}
+
 function adjustTransposition(steps) {
     currentSongTranspositionOffset += steps;
     renderReaderLyrics();
-
-    if (currentSongMassContextId) {
-        const mass = db.missas.find(m => m.id === currentSongMassContextId);
-        if (mass && mass.musicas) {
-            const mom = mass.musicas.find(m => m.musicaId === currentSongId);
-            if (mom) {
-                const song = db.musicas.find(s => s.id === currentSongId);
-                if (song) {
-                    mom.tomMissa = transposeChord(song.tomPadrao, currentSongTranspositionOffset);
-                    saveDatabase();
-                }
-            }
-        }
-    }
+    persistCurrentTranspositionToMass();
+    updateMyKeyToggle();
 }
 
 function resetTransposition() {
     currentSongTranspositionOffset = 0;
     renderReaderLyrics();
+    updateMyKeyToggle();
 }
 
 function toggleChordsVisibility() {
@@ -2275,6 +2323,7 @@ function openSongForm(songId = null, returnToVincMassId = null) {
     document.getElementById('form-song-id').value = '';
     document.getElementById('song-title').value = '';
     document.getElementById('song-key').value = 'C';
+    document.getElementById('song-key-personal').value = '';
     document.getElementById('song-youtube').value = '';
     document.getElementById('song-lyrics').value = '';
     
@@ -2292,6 +2341,7 @@ function openSongForm(songId = null, returnToVincMassId = null) {
         document.getElementById('form-song-id').value = song.id;
         document.getElementById('song-title').value = song.titulo;
         document.getElementById('song-key').value = song.tomPadrao;
+        document.getElementById('song-key-personal').value = song.tomPessoal || '';
         document.getElementById('song-youtube').value = song.linkYoutube || '';
         document.getElementById('song-lyrics').value = song.letra;
         
@@ -2317,6 +2367,7 @@ function handleSongSubmit(e) {
     const id = document.getElementById('form-song-id').value;
     const titulo = document.getElementById('song-title').value.trim();
     const tomPadrao = document.getElementById('song-key').value;
+    const tomPessoal = document.getElementById('song-key-personal').value;
     const linkYoutube = document.getElementById('song-youtube').value.trim();
     const letra = document.getElementById('song-lyrics').value;
 
@@ -2334,11 +2385,11 @@ function handleSongSubmit(e) {
     if (id) {
         const songIndex = db.musicas.findIndex(s => s.id === id);
         if (songIndex !== -1) {
-            db.musicas[songIndex] = { id, titulo, tomPadrao, tags, linkYoutube, letra };
+            db.musicas[songIndex] = { id, titulo, tomPadrao, tomPessoal, tags, linkYoutube, letra };
         }
     } else {
         const newId = 'song-' + Date.now();
-        db.musicas.push({ id: newId, titulo, tomPadrao, tags, linkYoutube, letra });
+        db.musicas.push({ id: newId, titulo, tomPadrao, tomPessoal, tags, linkYoutube, letra });
         savedId = newId;
     }
 
