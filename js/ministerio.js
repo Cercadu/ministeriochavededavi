@@ -2260,15 +2260,14 @@ function closeSongReader() {
 // ============================================================================
 
 function toggleAutoScroll() {
-    const btn = document.getElementById('btn-scroll-toggle');
     if (autoScrollInterval) {
         stopAutoScroll();
-        btn.classList.remove('active');
-        btn.innerHTML = `<i class="fas fa-play"></i> Rolar Cifra`;
     } else {
         startAutoScroll();
+        const btn = document.getElementById('btn-scroll-toggle');
         btn.classList.add('active');
-        btn.innerHTML = `<i class="fas fa-pause"></i> Pausar Rolagem`;
+        btn.innerHTML = `<i class="fas fa-pause"></i>`;
+        btn.title = 'Pausar Rolagem';
     }
 }
 
@@ -2285,6 +2284,13 @@ function stopAutoScroll() {
     if (autoScrollInterval) {
         clearInterval(autoScrollInterval);
         autoScrollInterval = null;
+    }
+
+    const btn = document.getElementById('btn-scroll-toggle');
+    if (btn) {
+        btn.classList.remove('active');
+        btn.innerHTML = `<i class="fas fa-play"></i>`;
+        btn.title = 'Rolar Cifra';
     }
 }
 
