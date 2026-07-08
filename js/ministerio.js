@@ -525,11 +525,12 @@ async function initDatabase() {
     if (raw) {
         try {
             db = JSON.parse(raw);
+            // upgradeSchema() já migra estruturas antigas sem apagar dados.
+            // Não usamos mais "db.version diferente de DB_VERSION" como gatilho para restaurar
+            // os padrões de fábrica: db.version reflete o conteúdo (sobe a cada edição/backup),
+            // não o esquema do código, e resetar aqui apagaria dados legítimos mais recentes
+            // do que os hardcoded em DEFAULT_SONGS/DEFAULT_MASSES.
             upgradeSchema();
-            if (db.version !== DB_VERSION) {
-                console.log("Banco de dados desatualizado localmente. Carregando padrões...");
-                restoreDefaults();
-            }
         } catch (e) {
             console.error("Erro ao carregar o banco local. Restaurando padrão.", e);
             restoreDefaults();
@@ -599,6 +600,15 @@ function saveDatabase() {
 
 const ADMIN_SESSION_KEY = 'ministerio_admin_pass';
 const PENDING_SYNC_KEY = 'ministerio_pending_sync';
+const SERVER_VERSION_KEY = 'ministerio_server_updated_at';
+
+function getLastKnownServerVersion() {
+    return localStorage.getItem(SERVER_VERSION_KEY) || '';
+}
+
+function setLastKnownServerVersion(updatedAt) {
+    if (updatedAt) localStorage.setItem(SERVER_VERSION_KEY, updatedAt);
+}
 let syncDebounceTimer = null;
 let isSyncingNow = false;
 
@@ -707,7 +717,8 @@ async function pushDatabaseToServer(password) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-Admin-Password': password
+                'X-Admin-Password': password,
+                'X-Expected-Updated-At': getLastKnownServerVersion()
             },
             body: JSON.stringify(db)
         });
@@ -717,10 +728,31 @@ async function pushDatabaseToServer(password) {
             alert("Sessão de administrador expirada ou senha incorreta. Faça login novamente para sincronizar suas alterações.");
             return false;
         }
+
+        if (response.status === 409) {
+            // Alguém mais atualizou o servidor antes de nós. Para não sobrescrever o trabalho
+            // de outra pessoa, descartamos nosso envio e adotamos a versão mais recente.
+            const conflict = await response.json();
+            if (conflict.serverData) {
+                db = conflict.serverData;
+                upgradeSchema();
+                localStorage.setItem('ministerio_db', JSON.stringify(db));
+                populateEventDropdown(document.getElementById('agenda-month-select')?.value || 'all');
+                updateEventsForSelectedDate();
+                renderContent();
+            }
+            setLastKnownServerVersion(conflict.updatedAt);
+            clearPendingSync();
+            alert("Alguém atualizou os dados no servidor enquanto você estava editando. Para não apagar o trabalho de outra pessoa, carregamos a versão mais recente aqui. Se sua última alteração não aparecer, refaça-a.");
+            return false;
+        }
+
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}`);
         }
 
+        const result = await response.json();
+        setLastKnownServerVersion(result.updatedAt);
         clearPendingSync();
         return true;
     } catch (err) {
@@ -743,10 +775,12 @@ async function pullDatabaseFromServer() {
         const response = await fetch('/api/database');
         if (response.ok) {
             const serverDb = await response.json();
+            const updatedAt = response.headers.get('X-Updated-At');
             if (serverDb && Array.isArray(serverDb.musicas) && Array.isArray(serverDb.missas)) {
                 db = serverDb;
                 upgradeSchema();
                 localStorage.setItem('ministerio_db', JSON.stringify(db));
+                setLastKnownServerVersion(updatedAt);
                 populateEventDropdown(document.getElementById('agenda-month-select')?.value || 'all');
                 updateEventsForSelectedDate();
                 renderContent();

@@ -17,7 +17,7 @@ function isAuthorized(req) {
 }
 
 export default async (req) => {
-  const store = getStore("ministerio-db");
+  const store = getStore({ name: "ministerio-db", consistency: "strong" });
   const url = new URL(req.url);
 
   // Checagem rápida de senha, usada pelo login do painel admin
@@ -29,22 +29,27 @@ export default async (req) => {
   }
 
   if (req.method === "GET") {
-    let data = await store.get(BLOB_KEY, { type: "json" });
+    let result = await store.getWithMetadata(BLOB_KEY, { type: "json" });
 
     // Primeira execução: ainda não existe nada no Blob, usa o database.json publicado no site como semente
-    if (!data) {
+    if (!result || !result.data) {
       try {
         const seedResponse = await fetch(`${url.origin}/database.json`);
         if (seedResponse.ok) {
-          data = await seedResponse.json();
-          await store.setJSON(BLOB_KEY, data);
+          const seedData = await seedResponse.json();
+          const updatedAt = String(Date.now());
+          await store.setJSON(BLOB_KEY, seedData, { metadata: { updatedAt } });
+          result = { data: seedData, metadata: { updatedAt } };
         }
       } catch (err) {
         console.error("Falha ao semear o banco de dados a partir do database.json estático.", err);
       }
     }
 
-    return new Response(JSON.stringify(data || null), { headers: JSON_HEADERS });
+    const updatedAt = result?.metadata?.updatedAt || "";
+    return new Response(JSON.stringify(result?.data || null), {
+      headers: { ...JSON_HEADERS, "X-Updated-At": updatedAt },
+    });
   }
 
   if (req.method === "POST") {
@@ -63,8 +68,22 @@ export default async (req) => {
       return new Response(JSON.stringify({ error: "invalid_schema" }), { status: 400, headers: JSON_HEADERS });
     }
 
-    await store.setJSON(BLOB_KEY, body);
-    return new Response(JSON.stringify({ ok: true }), { headers: JSON_HEADERS });
+    // Controle de concorrência: só aceita a gravação se o dispositivo partiu da versão mais recente do servidor.
+    // Evita que um aparelho com dados antigos em cache sobrescreva alterações mais novas feitas por outra pessoa.
+    const expectedUpdatedAt = req.headers.get("x-expected-updated-at") || "";
+    const current = await store.getWithMetadata(BLOB_KEY, { type: "json" });
+    const currentUpdatedAt = current?.metadata?.updatedAt || "";
+
+    if (currentUpdatedAt && currentUpdatedAt !== expectedUpdatedAt) {
+      return new Response(
+        JSON.stringify({ error: "conflict", serverData: current.data, updatedAt: currentUpdatedAt }),
+        { status: 409, headers: JSON_HEADERS }
+      );
+    }
+
+    const newUpdatedAt = String(Date.now());
+    await store.setJSON(BLOB_KEY, body, { metadata: { updatedAt: newUpdatedAt } });
+    return new Response(JSON.stringify({ ok: true, updatedAt: newUpdatedAt }), { headers: JSON_HEADERS });
   }
 
   return new Response("Method not allowed", { status: 405 });
