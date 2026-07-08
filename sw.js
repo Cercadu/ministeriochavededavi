@@ -1,11 +1,13 @@
-const CACHE_NAME = 'chave-de-davi-v1';
+const CACHE_NAME = 'chave-de-davi-v2';
 const APP_SHELL = [
     '/',
     '/index.html',
     '/css/style.css',
     '/js/ministerio.js',
     '/manifest.json',
-    '/img/icon.svg'
+    '/img/icon.svg',
+    '/img/icon-192.png',
+    '/img/icon-512.png'
 ];
 
 self.addEventListener('install', (event) => {
