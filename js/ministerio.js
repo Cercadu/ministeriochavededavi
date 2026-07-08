@@ -2721,15 +2721,17 @@ function openEditSongInMassModal(massId, index) {
     
     const mass = db.missas.find(m => m.id === massId);
     if (!mass || !mass.musicas || !mass.musicas[index]) return;
-    
+
     const mom = mass.musicas[index];
-    
+    const song = db.musicas.find(s => s.id === mom.musicaId);
+
     populateVincMomentoDropdown(mass);
-    
+
     document.getElementById('vinc-momento').value = mom.momento;
     document.getElementById('vinc-cantor').value = mom.cantor || '';
     document.getElementById('vinc-obs').value = mom.observacoes || '';
-    document.getElementById('vinc-tom').value = mom.tomMissa || '';
+    // Mostra o tom que está realmente em uso (o específico da celebração, ou o padrão da música como referência)
+    document.getElementById('vinc-tom').value = mom.tomMissa || (song ? song.tomPadrao : '');
     
     initVincularSongSelector(mom.musicaId);
 
@@ -2757,7 +2759,7 @@ function saveVincularMusica() {
     const linkedSong = {
         momento: selectMoment.value,
         musicaId: selectSongVal,
-        tomMissa: keyInput || '*',
+        tomMissa: keyInput,
         cantor: singerInput,
         observacoes: obsInput
     };
