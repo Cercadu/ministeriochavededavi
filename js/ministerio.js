@@ -599,6 +599,11 @@ function saveDatabase() {
 }
 
 const ADMIN_SESSION_KEY = 'ministerio_admin_pass';
+
+// Verifica se o navegador atual está autenticado como administrador
+function isAdmin() {
+    return Boolean(sessionStorage.getItem(ADMIN_SESSION_KEY));
+}
 const PENDING_SYNC_KEY = 'ministerio_pending_sync';
 const SERVER_VERSION_KEY = 'ministerio_server_updated_at';
 
@@ -1347,7 +1352,7 @@ function switchTab(tabName) {
     renderContent();
 
     // Mostrar ou ocultar elementos conforme a aba ativa
-    document.getElementById('btn-add-musica-topo').style.display = tabName === 'musicas' ? 'block' : 'none';
+    document.getElementById('btn-add-musica-topo').style.display = (tabName === 'musicas' && isAdmin()) ? 'block' : 'none';
 
     if (tabName === 'admin') {
         updateSyncStatusUI();
@@ -1556,6 +1561,7 @@ function renderDailyLiturgyOnly(container) {
 function renderMissasTab() {
     const container = document.getElementById('missas-list');
     container.innerHTML = '';
+    const adminMode = isAdmin();
 
     // Sincroniza os controles da Agenda no HTML para refletir o estado correto
     const datePicker = document.getElementById('agenda-date-picker');
@@ -1660,8 +1666,10 @@ function renderMissasTab() {
                         </div>
                         <div class="song-key-role flex gap-5 align-center">
                             <span class="song-key-badge cursor-help" title="Tom para esta celebração (Original: ${originalKey})">${massKey}</span>
+                            ${adminMode ? `
                             <button class="btn btn-small btn-secondary" onclick="openEditSongInMassModal('${mass.id}', ${index})" title="Editar escala/cantor" style="padding: 4px 8px; font-size: 0.75rem; border-radius: 6px;"><i class="fas fa-edit"></i> Alterar</button>
                             <button class="btn btn-small btn-danger" onclick="removeSongFromMass('${mass.id}', ${index})" title="Remover música" style="padding: 4px 8px; font-size: 0.75rem; border-radius: 6px; background: #ffebee; color: #c62828;"><i class="fas fa-trash-alt"></i></button>
+                            ` : ''}
                         </div>
                     </div>
                 `;
@@ -1677,10 +1685,12 @@ function renderMissasTab() {
                     <div class="flex align-center gap-10">
                         <span class="text-secondary bold uppercase size-12"><i class="fas fa-music text-gold"></i> Repertório Completo</span>
                     </div>
+                    ${adminMode ? `
                     <div class="flex gap-5">
                         <button class="btn btn-small" onclick="openMassForm('${mass.id}')" title="Editar Evento"><i class="fas fa-edit"></i> Editar Info</button>
                         <button class="btn btn-small btn-danger" onclick="deleteMass('${mass.id}')" title="Excluir Evento"><i class="fas fa-trash"></i> Excluir</button>
                     </div>
+                    ` : ''}
                 </div>
                 <div class="mass-card-body padding-15">
                     ${innerHeaderHTML}
@@ -1692,11 +1702,13 @@ function renderMissasTab() {
                     <div class="mass-songs-container margin-bottom-15">
                         ${musicasListHTML}
                     </div>
+                    ${adminMode ? `
                     <div class="flex flex-center">
                         <button class="btn btn-small btn-secondary border-radius-20" onclick="openAddSongToMassModal('${mass.id}')">
                             <i class="fas fa-plus"></i> Vincular Louvor
                         </button>
                     </div>
+                    ` : ''}
                 </div>
             </div>
         `;
@@ -1708,46 +1720,52 @@ function renderMissasTab() {
                 if (step.tipo === "titulo-secao") {
                     roteiroHTML += `
                         <div class="roteiro-drag-item" data-roteiro-step-id="${step.id}">
-                        <i class="fas fa-grip-vertical roteiro-drag-handle" title="Arraste para reordenar"></i>
+                        ${adminMode ? '<i class="fas fa-grip-vertical roteiro-drag-handle" title="Arraste para reordenar"></i>' : ''}
                         <div class="pamphlet-section-title uppercase bold font-700 text-gold margin-top-20 margin-bottom-10 border-bottom padding-bottom-5 size-14 flex flex-between align-center">
                             <span><i class="fas fa-bookmark"></i> ${step.texto}</span>
+                            ${adminMode ? `
                             <div class="flex gap-10 no-shrink" style="align-items: center;">
                                 <i class="fas fa-arrow-up move-roteiro-item text-muted size-12" onclick="moveRoteiroItem('${mass.id}', '${step.id}', -1)" title="Subir"></i>
                                 <i class="fas fa-arrow-down move-roteiro-item text-muted size-12" onclick="moveRoteiroItem('${mass.id}', '${step.id}', 1)" title="Descer"></i>
                                 <i class="fas fa-pencil-alt edit-roteiro-item text-muted size-12" onclick="editRoteiroItem('${mass.id}', '${step.id}')" title="Editar Título"></i>
                                 <i class="fas fa-trash-alt delete-roteiro-item text-red size-12" onclick="deleteRoteiroItem('${mass.id}', '${step.id}')" title="Remover Seção"></i>
                             </div>
+                            ` : ''}
                         </div>
                         </div>`;
                 }
                 else if (step.tipo === "liturgia") {
                     roteiroHTML += `
                         <div class="roteiro-drag-item" data-roteiro-step-id="${step.id}">
-                        <i class="fas fa-grip-vertical roteiro-drag-handle" title="Arraste para reordenar"></i>
+                        ${adminMode ? '<i class="fas fa-grip-vertical roteiro-drag-handle" title="Arraste para reordenar"></i>' : ''}
                         <div class="pamphlet-liturgy-prayer padding-10 bg-light-trans border-radius-8 margin-bottom-10 size-13 text-secondary italic font-500 flex flex-between align-center gap-10">
                             <span class="flex-grow">${step.texto}</span>
+                            ${adminMode ? `
                             <div class="flex gap-10 no-shrink" style="align-items: center; flex-shrink: 0;">
                                 <i class="fas fa-arrow-up move-roteiro-item text-muted size-12" onclick="moveRoteiroItem('${mass.id}', '${step.id}', -1)" title="Subir"></i>
                                 <i class="fas fa-arrow-down move-roteiro-item text-muted size-12" onclick="moveRoteiroItem('${mass.id}', '${step.id}', 1)" title="Descer"></i>
                                 <i class="fas fa-pencil-alt edit-roteiro-item text-muted size-12" onclick="editRoteiroItem('${mass.id}', '${step.id}')" title="Editar Texto"></i>
                                 <i class="fas fa-trash-alt delete-roteiro-item text-red size-12" onclick="deleteRoteiroItem('${mass.id}', '${step.id}')" title="Remover Texto"></i>
                             </div>
+                            ` : ''}
                         </div>
                         </div>`;
                 }
                 else if (step.tipo === "link-cancaonova") {
                     roteiroHTML += `
                         <div class="roteiro-drag-item" data-roteiro-step-id="${step.id}">
-                        <i class="fas fa-grip-vertical roteiro-drag-handle" title="Arraste para reordenar"></i>
+                        ${adminMode ? '<i class="fas fa-grip-vertical roteiro-drag-handle" title="Arraste para reordenar"></i>' : ''}
                         <div class="pamphlet-reading-box glass-panel padding-15 margin-bottom-10 flex flex-between align-center flex-wrap gap-10" style="border-left: 4px solid #10b981; background: rgba(16, 185, 129, 0.03);">
                             <div class="flex flex-column gap-5 flex-grow" style="min-width: 200px;">
                                 <span class="bold text-primary size-13 uppercase"><i class="fas fa-book-bible text-secondary"></i> Liturgia Diária</span>
                                 <span class="size-12 text-muted">Acompanhe as leituras completas e orações de hoje diretamente no portal Canção Nova.</span>
                             </div>
                             <div class="flex align-center gap-10">
+                                ${adminMode ? `
                                 <i class="fas fa-arrow-up move-roteiro-item text-muted size-12" onclick="moveRoteiroItem('${mass.id}', '${step.id}', -1)" title="Subir"></i>
                                 <i class="fas fa-arrow-down move-roteiro-item text-muted size-12" onclick="moveRoteiroItem('${mass.id}', '${step.id}', 1)" title="Descer"></i>
                                 <i class="fas fa-trash-alt delete-roteiro-item text-red size-12" onclick="deleteRoteiroItem('${mass.id}', '${step.id}')" title="Remover Bloco"></i>
+                                ` : ''}
                                 <a href="https://liturgia.cancaonova.com/pb/" target="_blank" class="btn btn-small btn-secondary border-radius-20 text-secondary" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); text-decoration: none;">
                                     <i class="fas fa-external-link-alt"></i> Canção Nova
                                 </a>
@@ -1795,15 +1813,17 @@ function renderMissasTab() {
                     
                     roteiroHTML += `
                         <div class="roteiro-drag-item" data-roteiro-step-id="${step.id}">
-                        <i class="fas fa-grip-vertical roteiro-drag-handle" title="Arraste para reordenar"></i>
+                        ${adminMode ? '<i class="fas fa-grip-vertical roteiro-drag-handle" title="Arraste para reordenar"></i>' : ''}
                         <div class="pamphlet-reading-box glass-panel padding-15 margin-bottom-10" style="${!textoLeitura ? 'border: 1px dashed rgba(107, 35, 130, 0.3); opacity: 0.7;' : ''}">
                             <span class="bold text-primary size-14 block margin-bottom-5 uppercase flex flex-between align-center">
                                 <span><i class="fas fa-scroll"></i> ${refSpan}${step.leituraLabel}${apiBadge}</span>
+                                ${adminMode ? `
                                 <div class="flex gap-10">
                                     <i class="fas fa-arrow-up move-roteiro-item text-muted size-12" onclick="moveRoteiroItem('${mass.id}', '${step.id}', -1)" title="Subir"></i>
                                     <i class="fas fa-arrow-down move-roteiro-item text-muted size-12" onclick="moveRoteiroItem('${mass.id}', '${step.id}', 1)" title="Descer"></i>
                                     <i class="fas fa-pencil-alt edit-roteiro-item text-muted size-12" onclick="editRoteiroItem('${mass.id}', '${step.id}')" title="Editar Leitura"></i>
                                 </div>
+                                ` : ''}
                             </span>
                             ${subtitleSpan}
                             <p class="size-13 text-justify line-height-1-6 whitespace-pre-wrap">${textoLeitura || '<i>Buscando leitura da API...</i>'}</p>
@@ -1836,15 +1856,17 @@ function renderMissasTab() {
                                     </div>
                                     <div class="flex align-center gap-10">
                                         <span class="song-key-badge">${massKey}</span>
+                                        ${adminMode ? `
                                         <div class="flex gap-5 align-center">
                                             <button class="btn btn-small btn-secondary" onclick="openEditSongInMassModal('${mass.id}', ${indexInMass})" title="Editar escala" style="padding: 4px 8px; font-size: 0.75rem; border-radius: 6px;"><i class="fas fa-edit"></i> Alterar</button>
                                             <button class="btn btn-small btn-danger" onclick="removeSongFromMass('${mass.id}', ${indexInMass})" title="Remover" style="padding: 4px 8px; font-size: 0.75rem; border-radius: 6px; background: #ffebee; color: #c62828;"><i class="fas fa-trash-alt"></i></button>
                                         </div>
+                                        ` : ''}
                                     </div>
                                 </div>
                             `;
                         });
-                    } else {
+                    } else if (adminMode) {
                         momentoHTML += `
                             <div class="pamphlet-song-empty flex flex-between align-center margin-bottom-10 padding-10 border-radius-8" style="border: 1px dashed rgba(107, 35, 130, 0.2); background: rgba(255,255,255,0.3);">
                                 <span class="size-12 uppercase text-muted font-600"><i class="fas fa-minus-circle"></i> Canto de ${step.momento} (Não Escaldo)</span>
@@ -1857,23 +1879,28 @@ function renderMissasTab() {
                         `;
                     }
 
-                    roteiroHTML += `
-                        <div class="roteiro-drag-item" data-roteiro-step-id="${step.id}">
-                        <i class="fas fa-grip-vertical roteiro-drag-handle" title="Arraste para reordenar o momento inteiro"></i>
-                        <div class="flex align-center gap-10" style="justify-content: flex-end; margin-bottom: 4px;">
-                            <i class="fas fa-arrow-up move-roteiro-item text-muted size-12" onclick="moveRoteiroItem('${mass.id}', '${step.id}', -1)" title="Subir momento"></i>
-                            <i class="fas fa-arrow-down move-roteiro-item text-muted size-12" onclick="moveRoteiroItem('${mass.id}', '${step.id}', 1)" title="Descer momento"></i>
-                            <i class="fas fa-trash-alt delete-roteiro-item text-red size-12" onclick="deleteRoteiroItem('${mass.id}', '${step.id}')" title="Remover Momento"></i>
-                        </div>
-                        ${momentoHTML}
-                        </div>
-                    `;
+                    if (vMusicas.length > 0 || adminMode) {
+                        roteiroHTML += `
+                            <div class="roteiro-drag-item" data-roteiro-step-id="${step.id}">
+                            ${adminMode ? `
+                            <i class="fas fa-grip-vertical roteiro-drag-handle" title="Arraste para reordenar o momento inteiro"></i>
+                            <div class="flex align-center gap-10" style="justify-content: flex-end; margin-bottom: 4px;">
+                                <i class="fas fa-arrow-up move-roteiro-item text-muted size-12" onclick="moveRoteiroItem('${mass.id}', '${step.id}', -1)" title="Subir momento"></i>
+                                <i class="fas fa-arrow-down move-roteiro-item text-muted size-12" onclick="moveRoteiroItem('${mass.id}', '${step.id}', 1)" title="Descer momento"></i>
+                                <i class="fas fa-trash-alt delete-roteiro-item text-red size-12" onclick="deleteRoteiroItem('${mass.id}', '${step.id}')" title="Remover Momento"></i>
+                            </div>
+                            ` : ''}
+                            ${momentoHTML}
+                            </div>
+                        `;
+                    }
                 }
             });
 
             roteiroHTML = `<div class="roteiro-drag-zone">${roteiroHTML}</div>`;
 
-            // Add custom action buttons at the bottom of the roteiro (fora da zona de arrastar)
+            // Add custom action buttons at the bottom do roteiro (fora da zona de arrastar), só para admin
+            if (adminMode) {
             roteiroHTML += `
                 <div class="flex flex-center gap-10 margin-top-20 flex-wrap" style="justify-content: center; margin-top: 25px; border-top: 1px dashed var(--border-color); padding-top: 15px;">
                     <button class="btn btn-small btn-secondary border-radius-20" onclick="addRoteiroItemModal('${mass.id}')">
@@ -1884,6 +1911,7 @@ function renderMissasTab() {
                     </button>
                 </div>
             `;
+            }
         } else {
             roteiroHTML = '<p class="gray text-center padding-20">Este roteiro está vazio.</p>';
         }
@@ -1895,10 +1923,12 @@ function renderMissasTab() {
                     <div class="flex align-center gap-10">
                         <span class="text-secondary bold uppercase size-12"><i class="fas fa-bookmark text-gold"></i> Roteiro da Celebração</span>
                     </div>
+                    ${adminMode ? `
                     <div class="flex gap-5">
                         <button class="btn btn-small" onclick="openMassForm('${mass.id}')" title="Editar Evento"><i class="fas fa-edit"></i> Editar Info</button>
                         <button class="btn btn-small btn-danger" onclick="deleteMass('${mass.id}')" title="Excluir Evento"><i class="fas fa-trash"></i> Excluir</button>
                     </div>
+                    ` : ''}
                 </div>
                 <div class="mass-card-body padding-20">
                     ${innerHeaderHTML}
@@ -1920,6 +1950,7 @@ function renderMissasTab() {
 
 // Habilita arrastar-e-soltar (mouse e toque) para reordenar os momentos do roteiro
 function setupRoteiroDragAndDrop(massId) {
+    if (!isAdmin()) return;
     const zone = document.querySelector('.roteiro-drag-zone');
     if (!zone) return;
 
@@ -2038,10 +2069,12 @@ function renderMusicasTab() {
                     <div class="song-card-tags flex gap-5">${tagsBadge}</div>
                 </div>
             </div>
+            ${isAdmin() ? `
             <div class="song-card-actions flex gap-5">
                 <button class="btn-icon" onclick="openSongForm('${song.id}')" title="Editar música"><i class="fas fa-edit"></i></button>
                 <button class="btn-icon text-red" onclick="deleteSong('${song.id}')" title="Excluir música"><i class="fas fa-trash-alt"></i></button>
             </div>
+            ` : ''}
         `;
         
         listContainer.appendChild(songCard);
@@ -2111,6 +2144,11 @@ function openSongReader(songId, massContextId = null) {
         ytContainer.classList.remove('hidden');
     } else {
         ytContainer.classList.add('hidden');
+    }
+
+    const editFromReaderBtn = document.getElementById('btn-edit-song-from-reader');
+    if (editFromReaderBtn) {
+        editFromReaderBtn.classList.toggle('hidden', !isAdmin());
     }
 
     renderReaderLyrics();
