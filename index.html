@@ -124,8 +124,14 @@
             <div class="glass-panel padding-20 margin-bottom-20">
                 <h3 class="text-primary font-700 margin-bottom-15"><i class="fas fa-sync-alt text-gold"></i> Sincronização em Tempo Real</h3>
                 <p class="size-14 gray margin-bottom-15">
-                    Toda alteração feita aqui é gravada automaticamente no banco de dados central (Netlify) e já aparece para todos os integrantes que acessarem o portal. O backup manual abaixo continua disponível como cópia de segurança.
+                    Toda alteração feita aqui é salva no aparelho na hora e enviada automaticamente para o banco de dados central (Netlify), aparecendo para todos os integrantes. Sem internet, continua funcionando com os dados já salvos e envia as pendências assim que a conexão voltar.
                 </p>
+                <div class="flex align-center flex-between gap-10 margin-bottom-15 flex-wrap">
+                    <span id="sync-status-indicator" class="sync-status"></span>
+                    <button class="btn btn-small btn-secondary" id="btn-sync-now">
+                        <i class="fas fa-sync"></i> Sincronizar Agora
+                    </button>
+                </div>
                 <div class="form-group margin-bottom-15">
                     <label for="textarea-db-backup" class="bold size-13">Dados do Banco (JSON):</label>
                     <textarea id="textarea-db-backup" class="form-control text-monospace" placeholder="Cole o código JSON aqui para importar, ou clique em Exportar para copiar..."></textarea>

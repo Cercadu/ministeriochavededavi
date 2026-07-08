@@ -569,26 +569,17 @@ async function initDatabase() {
         console.error("Erro ao carregar liturgia diária de hoje da API:", err);
     }
 
-    // Busca o banco de dados centralizado no servidor (Netlify Function + Blobs).
-    // O servidor é a fonte da verdade: se estiver acessível, substitui os dados locais.
-    try {
-        const response = await fetch('/api/database');
-        if (response.ok) {
-            const serverDb = await response.json();
-            if (serverDb && Array.isArray(serverDb.musicas) && Array.isArray(serverDb.missas)) {
-                db = serverDb;
-                upgradeSchema();
-                localStorage.setItem('ministerio_db', JSON.stringify(db));
-
-                // Repopula e atualiza
-                populateEventDropdown(document.getElementById('agenda-month-select')?.value || 'all');
-                updateEventsForSelectedDate();
-                renderContent();
-            }
+    // Sincroniza com o servidor central (Netlify Function + Blobs).
+    // Se houver alterações locais pendentes de um admin, envia primeiro para não perdê-las,
+    // e só então adota os dados do servidor como fonte da verdade.
+    if (navigator.onLine) {
+        const pendingPassword = sessionStorage.getItem(ADMIN_SESSION_KEY);
+        if (isPendingSync() && pendingPassword) {
+            await pushDatabaseToServer(pendingPassword);
         }
-    } catch (err) {
-        console.warn("Não foi possível sincronizar com o servidor central. Usando dados locais.", err);
+        await pullDatabaseFromServer();
     }
+    updateSyncStatusUI();
 }
 
 // Restaura os dados padrão
@@ -600,14 +591,16 @@ function restoreDefaults() {
     saveDatabase();
 }
 
-// Salva o banco de dados no localStorage e sincroniza com o servidor central
+// Salva o banco de dados no localStorage e agenda a sincronização com o servidor central
 function saveDatabase() {
     localStorage.setItem('ministerio_db', JSON.stringify(db));
-    syncDatabaseToServer();
+    queueSyncToServer();
 }
 
 const ADMIN_SESSION_KEY = 'ministerio_admin_pass';
+const PENDING_SYNC_KEY = 'ministerio_pending_sync';
 let syncDebounceTimer = null;
+let isSyncingNow = false;
 
 // Garante que o usuário digitou a senha de administrador antes de abrir o Painel Geral
 async function ensureAdminAccess() {
@@ -620,12 +613,22 @@ async function ensureAdminAccess() {
         return false;
     }
 
+    if (!navigator.onLine) {
+        // Sem internet: aceita a senha para uso offline. Ela só será validada de fato
+        // quando a conexão voltar e a sincronização for tentada.
+        sessionStorage.setItem(ADMIN_SESSION_KEY, password);
+        alert("Sem conexão agora. Você pode editar normalmente; as alterações ficarão pendentes até a internet voltar.");
+        updateSyncStatusUI();
+        return true;
+    }
+
     try {
         const response = await fetch(`/api/database?verify=1`, {
             headers: { 'X-Admin-Password': password }
         });
         if (response.ok) {
             sessionStorage.setItem(ADMIN_SESSION_KEY, password);
+            updateSyncStatusUI();
             return true;
         }
         alert("Senha incorreta.");
@@ -643,36 +646,124 @@ function logoutAdmin() {
     switchTab('missas');
 }
 
-// Envia o banco de dados atual para o servidor (Netlify Function + Blobs), com debounce
-function syncDatabaseToServer() {
-    const password = sessionStorage.getItem(ADMIN_SESSION_KEY);
-    if (!password) return; // só administradores autenticados gravam no servidor central
-
-    clearTimeout(syncDebounceTimer);
-    syncDebounceTimer = setTimeout(async () => {
-        try {
-            const response = await fetch('/api/database', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Admin-Password': password
-                },
-                body: JSON.stringify(db)
-            });
-
-            if (response.status === 401) {
-                sessionStorage.removeItem(ADMIN_SESSION_KEY);
-                alert("Sessão de administrador expirada ou senha incorreta. Faça login novamente para sincronizar suas alterações.");
-                return;
-            }
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}`);
-            }
-        } catch (err) {
-            console.warn("Não foi possível sincronizar as alterações com o servidor central.", err);
-        }
-    }, 600);
+function isPendingSync() {
+    return localStorage.getItem(PENDING_SYNC_KEY) === '1';
 }
+
+function markPendingSync() {
+    localStorage.setItem(PENDING_SYNC_KEY, '1');
+    updateSyncStatusUI();
+}
+
+function clearPendingSync() {
+    localStorage.removeItem(PENDING_SYNC_KEY);
+    updateSyncStatusUI();
+}
+
+// Atualiza o indicador visual de sincronização no Painel Geral
+function updateSyncStatusUI() {
+    const el = document.getElementById('sync-status-indicator');
+    if (!el) return;
+
+    if (!sessionStorage.getItem(ADMIN_SESSION_KEY)) {
+        el.innerHTML = '';
+        el.className = 'sync-status';
+        return;
+    }
+
+    if (!navigator.onLine) {
+        el.innerHTML = '<i class="fas fa-wifi"></i> Sem internet — trabalhando offline com os dados salvos no aparelho';
+        el.className = 'sync-status pending';
+    } else if (isPendingSync()) {
+        el.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Alterações pendentes para enviar ao servidor';
+        el.className = 'sync-status pending';
+    } else {
+        el.innerHTML = '<i class="fas fa-check-circle"></i> Tudo sincronizado com o servidor';
+        el.className = 'sync-status ok';
+    }
+}
+
+// Agenda o envio do banco de dados para o servidor (com debounce), marcando pendência até confirmar sucesso
+function queueSyncToServer() {
+    const password = sessionStorage.getItem(ADMIN_SESSION_KEY);
+    if (!password) return; // só administradores autenticados sincronizam com o servidor central
+
+    markPendingSync();
+    clearTimeout(syncDebounceTimer);
+    syncDebounceTimer = setTimeout(() => pushDatabaseToServer(password), 600);
+}
+
+// Envia o banco de dados atual para o servidor (Netlify Function + Blobs). Retorna true se teve sucesso.
+async function pushDatabaseToServer(password) {
+    if (isSyncingNow) return false;
+    isSyncingNow = true;
+    try {
+        const response = await fetch('/api/database', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Admin-Password': password
+            },
+            body: JSON.stringify(db)
+        });
+
+        if (response.status === 401) {
+            sessionStorage.removeItem(ADMIN_SESSION_KEY);
+            alert("Sessão de administrador expirada ou senha incorreta. Faça login novamente para sincronizar suas alterações.");
+            return false;
+        }
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        clearPendingSync();
+        return true;
+    } catch (err) {
+        console.warn("Não foi possível sincronizar as alterações com o servidor central. Ficará pendente até a conexão voltar.", err);
+        markPendingSync();
+        return false;
+    } finally {
+        isSyncingNow = false;
+    }
+}
+
+// Busca a versão central do servidor e adota como fonte da verdade,
+// a menos que existam alterações locais ainda não enviadas (para não perdê-las)
+async function pullDatabaseFromServer() {
+    if (isPendingSync()) {
+        console.log("Existem alterações locais pendentes de envio; mantendo os dados locais.");
+        return false;
+    }
+    try {
+        const response = await fetch('/api/database');
+        if (response.ok) {
+            const serverDb = await response.json();
+            if (serverDb && Array.isArray(serverDb.musicas) && Array.isArray(serverDb.missas)) {
+                db = serverDb;
+                upgradeSchema();
+                localStorage.setItem('ministerio_db', JSON.stringify(db));
+                populateEventDropdown(document.getElementById('agenda-month-select')?.value || 'all');
+                updateEventsForSelectedDate();
+                renderContent();
+                return true;
+            }
+        }
+    } catch (err) {
+        console.warn("Não foi possível sincronizar com o servidor central. Usando dados locais.", err);
+    }
+    return false;
+}
+
+// Tenta sincronizar automaticamente assim que a internet do aparelho voltar
+window.addEventListener('online', async () => {
+    const password = sessionStorage.getItem(ADMIN_SESSION_KEY);
+    if (password && isPendingSync()) {
+        await pushDatabaseToServer(password);
+    }
+    await pullDatabaseFromServer();
+    updateSyncStatusUI();
+});
+window.addEventListener('offline', updateSyncStatusUI);
 
 // Migra/Upgrade no schema do banco de dados para suportar roteiros dinâmicos e novos tipos
 function upgradeSchema() {
@@ -1170,6 +1261,19 @@ function setupGlobalEvents() {
     document.getElementById('btn-export-db').addEventListener('click', exportDatabase);
     document.getElementById('btn-import-db').addEventListener('click', importDatabase);
     document.getElementById('btn-logout-admin').addEventListener('click', logoutAdmin);
+    document.getElementById('btn-sync-now').addEventListener('click', async () => {
+        const password = sessionStorage.getItem(ADMIN_SESSION_KEY);
+        if (!password) {
+            alert("Faça login como administrador primeiro.");
+            return;
+        }
+        if (!navigator.onLine) {
+            alert("Sem conexão com a internet no momento.");
+            return;
+        }
+        const success = await pushDatabaseToServer(password);
+        alert(success ? "Sincronizado com sucesso!" : "Não foi possível sincronizar agora. Vai continuar tentando quando a conexão estiver estável.");
+    });
     document.getElementById('btn-download-db').addEventListener('click', downloadDatabase);
     document.getElementById('btn-restore-defaults').addEventListener('click', () => {
         if (confirm("Deseja realmente apagar todas as alterações e restaurar os dados originais?")) {
@@ -1197,9 +1301,13 @@ function switchTab(tabName) {
     currentTab = tabName;
     renderTabs();
     renderContent();
-    
+
     // Mostrar ou ocultar elementos conforme a aba ativa
     document.getElementById('btn-add-musica-topo').style.display = tabName === 'musicas' ? 'block' : 'none';
+
+    if (tabName === 'admin') {
+        updateSyncStatusUI();
+    }
 }
 
 function switchMassViewMode(mode) {
@@ -1555,6 +1663,8 @@ function renderMissasTab() {
             mass.roteiro.forEach((step, index) => {
                 if (step.tipo === "titulo-secao") {
                     roteiroHTML += `
+                        <div class="roteiro-drag-item" data-roteiro-step-id="${step.id}">
+                        <i class="fas fa-grip-vertical roteiro-drag-handle" title="Arraste para reordenar"></i>
                         <div class="pamphlet-section-title uppercase bold font-700 text-gold margin-top-20 margin-bottom-10 border-bottom padding-bottom-5 size-14 flex flex-between align-center">
                             <span><i class="fas fa-bookmark"></i> ${step.texto}</span>
                             <div class="flex gap-10 no-shrink" style="align-items: center;">
@@ -1563,10 +1673,13 @@ function renderMissasTab() {
                                 <i class="fas fa-pencil-alt edit-roteiro-item text-muted size-12" onclick="editRoteiroItem('${mass.id}', '${step.id}')" title="Editar Título"></i>
                                 <i class="fas fa-trash-alt delete-roteiro-item text-red size-12" onclick="deleteRoteiroItem('${mass.id}', '${step.id}')" title="Remover Seção"></i>
                             </div>
+                        </div>
                         </div>`;
-                } 
+                }
                 else if (step.tipo === "liturgia") {
                     roteiroHTML += `
+                        <div class="roteiro-drag-item" data-roteiro-step-id="${step.id}">
+                        <i class="fas fa-grip-vertical roteiro-drag-handle" title="Arraste para reordenar"></i>
                         <div class="pamphlet-liturgy-prayer padding-10 bg-light-trans border-radius-8 margin-bottom-10 size-13 text-secondary italic font-500 flex flex-between align-center gap-10">
                             <span class="flex-grow">${step.texto}</span>
                             <div class="flex gap-10 no-shrink" style="align-items: center; flex-shrink: 0;">
@@ -1575,10 +1688,13 @@ function renderMissasTab() {
                                 <i class="fas fa-pencil-alt edit-roteiro-item text-muted size-12" onclick="editRoteiroItem('${mass.id}', '${step.id}')" title="Editar Texto"></i>
                                 <i class="fas fa-trash-alt delete-roteiro-item text-red size-12" onclick="deleteRoteiroItem('${mass.id}', '${step.id}')" title="Remover Texto"></i>
                             </div>
+                        </div>
                         </div>`;
-                } 
+                }
                 else if (step.tipo === "link-cancaonova") {
                     roteiroHTML += `
+                        <div class="roteiro-drag-item" data-roteiro-step-id="${step.id}">
+                        <i class="fas fa-grip-vertical roteiro-drag-handle" title="Arraste para reordenar"></i>
                         <div class="pamphlet-reading-box glass-panel padding-15 margin-bottom-10 flex flex-between align-center flex-wrap gap-10" style="border-left: 4px solid #10b981; background: rgba(16, 185, 129, 0.03);">
                             <div class="flex flex-column gap-5 flex-grow" style="min-width: 200px;">
                                 <span class="bold text-primary size-13 uppercase"><i class="fas fa-book-bible text-secondary"></i> Liturgia Diária</span>
@@ -1592,6 +1708,7 @@ function renderMissasTab() {
                                     <i class="fas fa-external-link-alt"></i> Canção Nova
                                 </a>
                             </div>
+                        </div>
                         </div>
                     `;
                 }
@@ -1633,6 +1750,8 @@ function renderMissasTab() {
                     const subtitleSpan = tituloLeitura ? `<span class="bold size-12 text-secondary block margin-bottom-8" style="font-style: italic;">${tituloLeitura}</span>` : '';
                     
                     roteiroHTML += `
+                        <div class="roteiro-drag-item" data-roteiro-step-id="${step.id}">
+                        <i class="fas fa-grip-vertical roteiro-drag-handle" title="Arraste para reordenar"></i>
                         <div class="pamphlet-reading-box glass-panel padding-15 margin-bottom-10" style="${!textoLeitura ? 'border: 1px dashed rgba(107, 35, 130, 0.3); opacity: 0.7;' : ''}">
                             <span class="bold text-primary size-14 block margin-bottom-5 uppercase flex flex-between align-center">
                                 <span><i class="fas fa-scroll"></i> ${refSpan}${step.leituraLabel}${apiBadge}</span>
@@ -1645,23 +1764,25 @@ function renderMissasTab() {
                             ${subtitleSpan}
                             <p class="size-13 text-justify line-height-1-6 whitespace-pre-wrap">${textoLeitura || '<i>Buscando leitura da API...</i>'}</p>
                         </div>
+                        </div>
                     `;
-                } 
+                }
                 else if (step.tipo === "momento-musica") {
                     const vMusicas = mass.musicas ? mass.musicas.filter(m => m.momento === step.momento) : [];
-                    
+                    let momentoHTML = '';
+
                     if (vMusicas.length > 0) {
                         vMusicas.forEach(vMus => {
                             const song = db.musicas.find(s => s.id === vMus.musicaId);
                             const songTitle = song ? song.titulo : 'Sem título';
                             const originalKey = song ? song.tomPadrao : '*';
                             const massKey = vMus.tomMissa || originalKey;
-                            const hasYoutube = song && song.linkYoutube ? 
+                            const hasYoutube = song && song.linkYoutube ?
                                 `<i class="fab fa-youtube text-red pointer" onclick="event.stopPropagation(); openYoutubePlayer('${song.linkYoutube}')" title="Assistir vídeo de referência" style="margin-left: 5px; cursor: pointer;"></i>` : '';
                             const indexInMass = mass.musicas.indexOf(vMus);
                             const singer = vMus.cantor ? `<span class="singer-tag"><i class="fas fa-microphone"></i> ${vMus.cantor}</span>` : '';
-                            
-                            roteiroHTML += `
+
+                            momentoHTML += `
                                 <div class="pamphlet-song-card flex flex-between align-center margin-bottom-10 padding-15 pointer-hover" style="border-left: 4px solid var(--accent); background: rgba(212, 175, 55, 0.05); border-radius: 8px;">
                                     <div class="flex flex-column gap-5 flex-grow" onclick="openSongReader('${vMus.musicaId}', '${mass.id}')">
                                         <span class="moment-label uppercase text-gold bold"><i class="fas ${step.icone || 'fa-music'}"></i> Canto de ${step.momento}</span>
@@ -1672,8 +1793,6 @@ function renderMissasTab() {
                                     <div class="flex align-center gap-10">
                                         <span class="song-key-badge">${massKey}</span>
                                         <div class="flex gap-5 align-center">
-                                            <i class="fas fa-arrow-up move-roteiro-item text-muted size-12" onclick="moveRoteiroItem('${mass.id}', '${step.id}', -1)" title="Subir" style="padding: 4px;"></i>
-                                            <i class="fas fa-arrow-down move-roteiro-item text-muted size-12" onclick="moveRoteiroItem('${mass.id}', '${step.id}', 1)" title="Descer" style="padding: 4px;"></i>
                                             <button class="btn btn-small btn-secondary" onclick="openEditSongInMassModal('${mass.id}', ${indexInMass})" title="Editar escala" style="padding: 4px 8px; font-size: 0.75rem; border-radius: 6px;"><i class="fas fa-edit"></i> Alterar</button>
                                             <button class="btn btn-small btn-danger" onclick="removeSongFromMass('${mass.id}', ${indexInMass})" title="Remover" style="padding: 4px 8px; font-size: 0.75rem; border-radius: 6px; background: #ffebee; color: #c62828;"><i class="fas fa-trash-alt"></i></button>
                                         </div>
@@ -1682,13 +1801,10 @@ function renderMissasTab() {
                             `;
                         });
                     } else {
-                        roteiroHTML += `
+                        momentoHTML += `
                             <div class="pamphlet-song-empty flex flex-between align-center margin-bottom-10 padding-10 border-radius-8" style="border: 1px dashed rgba(107, 35, 130, 0.2); background: rgba(255,255,255,0.3);">
                                 <span class="size-12 uppercase text-muted font-600"><i class="fas fa-minus-circle"></i> Canto de ${step.momento} (Não Escaldo)</span>
                                 <div class="flex gap-5 align-center">
-                                    <i class="fas fa-arrow-up move-roteiro-item text-muted size-12" onclick="moveRoteiroItem('${mass.id}', '${step.id}', -1)" title="Subir" style="padding: 4px;"></i>
-                                    <i class="fas fa-arrow-down move-roteiro-item text-muted size-12" onclick="moveRoteiroItem('${mass.id}', '${step.id}', 1)" title="Descer" style="padding: 4px;"></i>
-                                    <i class="fas fa-trash-alt delete-roteiro-item text-red size-12" onclick="deleteRoteiroItem('${mass.id}', '${step.id}')" title="Remover Momento" style="padding: 4px; margin-right: 5px;"></i>
                                     <button class="btn btn-small btn-secondary border-radius-20" onclick="openAddSongToMassModal('${mass.id}', '${step.momento}');">
                                         <i class="fas fa-plus"></i> Escalar
                                     </button>
@@ -1696,10 +1812,24 @@ function renderMissasTab() {
                             </div>
                         `;
                     }
+
+                    roteiroHTML += `
+                        <div class="roteiro-drag-item" data-roteiro-step-id="${step.id}">
+                        <i class="fas fa-grip-vertical roteiro-drag-handle" title="Arraste para reordenar o momento inteiro"></i>
+                        <div class="flex align-center gap-10" style="justify-content: flex-end; margin-bottom: 4px;">
+                            <i class="fas fa-arrow-up move-roteiro-item text-muted size-12" onclick="moveRoteiroItem('${mass.id}', '${step.id}', -1)" title="Subir momento"></i>
+                            <i class="fas fa-arrow-down move-roteiro-item text-muted size-12" onclick="moveRoteiroItem('${mass.id}', '${step.id}', 1)" title="Descer momento"></i>
+                            <i class="fas fa-trash-alt delete-roteiro-item text-red size-12" onclick="deleteRoteiroItem('${mass.id}', '${step.id}')" title="Remover Momento"></i>
+                        </div>
+                        ${momentoHTML}
+                        </div>
+                    `;
                 }
             });
-            
-            // Add custom action buttons at the bottom of the roteiro
+
+            roteiroHTML = `<div class="roteiro-drag-zone">${roteiroHTML}</div>`;
+
+            // Add custom action buttons at the bottom of the roteiro (fora da zona de arrastar)
             roteiroHTML += `
                 <div class="flex flex-center gap-10 margin-top-20 flex-wrap" style="justify-content: center; margin-top: 25px; border-top: 1px dashed var(--border-color); padding-top: 15px;">
                     <button class="btn btn-small btn-secondary border-radius-20" onclick="addRoteiroItemModal('${mass.id}')">
@@ -1740,7 +1870,90 @@ function renderMissasTab() {
                 </div>
             </div>
         `;
+        setupRoteiroDragAndDrop(mass.id);
     }
+}
+
+// Habilita arrastar-e-soltar (mouse e toque) para reordenar os momentos do roteiro
+function setupRoteiroDragAndDrop(massId) {
+    const zone = document.querySelector('.roteiro-drag-zone');
+    if (!zone) return;
+
+    zone.querySelectorAll('.roteiro-drag-handle').forEach(handle => {
+        handle.addEventListener('pointerdown', (e) => {
+            e.preventDefault();
+            const dragEl = handle.closest('.roteiro-drag-item');
+            if (!dragEl) return;
+
+            const startOrder = Array.from(zone.querySelectorAll('.roteiro-drag-item')).map(el => el.dataset.roteiroStepId);
+            handle.setPointerCapture(e.pointerId);
+            dragEl.classList.add('dragging');
+
+            const onMove = (ev) => {
+                const afterEl = getRoteiroDragAfterElement(zone, ev.clientY);
+                if (afterEl == null) {
+                    zone.appendChild(dragEl);
+                } else {
+                    zone.insertBefore(dragEl, afterEl);
+                }
+            };
+
+            const onUp = () => {
+                handle.releasePointerCapture(e.pointerId);
+                handle.removeEventListener('pointermove', onMove);
+                handle.removeEventListener('pointerup', onUp);
+                dragEl.classList.remove('dragging');
+
+                const newOrder = Array.from(zone.querySelectorAll('.roteiro-drag-item')).map(el => el.dataset.roteiroStepId);
+                const changed = newOrder.length === startOrder.length && newOrder.some((id, i) => id !== startOrder[i]);
+                if (changed) {
+                    finishRoteiroReorder(massId, newOrder);
+                }
+            };
+
+            handle.addEventListener('pointermove', onMove);
+            handle.addEventListener('pointerup', onUp);
+        });
+    });
+}
+
+function getRoteiroDragAfterElement(zone, clientY) {
+    const items = [...zone.querySelectorAll('.roteiro-drag-item:not(.dragging)')];
+    return items.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = clientY - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+            return { offset, element: child };
+        }
+        return closest;
+    }, { offset: Number.NEGATIVE_INFINITY, element: null }).element;
+}
+
+// Aplica a nova ordem ao roteiro salvo e pergunta se deve atualizar online agora
+function finishRoteiroReorder(massId, newOrderIds) {
+    const mass = db.missas.find(m => m.id === massId);
+    if (!mass || !mass.roteiro) return;
+
+    const stepMap = new Map(mass.roteiro.map(s => [s.id, s]));
+    const reordered = newOrderIds.map(id => stepMap.get(id)).filter(Boolean);
+    if (reordered.length !== mass.roteiro.length) {
+        renderMissasTab();
+        return;
+    }
+
+    mass.roteiro = reordered;
+    localStorage.setItem('ministerio_db', JSON.stringify(db));
+
+    const password = sessionStorage.getItem(ADMIN_SESSION_KEY);
+    if (password && navigator.onLine && confirm("Ordem atualizada! Deseja atualizar online agora para todos verem?")) {
+        pushDatabaseToServer(password).then(success => {
+            if (!success) alert("Não foi possível enviar agora. Vai continuar tentando quando a conexão estiver estável.");
+        });
+    } else {
+        markPendingSync();
+    }
+
+    renderMissasTab();
 }
 
 function renderMusicasTab() {
