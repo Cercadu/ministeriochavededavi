@@ -662,6 +662,11 @@ function clearPendingSync() {
 
 // Atualiza o indicador visual de sincronização no Painel Geral
 function updateSyncStatusUI() {
+    const badge = document.getElementById('admin-mode-badge');
+    if (badge) {
+        badge.classList.toggle('hidden', !sessionStorage.getItem(ADMIN_SESSION_KEY));
+    }
+
     const el = document.getElementById('sync-status-indicator');
     if (!el) return;
 

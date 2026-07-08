@@ -138,6 +138,34 @@ body {
     letter-spacing: 0.5px;
 }
 
+.admin-mode-badge {
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    background: rgba(212, 175, 55, 0.95);
+    color: #210826;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+@media (max-width: 480px) {
+    .admin-mode-badge {
+        top: 8px;
+        right: 8px;
+        font-size: 9px;
+        padding: 3px 8px;
+    }
+}
+
 /* NAVEGAÇÃO E ABAS */
 .tabs-navigation {
     display: flex;
