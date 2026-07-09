@@ -2792,6 +2792,7 @@ let currentLinkingMassId = null;
 let editingLinkedSongIndex = null;
 let vincSelectedSongId = null;
 let vincSearchQuery = '';
+let vincFilterTag = 'Todos';
 
 function populateVincMomentoDropdown(mass) {
     const select = document.getElementById('vinc-momento');
@@ -2808,15 +2809,18 @@ function populateVincMomentoDropdown(mass) {
     }
 }
 
-// Preenche o dropdown de músicas. A música atualmente vinculada (se houver) vem sempre em primeiro lugar.
+// Preenche o dropdown de músicas, respeitando busca e filtro de categoria.
+// A música atualmente vinculada (se houver e passar no filtro) vem sempre em primeiro lugar.
 function renderVincSongSelectorSelect() {
     const select = document.getElementById('vinc-musica-select');
     if (!select) return;
 
-    const filtered = db.musicas.filter(song =>
-        song.titulo.toLowerCase().includes(vincSearchQuery) ||
-        song.letra.toLowerCase().includes(vincSearchQuery)
-    ).sort((a, b) => a.titulo.localeCompare(b.titulo));
+    const filtered = db.musicas.filter(song => {
+        const matchesQuery = song.titulo.toLowerCase().includes(vincSearchQuery) ||
+                              song.letra.toLowerCase().includes(vincSearchQuery);
+        const matchesTag = vincFilterTag === 'Todos' || song.tags.includes(vincFilterTag);
+        return matchesQuery && matchesTag;
+    }).sort((a, b) => a.titulo.localeCompare(b.titulo));
 
     let ordered = filtered;
     const current = filtered.find(s => s.id === vincSelectedSongId);
@@ -2825,7 +2829,7 @@ function renderVincSongSelectorSelect() {
     }
 
     if (ordered.length === 0) {
-        select.innerHTML = `<option value="">Nenhuma música encontrada</option>`;
+        select.innerHTML = `<option value="">Nenhuma música encontrada com esse filtro</option>`;
         return;
     }
 
@@ -2840,13 +2844,31 @@ function initVincularSongSelector(activeSongId = null) {
     vincSelectedSongId = activeSongId;
     document.getElementById('vinc-musica-id').value = activeSongId || '';
     vincSearchQuery = '';
+    vincFilterTag = 'Todos';
     document.getElementById('vinc-musica-busca').value = '';
+    document.getElementById('vinc-musica-tag-filter').value = 'Todos';
+
+    const atualInfo = document.getElementById('vinc-musica-atual-info');
+    const atualLabel = document.getElementById('vinc-musica-atual-label');
+    const activeSong = activeSongId ? db.musicas.find(s => s.id === activeSongId) : null;
+    if (activeSong) {
+        atualLabel.textContent = `${activeSong.titulo} (Tom ${activeSong.tomPadrao})`;
+        atualInfo.classList.remove('hidden');
+    } else {
+        atualInfo.classList.add('hidden');
+    }
 
     renderVincSongSelectorSelect();
 
     const searchInput = document.getElementById('vinc-musica-busca');
     searchInput.oninput = (e) => {
         vincSearchQuery = e.target.value.toLowerCase();
+        renderVincSongSelectorSelect();
+    };
+
+    const tagFilter = document.getElementById('vinc-musica-tag-filter');
+    tagFilter.onchange = (e) => {
+        vincFilterTag = e.target.value;
         renderVincSongSelectorSelect();
     };
 

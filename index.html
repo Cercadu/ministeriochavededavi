@@ -500,9 +500,30 @@
                             <i class="fas fa-plus"></i> Nova Música
                         </button>
                     </div>
-                    <div class="search-input-wrapper" style="margin-bottom: 10px;">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="vinc-musica-busca" class="form-control" placeholder="Filtrar por título ou letra...">
+                    <div id="vinc-musica-atual-info" class="size-12 text-secondary bold margin-bottom-10 hidden" style="background: rgba(212, 175, 55, 0.1); padding: 6px 10px; border-radius: 8px;">
+                        <i class="fas fa-music text-gold"></i> Música atual: <span id="vinc-musica-atual-label"></span>
+                    </div>
+                    <div class="form-row flex gap-10 mobile-column" style="margin-bottom: 10px;">
+                        <div class="search-input-wrapper flex-grow" style="margin-bottom: 0;">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="vinc-musica-busca" class="form-control" placeholder="Filtrar por título ou letra...">
+                        </div>
+                        <select id="vinc-musica-tag-filter" class="form-control" style="max-width: 160px;">
+                            <option value="Todos">Todas as categorias</option>
+                            <option value="Entrada">Entrada</option>
+                            <option value="Ato Penitencial">Ato Penitencial</option>
+                            <option value="Glória">Glória</option>
+                            <option value="Salmo">Salmo</option>
+                            <option value="Aclamação">Aclamação</option>
+                            <option value="Ofertório">Ofertório</option>
+                            <option value="Santo">Santo</option>
+                            <option value="Pai Nosso">Pai Nosso</option>
+                            <option value="Cordeiro">Cordeiro</option>
+                            <option value="Comunhão">Comunhão</option>
+                            <option value="Pós-Comunhão">Pós-Comunhão</option>
+                            <option value="Adoração">Adoração</option>
+                            <option value="Final">Final</option>
+                        </select>
                     </div>
                     <input type="hidden" id="vinc-musica-id">
                     <select id="vinc-musica-select" class="form-control">
