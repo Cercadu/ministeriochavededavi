@@ -2123,7 +2123,7 @@ function renderMusicasTab() {
 }
 
 function renderTagFilters() {
-    const tags = ['Todos', 'Entrada', 'Ato Penitencial', 'Glória', 'Salmo', 'Aclamação', 'Ofertório', 'Santo', 'Pai Nosso', 'Cordeiro', 'Comunhão', 'Pós-Comunhão', 'Adoração', 'Final'];
+    const tags = ['Todos', 'Entrada', 'Ato Penitencial', 'Glória', 'Salmo', 'Aclamação', 'Ofertório', 'Santo', 'Pai Nosso', 'Cordeiro', 'Comunhão', 'Pós-Comunhão', 'Adoração', 'Final', 'Louvor', 'Animação', 'Meditação', 'Mariana'];
     const container = document.getElementById('musicas-tag-filters');
     container.innerHTML = '';
     
@@ -3112,6 +3112,8 @@ function renderVincSongSelectorSelect() {
 
     if (ordered.length === 0) {
         select.innerHTML = `<option value="">Nenhuma música encontrada com esse filtro</option>`;
+        vincSelectedSongId = null;
+        document.getElementById('vinc-musica-id').value = '';
         return;
     }
 
@@ -3120,6 +3122,12 @@ function renderVincSongSelectorSelect() {
             ${song.titulo} — Tom ${song.tomPadrao}
         </option>
     `).join('');
+
+    // O <select> sempre acaba com alguma opção selecionada (a marcada acima, ou a primeira
+    // por padrão do navegador). Sincroniza nosso estado com o que está de fato selecionado,
+    // já que trocar a lista programaticamente não dispara o evento "change".
+    vincSelectedSongId = select.value;
+    document.getElementById('vinc-musica-id').value = vincSelectedSongId;
 }
 
 function initVincularSongSelector(activeSongId = null) {
