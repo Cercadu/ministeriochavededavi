@@ -812,7 +812,9 @@ window.addEventListener('offline', updateSyncStatusUI);
 // Migra/Upgrade no schema do banco de dados para suportar roteiros dinâmicos e novos tipos
 function upgradeSchema() {
     if (!db.missas) db.missas = [];
+    if (!db.musicos) db.musicos = [];
     db.missas.forEach(mass => {
+        if (!mass.escala) mass.escala = [];
         if (!mass.tipo) {
             mass.tipo = "missa";
         }
@@ -1223,6 +1225,7 @@ function setupGlobalEvents() {
     // Configura botões das abas principais
     document.getElementById('tab-btn-missas').addEventListener('click', () => switchTab('missas'));
     document.getElementById('tab-btn-musicas').addEventListener('click', () => switchTab('musicas'));
+    document.getElementById('tab-btn-equipe').addEventListener('click', () => switchTab('equipe'));
     document.getElementById('tab-btn-admin').addEventListener('click', async () => {
         const allowed = await ensureAdminAccess();
         if (allowed) switchTab('admin');
@@ -1305,6 +1308,9 @@ function setupGlobalEvents() {
     // Submissão de Formulários
     document.getElementById('form-song').addEventListener('submit', handleSongSubmit);
     document.getElementById('form-mass').addEventListener('submit', handleMassSubmit);
+    document.getElementById('form-musico').addEventListener('submit', handleMusicoSubmit);
+    document.getElementById('btn-add-musico-topo').addEventListener('click', () => openMusicoForm());
+    document.getElementById('btn-confirmar-escala').addEventListener('click', saveEscalaMusico);
 
     // Backup e Configurações
     document.getElementById('btn-export-db').addEventListener('click', exportDatabase);
@@ -1353,6 +1359,7 @@ function switchTab(tabName) {
 
     // Mostrar ou ocultar elementos conforme a aba ativa
     document.getElementById('btn-add-musica-topo').style.display = (tabName === 'musicas' && isAdmin()) ? 'block' : 'none';
+    document.getElementById('btn-add-musico-topo').style.display = (tabName === 'equipe' && isAdmin()) ? 'block' : 'none';
 
     if (tabName === 'admin') {
         updateSyncStatusUI();
@@ -1368,7 +1375,7 @@ function switchMassViewMode(mode) {
 }
 
 function renderTabs() {
-    const tabs = ['missas', 'musicas', 'admin'];
+    const tabs = ['missas', 'musicas', 'equipe', 'admin'];
     tabs.forEach(tab => {
         const btn = document.getElementById(`tab-btn-${tab}`);
         if (btn) {
@@ -1407,8 +1414,9 @@ function populateMassDropdown() {
 function renderContent() {
     document.getElementById('pane-missas').classList.add('hidden');
     document.getElementById('pane-musicas').classList.add('hidden');
+    document.getElementById('pane-equipe').classList.add('hidden');
     document.getElementById('pane-admin').classList.add('hidden');
-    
+
     updateMainBannerColor();
 
     if (currentTab === 'missas') {
@@ -1417,6 +1425,9 @@ function renderContent() {
     } else if (currentTab === 'musicas') {
         document.getElementById('pane-musicas').classList.remove('hidden');
         renderMusicasTab();
+    } else if (currentTab === 'equipe') {
+        document.getElementById('pane-equipe').classList.remove('hidden');
+        renderEquipeTab();
     } else if (currentTab === 'admin') {
         document.getElementById('pane-admin').classList.remove('hidden');
         populateMassDropdown();
@@ -1630,6 +1641,25 @@ function renderMissasTab() {
     const dateObj = new Date(mass.data + 'T00:00:00');
     const formattedDate = dateObj.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 
+    const escalaItemsHTML = (mass.escala || []).map((entry, index) => {
+        const musico = db.musicos.find(m => m.id === entry.musicoId);
+        const nome = musico ? musico.nome : 'Músico não encontrado';
+        return `
+            <span class="tag-badge size-11" style="padding: 4px 10px; display: inline-flex; align-items: center; gap: 6px;">
+                <i class="fas fa-user text-gold"></i> ${nome} <span class="gray">(${entry.funcao})</span>
+                ${adminMode ? `<i class="fas fa-times-circle pointer text-red" style="margin-left: 2px;" onclick="removeMusicoFromEscala('${mass.id}', ${index})" title="Remover da escala"></i>` : ''}
+            </span>
+        `;
+    }).join('');
+
+    const escalaHTML = ((mass.escala && mass.escala.length > 0) || adminMode) ? `
+        <div class="flex align-center gap-10 flex-wrap margin-top-10" style="padding-top: 10px; border-top: 1px dashed rgba(212, 175, 55, 0.3);">
+            <span class="size-12 bold text-secondary uppercase"><i class="fas fa-users text-gold"></i> Escala:</span>
+            ${escalaItemsHTML || '<span class="size-12 gray">Ninguém escalado ainda.</span>'}
+            ${adminMode ? `<button class="btn btn-small btn-secondary border-radius-20" style="padding: 3px 10px; font-size: 11px;" onclick="openEscalarMusicoModal('${mass.id}')"><i class="fas fa-plus"></i> Escalar</button>` : ''}
+        </div>
+    ` : '';
+
     const innerHeaderHTML = `
         <!-- Detalhes no topo do Roteiro -->
         <div class="mass-card-header-details margin-bottom-15 padding-15 bg-light-trans border-radius-8" style="border-left: 4px solid var(--accent); background: rgba(212, 175, 55, 0.03);">
@@ -1638,6 +1668,7 @@ function renderMissasTab() {
                 <span><i class="fas fa-calendar-day text-gold"></i> ${formattedDate}</span>
                 <span><i class="fas fa-map-marker-alt text-gold"></i> ${mass.local}</span>
             </div>
+            ${escalaHTML}
         </div>
     `;
 
@@ -2102,6 +2133,201 @@ function renderTagFilters() {
 }
 
 // ============================================================================
+// ABA: EQUIPE (CADASTRO DE MÚSICOS E ESCALA POR CELEBRAÇÃO)
+// ============================================================================
+
+function openMusicoForm(musicoId = null) {
+    const modal = document.getElementById('modal-musico-editor');
+    const formTitle = document.getElementById('musico-form-title');
+
+    document.getElementById('form-musico-id').value = '';
+    document.getElementById('musico-nome').value = '';
+    document.querySelectorAll('#musico-funcoes-checkboxes input[type="checkbox"]').forEach(cb => cb.checked = false);
+
+    if (musicoId) {
+        const musico = db.musicos.find(m => m.id === musicoId);
+        if (!musico) return;
+
+        formTitle.textContent = "Editar Músico";
+        document.getElementById('form-musico-id').value = musico.id;
+        document.getElementById('musico-nome').value = musico.nome;
+        document.querySelectorAll('#musico-funcoes-checkboxes input[type="checkbox"]').forEach(cb => {
+            cb.checked = (musico.funcoes || []).includes(cb.value);
+        });
+    } else {
+        formTitle.textContent = "Novo Músico";
+    }
+
+    modal.classList.remove('hidden');
+}
+
+function handleMusicoSubmit(e) {
+    e.preventDefault();
+
+    const id = document.getElementById('form-musico-id').value;
+    const nome = document.getElementById('musico-nome').value.trim();
+    const funcoes = Array.from(document.querySelectorAll('#musico-funcoes-checkboxes input[type="checkbox"]:checked')).map(cb => cb.value);
+
+    if (!nome) {
+        alert("Preencha o nome do músico.");
+        return;
+    }
+
+    if (id) {
+        const index = db.musicos.findIndex(m => m.id === id);
+        if (index !== -1) {
+            db.musicos[index] = { id, nome, funcoes };
+        }
+    } else {
+        db.musicos.push({ id: 'musico-' + Date.now(), nome, funcoes });
+    }
+
+    saveDatabase();
+    document.getElementById('modal-musico-editor').classList.add('hidden');
+    renderEquipeTab();
+}
+
+function deleteMusico(musicoId) {
+    if (!confirm("Tem certeza que deseja excluir este músico? Ele também será removido de qualquer escala futura.")) return;
+
+    db.musicos = db.musicos.filter(m => m.id !== musicoId);
+    db.missas.forEach(mass => {
+        if (mass.escala) {
+            mass.escala = mass.escala.filter(e => e.musicoId !== musicoId);
+        }
+    });
+
+    saveDatabase();
+    renderEquipeTab();
+}
+
+// Retorna as próximas celebrações (a partir de hoje) em que o músico está escalado
+function getUpcomingEscalasForMusico(musicoId) {
+    const today = getTodayLocalDateString();
+    return db.missas
+        .filter(mass => mass.data >= today && (mass.escala || []).some(e => e.musicoId === musicoId))
+        .sort((a, b) => new Date(a.data) - new Date(b.data))
+        .map(mass => {
+            const entry = mass.escala.find(e => e.musicoId === musicoId);
+            return { mass, funcao: entry.funcao };
+        });
+}
+
+function renderEquipeTab() {
+    const container = document.getElementById('equipe-list');
+    container.innerHTML = '';
+    const adminMode = isAdmin();
+
+    if (!db.musicos || db.musicos.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state text-center padding-20">
+                <i class="fas fa-users size-40 gray margin-bottom-10"></i>
+                <p>Nenhum músico cadastrado ainda.</p>
+            </div>
+        `;
+        return;
+    }
+
+    const sorted = [...db.musicos].sort((a, b) => a.nome.localeCompare(b.nome));
+
+    sorted.forEach(musico => {
+        const funcoesBadge = (musico.funcoes || []).map(f => `<span class="tag-badge uppercase size-10">${f}</span>`).join(' ');
+        const upcoming = getUpcomingEscalasForMusico(musico.id);
+
+        const upcomingHTML = upcoming.length > 0
+            ? upcoming.slice(0, 3).map(({ mass, funcao }) => {
+                const dateObj = new Date(mass.data + 'T00:00:00');
+                const formattedDate = dateObj.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+                return `<div class="size-12 text-secondary"><i class="fas fa-calendar-check text-gold"></i> ${formattedDate} — ${mass.titulo} <span class="gray">(${funcao})</span></div>`;
+            }).join('')
+            : `<div class="size-12 gray">Sem escalas futuras.</div>`;
+
+        const card = document.createElement('div');
+        card.className = 'glass-panel padding-15';
+        card.innerHTML = `
+            <div class="flex flex-between align-center margin-bottom-10">
+                <span class="text-primary bold size-16">${musico.nome}</span>
+                ${adminMode ? `
+                <div class="flex gap-5">
+                    <button class="btn-icon" onclick="openMusicoForm('${musico.id}')" title="Editar músico"><i class="fas fa-edit"></i></button>
+                    <button class="btn-icon text-red" onclick="deleteMusico('${musico.id}')" title="Excluir músico"><i class="fas fa-trash-alt"></i></button>
+                </div>
+                ` : ''}
+            </div>
+            <div class="flex gap-5 flex-wrap margin-bottom-10">${funcoesBadge}</div>
+            <div class="flex flex-column gap-5">${upcomingHTML}</div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+// ---- Escala de músicos por celebração ----
+
+let currentEscalaMassId = null;
+
+function openEscalarMusicoModal(massId) {
+    currentEscalaMassId = massId;
+    const mass = db.missas.find(m => m.id === massId);
+    if (!mass) return;
+
+    if (!db.musicos || db.musicos.length === 0) {
+        alert("Cadastre ao menos um músico na aba Equipe antes de escalar.");
+        return;
+    }
+
+    const jaEscalados = (mass.escala || []).map(e => e.musicoId);
+    const disponiveis = db.musicos.filter(m => !jaEscalados.includes(m.id));
+
+    if (disponiveis.length === 0) {
+        alert("Todos os músicos cadastrados já estão escalados nesta celebração.");
+        return;
+    }
+
+    const musicoSelect = document.getElementById('escala-musico-select');
+    musicoSelect.innerHTML = disponiveis
+        .sort((a, b) => a.nome.localeCompare(b.nome))
+        .map(m => `<option value="${m.id}">${m.nome}</option>`)
+        .join('');
+
+    const updateFuncaoOptions = () => {
+        const musico = db.musicos.find(m => m.id === musicoSelect.value);
+        const funcaoSelect = document.getElementById('escala-funcao-select');
+        const funcoes = (musico && musico.funcoes && musico.funcoes.length > 0) ? musico.funcoes : ['Ministro(a) de Louvor'];
+        funcaoSelect.innerHTML = funcoes.map(f => `<option value="${f}">${f}</option>`).join('');
+    };
+
+    musicoSelect.onchange = updateFuncaoOptions;
+    updateFuncaoOptions();
+
+    document.getElementById('modal-escalar-musico').classList.remove('hidden');
+}
+
+function saveEscalaMusico() {
+    const mass = db.missas.find(m => m.id === currentEscalaMassId);
+    if (!mass) return;
+
+    const musicoId = document.getElementById('escala-musico-select').value;
+    const funcao = document.getElementById('escala-funcao-select').value;
+    if (!musicoId) return;
+
+    if (!mass.escala) mass.escala = [];
+    mass.escala.push({ musicoId, funcao });
+
+    saveDatabase();
+    document.getElementById('modal-escalar-musico').classList.add('hidden');
+    renderMissasTab();
+}
+
+function removeMusicoFromEscala(massId, index) {
+    const mass = db.missas.find(m => m.id === massId);
+    if (!mass || !mass.escala) return;
+
+    mass.escala.splice(index, 1);
+    saveDatabase();
+    renderMissasTab();
+}
+
+// ============================================================================
 // VISUALIZADOR DE CIFRAS INTERATIVO (LEITOR DE CIFRAS)
 // ============================================================================
 
@@ -2258,13 +2484,32 @@ function renderReaderLyrics() {
 
     const transposed = transposeLyrics(song.letra, currentSongTranspositionOffset);
     const formattedHTML = formatLyricsHTML(transposed, hideChords);
-    
+    const currentKey = transposeChord(song.tomPadrao, currentSongTranspositionOffset);
+
+    let cantor = '';
+    if (currentSongMassContextId) {
+        const mass = db.missas.find(m => m.id === currentSongMassContextId);
+        const mom = mass?.musicas?.find(m => m.musicaId === currentSongId);
+        cantor = mom?.cantor || '';
+    }
+
+    const headerContainer = document.getElementById('reader-song-header');
+    if (headerContainer) {
+        headerContainer.innerHTML = `
+            <h2 class="reader-song-header-title">${song.titulo}</h2>
+            <div class="reader-song-header-meta">
+                ${cantor ? `<span class="reader-song-header-cantor"><i class="fas fa-microphone"></i> ${cantor}</span>` : ''}
+                <span class="reader-song-header-tom"><i class="fas fa-music"></i> Tom: ${currentKey}</span>
+            </div>
+        `;
+    }
+
     const lyricsBox = document.getElementById('reader-lyrics-box');
     lyricsBox.innerHTML = formattedHTML;
     lyricsBox.style.fontSize = `calc(var(--font-size) * ${fontSizeMultiplier})`;
-    
+
     const currentKeyDisplay = document.getElementById('reader-song-key-current');
-    currentKeyDisplay.textContent = transposeChord(song.tomPadrao, currentSongTranspositionOffset);
+    currentKeyDisplay.textContent = currentKey;
 }
 
 // Salva o tom transposto atual como o tom desta música para a celebração em andamento (se houver contexto de missa)

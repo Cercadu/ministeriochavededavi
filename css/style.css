@@ -561,6 +561,32 @@ textarea.form-control {
     scroll-behavior: smooth;
 }
 
+.reader-song-header {
+    max-width: 700px;
+    margin: 0 auto 20px auto;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--accent, #D4AF37);
+}
+.reader-song-header-title {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 8px;
+}
+.reader-song-header-meta {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+.reader-song-header-cantor {
+    color: var(--text-muted, #6A5B6E);
+}
+.reader-song-header-tom {
+    color: var(--accent, #D4AF37);
+}
+
 .reader-lyrics-box {
     max-width: 700px;
     margin: 0 auto;
@@ -1196,6 +1222,9 @@ textarea.form-control {
 .song-reader-overlay.stage-mode .chord-line .chord { color: #81c784 !important; }
 .song-reader-overlay.stage-mode .reader-lyrics-box { color: #EFE4F5; }
 .song-reader-overlay.stage-mode .section-label { color: #B388FF; }
+.song-reader-overlay.stage-mode .reader-song-header-title { color: #EFE4F5; }
+.song-reader-overlay.stage-mode .reader-song-header-cantor { color: #C9BEDB; }
+.song-reader-overlay.stage-mode .reader-song-header { border-bottom-color: #B388FF; }
 
 @media (max-width: 480px) {
     .reader-sidebar-menu {

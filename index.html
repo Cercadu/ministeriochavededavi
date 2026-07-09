@@ -28,6 +28,9 @@
             <button class="tab-btn" id="tab-btn-musicas">
                 <i class="fas fa-music"></i> <span>Pasta Musical</span>
             </button>
+            <button class="tab-btn" id="tab-btn-equipe">
+                <i class="fas fa-users"></i> <span>Equipe</span>
+            </button>
             <button class="tab-btn" id="tab-btn-admin">
                 <i class="fas fa-sliders-h"></i> <span>Painel Geral</span>
             </button>
@@ -40,6 +43,9 @@
             </div>
             <button class="btn btn-primary" id="btn-add-musica-topo" style="display: none;">
                 <i class="fas fa-plus"></i> Nova Música
+            </button>
+            <button class="btn btn-primary" id="btn-add-musico-topo" style="display: none;">
+                <i class="fas fa-user-plus"></i> Novo Músico
             </button>
         </div>
 
@@ -107,6 +113,11 @@
             <div class="tag-filters" id="musicas-tag-filters">
                 </div>
             <div id="musicas-list" class="flex flex-column gap-10">
+                </div>
+        </div>
+
+        <div id="pane-equipe" class="tab-pane hidden">
+            <div id="equipe-list" class="flex flex-column gap-10">
                 </div>
         </div>
 
@@ -261,6 +272,9 @@
 
         <!-- Área de Cifras Rolável (Ocupa a tela inteira de ponta a ponta) -->
         <div id="reader-lyrics-scrollable" class="reader-lyrics-scrollable">
+            <div id="reader-song-header" class="reader-song-header">
+                <!-- Preenchido dinamicamente pelo JS: título, cantor escalado e tom -->
+            </div>
             <div id="reader-lyrics-box" class="reader-lyrics-box">
                 <!-- Preenchido dinamicamente pelo JS -->
             </div>
@@ -406,6 +420,68 @@
                     <button type="submit" class="btn btn-primary">Salvar Música</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <div id="modal-musico-editor" class="modal-overlay hidden">
+        <div class="modal-container glass-panel">
+            <div class="modal-header">
+                <h3 id="musico-form-title">Novo Músico</h3>
+                <button type="button" class="btn-icon close-modal-btn text-white" style="color: white;"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="form-musico">
+                <div class="modal-body">
+                    <input type="hidden" id="form-musico-id">
+
+                    <div class="form-group">
+                        <label for="musico-nome">Nome</label>
+                        <input type="text" id="musico-nome" class="form-control" placeholder="Ex: Carlos Eduardo" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Funções / Instrumentos</label>
+                        <div id="musico-funcoes-checkboxes" class="tags-checkbox-grid">
+                            <label class="tag-checkbox-label"><input type="checkbox" value="Ministro(a) de Louvor"> Ministro(a) de Louvor</label>
+                            <label class="tag-checkbox-label"><input type="checkbox" value="Vocal"> Vocal</label>
+                            <label class="tag-checkbox-label"><input type="checkbox" value="Backing Vocal"> Backing Vocal</label>
+                            <label class="tag-checkbox-label"><input type="checkbox" value="Violão"> Violão</label>
+                            <label class="tag-checkbox-label"><input type="checkbox" value="Guitarra"> Guitarra</label>
+                            <label class="tag-checkbox-label"><input type="checkbox" value="Baixo"> Baixo</label>
+                            <label class="tag-checkbox-label"><input type="checkbox" value="Teclado/Piano"> Teclado/Piano</label>
+                            <label class="tag-checkbox-label"><input type="checkbox" value="Bateria"> Bateria</label>
+                            <label class="tag-checkbox-label"><input type="checkbox" value="Cajón/Percussão"> Cajón/Percussão</label>
+                            <label class="tag-checkbox-label"><input type="checkbox" value="Técnico de Som"> Técnico de Som</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="padding-15 border-top flex gap-10 bg-light-trans modal-footer-buttons">
+                    <button type="button" class="btn btn-secondary close-modal-btn">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar Músico</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-escalar-musico" class="modal-overlay hidden">
+        <div class="modal-container glass-panel">
+            <div class="modal-header">
+                <h3>Escalar Músico</h3>
+                <button type="button" class="btn-icon close-modal-btn text-white" style="color: white;"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="escala-musico-select">Músico</label>
+                    <select id="escala-musico-select" class="form-control"></select>
+                </div>
+                <div class="form-group">
+                    <label for="escala-funcao-select">Função nesta celebração</label>
+                    <select id="escala-funcao-select" class="form-control"></select>
+                </div>
+            </div>
+            <div class="padding-15 border-top flex gap-10 bg-light-trans modal-footer-buttons">
+                <button type="button" class="btn btn-secondary close-modal-btn">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="btn-confirmar-escala">Confirmar Escala</button>
+            </div>
         </div>
     </div>
 
