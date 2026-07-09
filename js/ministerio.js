@@ -3418,6 +3418,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupGlobalEvents();
     renderTabs();
     renderContent();
+    setupPwaInstallPrompt();
 });
 
 // Registra o Service Worker para permitir que o app abra offline (PWA)
@@ -3427,6 +3428,88 @@ if ('serviceWorker' in navigator) {
             console.warn('Não foi possível registrar o Service Worker.', err);
         });
     });
+}
+
+// ============================================================================
+// SUGESTÃO DE INSTALAÇÃO DO APP (PWA)
+// ============================================================================
+
+const PWA_INSTALL_DISMISS_KEY = 'ministerio_pwa_install_dismissed_at';
+let deferredInstallPrompt = null;
+
+// Detecta se o app já está rodando instalado (tela cheia, sem barra do navegador)
+function isRunningStandalone() {
+    return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+}
+
+function isIOSDevice() {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+}
+
+// Evita insistir todo dia caso a pessoa já tenha fechado o aviso
+function shouldShowInstallBanner() {
+    const dismissedAt = localStorage.getItem(PWA_INSTALL_DISMISS_KEY);
+    if (!dismissedAt) return true;
+    const daysSinceDismiss = (Date.now() - parseInt(dismissedAt, 10)) / (1000 * 60 * 60 * 24);
+    return daysSinceDismiss >= 14;
+}
+
+function showInstallBanner(mode) {
+    const banner = document.getElementById('pwa-install-banner');
+    const text = document.getElementById('pwa-install-text');
+    const actionBtn = document.getElementById('btn-pwa-install-action');
+    if (!banner || !text || !actionBtn) return;
+
+    if (mode === 'android') {
+        text.textContent = 'Instale o app no seu celular para acesso rápido e uso offline.';
+        actionBtn.classList.remove('hidden');
+    } else if (mode === 'ios') {
+        text.innerHTML = 'Para instalar: toque em <i class="fas fa-share-square"></i> Compartilhar e depois em "Adicionar à Tela de Início".';
+        actionBtn.classList.add('hidden');
+    }
+    banner.classList.remove('hidden');
+}
+
+function maybeShowInstallBanner() {
+    if (isRunningStandalone() || !shouldShowInstallBanner()) return;
+
+    if (deferredInstallPrompt) {
+        showInstallBanner('android');
+    } else if (isIOSDevice()) {
+        showInstallBanner('ios');
+    }
+}
+
+// Chrome/Android dispara este evento quando o site cumpre os critérios de instalação.
+// Guardamos o evento para disparar o prompt nativo só quando a pessoa clicar no nosso botão.
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    maybeShowInstallBanner();
+});
+
+window.addEventListener('appinstalled', () => {
+    deferredInstallPrompt = null;
+    document.getElementById('pwa-install-banner')?.classList.add('hidden');
+});
+
+function setupPwaInstallPrompt() {
+    document.getElementById('btn-pwa-install-action')?.addEventListener('click', async () => {
+        if (!deferredInstallPrompt) return;
+        deferredInstallPrompt.prompt();
+        await deferredInstallPrompt.userChoice;
+        deferredInstallPrompt = null;
+        document.getElementById('pwa-install-banner')?.classList.add('hidden');
+    });
+
+    document.getElementById('btn-pwa-install-dismiss')?.addEventListener('click', () => {
+        localStorage.setItem(PWA_INSTALL_DISMISS_KEY, Date.now().toString());
+        document.getElementById('pwa-install-banner')?.classList.add('hidden');
+    });
+
+    // No Android o botão só aparece quando o navegador dispara beforeinstallprompt;
+    // no iOS não existe esse evento, então mostramos a instrução direto.
+    maybeShowInstallBanner();
 }
 
 // ============================================================================
