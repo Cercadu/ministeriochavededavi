@@ -1259,13 +1259,11 @@ textarea.form-control {
 }
 
 /* ============================================================================ */
-/* TOGGLE MEU TOM / TOM DO MINISTÉRIO NO LEITOR                                */
+/* TONS ESPECÍFICOS CADASTRADOS NA MÚSICA (LEITOR E FORMULÁRIO)                */
 /* ============================================================================ */
-#my-key-toggle-group .btn.active {
-    background: var(--accent, #D4AF37);
-    color: #210826;
-    border-color: var(--accent, #D4AF37);
-    font-weight: 700;
+.tom-alternativo-row .form-control {
+    padding: 6px 10px;
+    font-size: 0.85rem;
 }
 
 /* ============================================================================ */

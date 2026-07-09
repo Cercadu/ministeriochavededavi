@@ -239,13 +239,10 @@
                     </div>
                 </div>
 
-                <!-- Grupo: Meu Tom vs Tom do Ministério (só aparece se a música tiver um "Meu Tom" cadastrado) -->
-                <div class="sidebar-group hidden" id="my-key-toggle-group">
-                    <label class="bold size-13 uppercase"><i class="fas fa-user"></i> Tom Pessoal</label>
-                    <div class="flex gap-5">
-                        <button id="btn-use-ministry-key" class="btn btn-small btn-secondary flex-grow">Ministério</button>
-                        <button id="btn-use-my-key" class="btn btn-small btn-secondary flex-grow">Meu Tom</button>
-                    </div>
+                <!-- Grupo: Tons Específicos cadastrados (só aparece se a música tiver algum) -->
+                <div class="sidebar-group hidden" id="tons-alternativos-group">
+                    <label class="bold size-13 uppercase"><i class="fas fa-users"></i> Tom Específico</label>
+                    <select id="tons-alternativos-select" class="form-control"></select>
                 </div>
 
                 <!-- Grupo: Exibição -->
@@ -338,36 +335,6 @@
                             </select>
                         </div>
                         <div class="form-group flex-grow">
-                            <label for="song-key-personal">Meu Tom (opcional)</label>
-                            <select id="song-key-personal" class="form-control">
-                                <option value="">— Sem tom pessoal —</option>
-                                <option value="C">C (Dó)</option>
-                                <option value="C#">C# (Dó sustenido)</option>
-                                <option value="D">D (Ré)</option>
-                                <option value="D#">D# (Ré sustenido)</option>
-                                <option value="E">E (Mi)</option>
-                                <option value="F">F (Fá)</option>
-                                <option value="F#">F# (Fá sustenido)</option>
-                                <option value="G">G (Sol)</option>
-                                <option value="G#">G# (Sol sustenido)</option>
-                                <option value="A">A (Lá)</option>
-                                <option value="A#">A# (Lá sustenido)</option>
-                                <option value="B">B (Si)</option>
-                                <option value="Cm">Cm (Dó menor)</option>
-                                <option value="C#m">C#m (Dó sustenido menor)</option>
-                                <option value="Dm">Dm (Ré menor)</option>
-                                <option value="D#m">D#m (Ré sustenido menor)</option>
-                                <option value="Em">Em (Mi menor)</option>
-                                <option value="Fm">Fm (Fá menor)</option>
-                                <option value="F#m">F#m (Fá sustenido menor)</option>
-                                <option value="Gm">Gm (Sol menor)</option>
-                                <option value="G#m">G#m (Sol sustenido menor)</option>
-                                <option value="Am">Am (Lá menor)</option>
-                                <option value="A#m">A#m (Lá sustenido menor)</option>
-                                <option value="Bm">Bm (Si menor)</option>
-                            </select>
-                        </div>
-                        <div class="form-group flex-grow">
                             <label for="song-capo">Capotraste (opcional)</label>
                             <select id="song-capo" class="form-control">
                                 <option value="">— Sem capotraste —</option>
@@ -402,6 +369,15 @@
                             </div>
                             <input type="hidden" id="song-tags">
                         </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tons Específicos (opcional)</label>
+                        <p class="size-11 gray margin-bottom-5">Use quando pessoas diferentes cantam essa música em tons diferentes (ex: "Cadu" em G, "Ministério" em A). Uma observação (nome) + o tom de cada uma.</p>
+                        <div id="song-tons-alternativos-list" class="flex flex-column gap-5"></div>
+                        <button type="button" class="btn btn-small btn-secondary margin-top-5" id="btn-add-tom-alternativo">
+                            <i class="fas fa-plus"></i> Adicionar Tom Específico
+                        </button>
                     </div>
 
                     <div class="form-group">

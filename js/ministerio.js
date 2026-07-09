@@ -813,6 +813,13 @@ window.addEventListener('offline', updateSyncStatusUI);
 function upgradeSchema() {
     if (!db.missas) db.missas = [];
     if (!db.musicos) db.musicos = [];
+    if (!db.musicas) db.musicas = [];
+    db.musicas.forEach(song => {
+        if (!song.tonsAlternativos) {
+            // Migra o antigo "Meu Tom" (um único valor) para a lista de tons específicos nomeados
+            song.tonsAlternativos = song.tomPessoal ? [{ observacao: 'Meu Tom', tom: song.tomPessoal }] : [];
+        }
+    });
     db.missas.forEach(mass => {
         if (!mass.escala) mass.escala = [];
         if (!mass.tipo) {
@@ -1258,6 +1265,7 @@ function setupGlobalEvents() {
     document.getElementById('btn-add-missa-topo').addEventListener('click', () => openMassForm());
     document.getElementById('btn-add-musica-topo').addEventListener('click', () => openSongForm());
     document.getElementById('btn-format-cifraclub').addEventListener('click', formatCifraClubPaste);
+    document.getElementById('btn-add-tom-alternativo').addEventListener('click', addTomAlternativoRow);
 
 // Configura botões do visualizador de cifras (Leitor Atualizado)
     document.getElementById('reader-close').addEventListener('click', closeSongReader);
@@ -1266,8 +1274,7 @@ function setupGlobalEvents() {
     document.getElementById('btn-transp-down').addEventListener('click', () => adjustTransposition(-1));
     document.getElementById('btn-transp-up').addEventListener('click', () => adjustTransposition(1));
     document.getElementById('btn-transp-reset').addEventListener('click', () => resetTransposition());
-    document.getElementById('btn-use-my-key').addEventListener('click', useMyKey);
-    document.getElementById('btn-use-ministry-key').addEventListener('click', useMinistryKey);
+    document.getElementById('tons-alternativos-select').addEventListener('change', (e) => selectTomAlternativo(e.target.value));
     document.getElementById('btn-hide-chords').addEventListener('click', toggleChordsVisibility);
     document.getElementById('btn-font-down').addEventListener('click', () => adjustFontSize(-0.1));
     document.getElementById('btn-font-up').addEventListener('click', () => adjustFontSize(0.1));
@@ -2382,51 +2389,43 @@ function openSongReader(songId, massContextId = null) {
 
     renderReaderLyrics();
     updateReaderNavButtons();
-    updateMyKeyToggle();
+    updateTonsAlternativosSelector();
     document.getElementById('song-reader-overlay').classList.remove('hidden');
     requestWakeLock();
 }
 
-// Mostra/oculta e sincroniza o toggle "Ministério" / "Meu Tom" conforme a música atual
-function updateMyKeyToggle() {
-    const group = document.getElementById('my-key-toggle-group');
-    const ministryBtn = document.getElementById('btn-use-ministry-key');
-    const myKeyBtn = document.getElementById('btn-use-my-key');
-    if (!group || !ministryBtn || !myKeyBtn) return;
+// Mostra/oculta e sincroniza o dropdown de tons específicos cadastrados na música
+function updateTonsAlternativosSelector() {
+    const group = document.getElementById('tons-alternativos-group');
+    const select = document.getElementById('tons-alternativos-select');
+    if (!group || !select) return;
 
     const song = db.musicas.find(s => s.id === currentSongId);
-    if (!song || !song.tomPessoal) {
+    const tons = (song && song.tonsAlternativos) || [];
+    if (!song || tons.length === 0) {
         group.classList.add('hidden');
         return;
     }
 
     group.classList.remove('hidden');
-    ministryBtn.textContent = `Ministério (${song.tomPadrao})`;
-    myKeyBtn.textContent = `Meu Tom (${song.tomPessoal})`;
 
     const currentChord = transposeChord(song.tomPadrao, currentSongTranspositionOffset);
-    const isMyKey = currentChord === song.tomPessoal;
-    myKeyBtn.classList.toggle('active', isMyKey);
-    ministryBtn.classList.toggle('active', !isMyKey);
+    const matching = tons.find(t => t.tom === currentChord);
+
+    const options = [`<option value="" ${!matching ? 'selected' : ''}>Padrão (${song.tomPadrao})</option>`]
+        .concat(tons.map(t => `<option value="${t.tom}" ${matching === t ? 'selected' : ''}>${t.observacao} (${t.tom})</option>`));
+    select.innerHTML = options.join('');
 }
 
-// Alterna a transposição atual para o "Meu Tom" cadastrado na música
-function useMyKey() {
+// Aplica o tom escolhido no dropdown (ou volta ao Padrão se vazio)
+function selectTomAlternativo(tomValue) {
     const song = db.musicas.find(s => s.id === currentSongId);
-    if (!song || !song.tomPessoal) return;
+    if (!song) return;
 
-    currentSongTranspositionOffset = getSemitoneDistance(song.tomPadrao, song.tomPessoal);
+    currentSongTranspositionOffset = tomValue ? getSemitoneDistance(song.tomPadrao, tomValue) : 0;
     renderReaderLyrics();
     persistCurrentTranspositionToMass();
-    updateMyKeyToggle();
-}
-
-// Alterna a transposição atual de volta para o tom oficial do ministério (Tom Padrão)
-function useMinistryKey() {
-    currentSongTranspositionOffset = 0;
-    renderReaderLyrics();
-    persistCurrentTranspositionToMass();
-    updateMyKeyToggle();
+    updateTonsAlternativosSelector();
 }
 
 // Retorna a sequência de IDs de música na ordem em que aparecem no roteiro da missa
@@ -2530,13 +2529,13 @@ function adjustTransposition(steps) {
     currentSongTranspositionOffset += steps;
     renderReaderLyrics();
     persistCurrentTranspositionToMass();
-    updateMyKeyToggle();
+    updateTonsAlternativosSelector();
 }
 
 function resetTransposition() {
     currentSongTranspositionOffset = 0;
     renderReaderLyrics();
-    updateMyKeyToggle();
+    updateTonsAlternativosSelector();
 }
 
 function toggleChordsVisibility() {
@@ -2662,31 +2661,31 @@ function openSongForm(songId = null, returnToVincMassId = null) {
     document.getElementById('form-song-id').value = '';
     document.getElementById('song-title').value = '';
     document.getElementById('song-key').value = 'C';
-    document.getElementById('song-key-personal').value = '';
     document.getElementById('song-capo').value = '';
     document.getElementById('song-youtube').value = '';
     document.getElementById('song-lyrics').value = '';
     document.getElementById('cifraclub-paste-input').value = '';
-    
+    renderTonsAlternativosRows([]);
+
     // Salva contexto de retorno para quando fechar este modal re-abrir o vinc
     document.getElementById('modal-song-editor').dataset.returnToVincMassId = returnToVincMassId || '';
-    
+
     // Desmarca todos os checkboxes
     document.querySelectorAll('#song-tags-checkboxes input[type="checkbox"]').forEach(cb => cb.checked = false);
 
     if (songId) {
         const song = db.musicas.find(s => s.id === songId);
         if (!song) return;
-        
+
         formTitle.textContent = "Editar Música";
         document.getElementById('form-song-id').value = song.id;
         document.getElementById('song-title').value = song.titulo;
         document.getElementById('song-key').value = song.tomPadrao;
-        document.getElementById('song-key-personal').value = song.tomPessoal || '';
         document.getElementById('song-capo').value = song.capotraste || '';
         document.getElementById('song-youtube').value = song.linkYoutube || '';
         document.getElementById('song-lyrics').value = song.letra;
-        
+        renderTonsAlternativosRows(song.tonsAlternativos || []);
+
         // Marca as tags correspondentes nos checkboxes
         const songTags = song.tags || [];
         document.querySelectorAll('#song-tags-checkboxes input[type="checkbox"]').forEach(cb => {
@@ -2697,6 +2696,44 @@ function openSongForm(songId = null, returnToVincMassId = null) {
     }
 
     modal.classList.remove('hidden');
+}
+
+const TOM_OPTIONS_LIST = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B', 'Cm', 'C#m', 'Dm', 'D#m', 'Em', 'Fm', 'F#m', 'Gm', 'G#m', 'Am', 'A#m', 'Bm'];
+
+function createTomAlternativoRow(observacao = '', tom = 'C') {
+    const rowEl = document.createElement('div');
+    rowEl.className = 'flex gap-5 align-center tom-alternativo-row';
+    rowEl.innerHTML = `
+        <input type="text" class="form-control tom-alt-observacao" placeholder="Ex: Cadu, Ministério..." value="${observacao}" style="flex: 2;">
+        <select class="form-control tom-alt-tom" style="flex: 1;">
+            ${TOM_OPTIONS_LIST.map(t => `<option value="${t}" ${tom === t ? 'selected' : ''}>${t}</option>`).join('')}
+        </select>
+        <button type="button" class="btn-icon text-red" title="Remover"><i class="fas fa-trash-alt"></i></button>
+    `;
+    rowEl.querySelector('.btn-icon').addEventListener('click', () => rowEl.remove());
+    return rowEl;
+}
+
+function renderTonsAlternativosRows(rows) {
+    const container = document.getElementById('song-tons-alternativos-list');
+    if (!container) return;
+    container.innerHTML = '';
+    rows.forEach(row => container.appendChild(createTomAlternativoRow(row.observacao, row.tom)));
+}
+
+function addTomAlternativoRow() {
+    document.getElementById('song-tons-alternativos-list')?.appendChild(createTomAlternativoRow());
+}
+
+function collectTonsAlternativosFromForm() {
+    const rows = document.querySelectorAll('#song-tons-alternativos-list .tom-alternativo-row');
+    const result = [];
+    rows.forEach(rowEl => {
+        const observacao = rowEl.querySelector('.tom-alt-observacao').value.trim();
+        const tom = rowEl.querySelector('.tom-alt-tom').value;
+        if (observacao) result.push({ observacao, tom });
+    });
+    return result;
 }
 
 function openSongFormFromVinc(returnToVincMassId) {
@@ -2843,7 +2880,7 @@ function handleSongSubmit(e) {
     const id = document.getElementById('form-song-id').value;
     const titulo = document.getElementById('song-title').value.trim();
     const tomPadrao = document.getElementById('song-key').value;
-    const tomPessoal = document.getElementById('song-key-personal').value;
+    const tonsAlternativos = collectTonsAlternativosFromForm();
     const capotraste = document.getElementById('song-capo').value;
     const linkYoutube = document.getElementById('song-youtube').value.trim();
     const letra = document.getElementById('song-lyrics').value;
@@ -2862,11 +2899,11 @@ function handleSongSubmit(e) {
     if (id) {
         const songIndex = db.musicas.findIndex(s => s.id === id);
         if (songIndex !== -1) {
-            db.musicas[songIndex] = { id, titulo, tomPadrao, tomPessoal, capotraste, tags, linkYoutube, letra };
+            db.musicas[songIndex] = { id, titulo, tomPadrao, tonsAlternativos, capotraste, tags, linkYoutube, letra };
         }
     } else {
         const newId = 'song-' + Date.now();
-        db.musicas.push({ id: newId, titulo, tomPadrao, tomPessoal, capotraste, tags, linkYoutube, letra });
+        db.musicas.push({ id: newId, titulo, tomPadrao, tonsAlternativos, capotraste, tags, linkYoutube, letra });
         savedId = newId;
     }
 
