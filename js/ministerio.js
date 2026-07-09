@@ -2789,7 +2789,6 @@ let currentLinkingMassId = null;
 let editingLinkedSongIndex = null;
 let vincSelectedSongId = null;
 let vincSearchQuery = '';
-let vincFilterTag = 'Todos';
 
 function populateVincMomentoDropdown(mass) {
     const select = document.getElementById('vinc-momento');
@@ -2806,97 +2805,59 @@ function populateVincMomentoDropdown(mass) {
     }
 }
 
-function renderVincSongSelectorList() {
-    const listContainer = document.getElementById('vinc-musica-lista');
-    if (!listContainer) return;
-    listContainer.innerHTML = '';
-    
-    const filteredSongs = db.musicas.filter(song => {
-        const matchesQuery = song.titulo.toLowerCase().includes(vincSearchQuery) || 
-                             song.letra.toLowerCase().includes(vincSearchQuery);
-        const matchesTag = vincFilterTag === 'Todos' || song.tags.includes(vincFilterTag);
-        return matchesQuery && matchesTag;
-    }).sort((a, b) => a.titulo.localeCompare(b.titulo));
+// Preenche o dropdown de músicas. A música atualmente vinculada (se houver) vem sempre em primeiro lugar.
+function renderVincSongSelectorSelect() {
+    const select = document.getElementById('vinc-musica-select');
+    if (!select) return;
 
-    if (filteredSongs.length === 0) {
-        listContainer.innerHTML = `<p class="size-13 gray text-center padding-10">Nenhuma música encontrada.</p>`;
+    const filtered = db.musicas.filter(song =>
+        song.titulo.toLowerCase().includes(vincSearchQuery) ||
+        song.letra.toLowerCase().includes(vincSearchQuery)
+    ).sort((a, b) => a.titulo.localeCompare(b.titulo));
+
+    let ordered = filtered;
+    const current = filtered.find(s => s.id === vincSelectedSongId);
+    if (current) {
+        ordered = [current, ...filtered.filter(s => s.id !== vincSelectedSongId)];
+    }
+
+    if (ordered.length === 0) {
+        select.innerHTML = `<option value="">Nenhuma música encontrada</option>`;
         return;
     }
 
-    filteredSongs.forEach(song => {
-        const item = document.createElement('div');
-        item.className = `vinc-musica-item ${song.id === vincSelectedSongId ? 'selected' : ''}`;
-        item.dataset.songId = song.id;
-        item.onclick = (e) => {
-            e.preventDefault();
-            vincSelectedSongId = song.id;
-            document.getElementById('vinc-musica-id').value = song.id;
-            const items = listContainer.querySelectorAll('.vinc-musica-item');
-            items.forEach(el => el.classList.remove('selected'));
-            item.classList.add('selected');
-            
-            const currentTom = document.getElementById('vinc-tom').value.trim();
-            if (!currentTom || currentTom === '*') {
-                document.getElementById('vinc-tom').value = song.tomPadrao;
-            }
-        };
-
-        const tagsBadge = song.tags.map(t => `<span class="tag-badge uppercase size-9" style="padding: 2px 5px; background: rgba(74,21,75,0.08); border-radius: 10px; margin-right: 3px; font-size: 8px;">${t}</span>`).join('');
-
-        item.innerHTML = `
-            <div class="song-title-col">
-                <span class="song-title">${song.titulo}</span>
-                <div class="song-tags">${tagsBadge}</div>
-            </div>
-            <div class="song-meta">
-                <span class="song-key">${song.tomPadrao}</span>
-            </div>
-        `;
-        listContainer.appendChild(item);
-    });
+    select.innerHTML = ordered.map(song => `
+        <option value="${song.id}" ${song.id === vincSelectedSongId ? 'selected' : ''}>
+            ${song.titulo} — Tom ${song.tomPadrao}
+        </option>
+    `).join('');
 }
 
 function initVincularSongSelector(activeSongId = null) {
     vincSelectedSongId = activeSongId;
     document.getElementById('vinc-musica-id').value = activeSongId || '';
     vincSearchQuery = '';
-    vincFilterTag = 'Todos';
     document.getElementById('vinc-musica-busca').value = '';
-    
-    const tags = ['Todos', 'Entrada', 'Ato Penitencial', 'Glória', 'Salmo', 'Aclamação', 'Ofertório', 'Santo', 'Pai Nosso', 'Cordeiro', 'Comunhão', 'Pós-Comunhão', 'Adoração', 'Final'];
-    const filtersContainer = document.getElementById('vinc-musica-filtros');
-    filtersContainer.innerHTML = '';
-    
-    tags.forEach(tag => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = `btn btn-small filter-btn border-radius-20 ${vincFilterTag === tag ? 'active' : 'btn-secondary'}`;
-        btn.style.padding = '3px 8px';
-        btn.style.fontSize = '10px';
-        btn.textContent = tag;
-        btn.onclick = (e) => {
-            e.preventDefault();
-            vincFilterTag = tag;
-            filtersContainer.querySelectorAll('.filter-btn').forEach(b => {
-                b.classList.toggle('active', b.textContent === tag);
-                if (b.textContent !== tag) {
-                    b.classList.add('btn-secondary');
-                } else {
-                    b.classList.remove('btn-secondary');
-                }
-            });
-            renderVincSongSelectorList();
-        };
-        filtersContainer.appendChild(btn);
-    });
+
+    renderVincSongSelectorSelect();
 
     const searchInput = document.getElementById('vinc-musica-busca');
     searchInput.oninput = (e) => {
         vincSearchQuery = e.target.value.toLowerCase();
-        renderVincSongSelectorList();
+        renderVincSongSelectorSelect();
     };
 
-    renderVincSongSelectorList();
+    const select = document.getElementById('vinc-musica-select');
+    select.onchange = (e) => {
+        vincSelectedSongId = e.target.value;
+        document.getElementById('vinc-musica-id').value = vincSelectedSongId;
+
+        const song = db.musicas.find(s => s.id === vincSelectedSongId);
+        const currentTom = document.getElementById('vinc-tom').value.trim();
+        if (song && (!currentTom || currentTom === '*')) {
+            document.getElementById('vinc-tom').value = song.tomPadrao;
+        }
+    };
 }
 
 function openSongFormFromVinc() {
