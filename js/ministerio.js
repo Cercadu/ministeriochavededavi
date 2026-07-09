@@ -1960,8 +1960,10 @@ function setupRoteiroDragAndDrop(massId) {
             const dragEl = handle.closest('.roteiro-drag-item');
             if (!dragEl) return;
 
+            // Os listeners de mover/soltar ficam no document (não no handle): o item arrastado
+            // é reposicionado no DOM durante o gesto, e mover o próprio elemento que "capturou"
+            // o ponteiro invalida essa captura no meio do arrasto, travando o drag.
             const startOrder = Array.from(zone.querySelectorAll('.roteiro-drag-item')).map(el => el.dataset.roteiroStepId);
-            handle.setPointerCapture(e.pointerId);
             dragEl.classList.add('dragging');
 
             const onMove = (ev) => {
@@ -1974,9 +1976,9 @@ function setupRoteiroDragAndDrop(massId) {
             };
 
             const onUp = () => {
-                handle.releasePointerCapture(e.pointerId);
-                handle.removeEventListener('pointermove', onMove);
-                handle.removeEventListener('pointerup', onUp);
+                document.removeEventListener('pointermove', onMove);
+                document.removeEventListener('pointerup', onUp);
+                document.removeEventListener('pointercancel', onUp);
                 dragEl.classList.remove('dragging');
 
                 const newOrder = Array.from(zone.querySelectorAll('.roteiro-drag-item')).map(el => el.dataset.roteiroStepId);
@@ -1986,8 +1988,9 @@ function setupRoteiroDragAndDrop(massId) {
                 }
             };
 
-            handle.addEventListener('pointermove', onMove);
-            handle.addEventListener('pointerup', onUp);
+            document.addEventListener('pointermove', onMove);
+            document.addEventListener('pointerup', onUp);
+            document.addEventListener('pointercancel', onUp);
         });
     });
 }
